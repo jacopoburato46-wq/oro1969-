@@ -46,18 +46,14 @@ exports.handler = async function (event) {
         },
         body: JSON.stringify([payload]),
       });
-      if (!res.ok) {
-        throw new Error(`State upsert failed: ${await res.text()}`);
-      }
+      if (!res.ok) throw new Error(await res.text());
     }
 
     async function getEntriesSince(lastResetAt) {
-      let url = `${SUPABASE_URL}/rest/v1/gold_entries?select=grams,created_at`;
-
+      let url = `${SUPABASE_URL}/rest/v1/gold_entries?select=store,operator_name,grams,created_at`;
       if (lastResetAt) {
         url += `&created_at=gt.${encodeURIComponent(lastResetAt)}`;
       }
-
       const res = await fetch(url, { headers });
       const data = await res.json();
       return Array.isArray(data) ? data : [];
@@ -75,19 +71,43 @@ exports.handler = async function (event) {
           }),
         }
       );
-
       const data = await res.json();
-      if (!data.ok) {
-        throw new Error(`Telegram send failed: ${JSON.stringify(data)}`);
-      }
+      if (!data.ok) throw new Error(JSON.stringify(data));
     }
 
     const state = await getState();
 
     if (action === 'reset') {
+      const entries = await getEntriesSince(state.last_reset_at);
+      const total = entries.reduce((sum, row) => sum + Number(row.grams || 0), 0);
+
+      const byStore = {};
+      entries.forEach((row) => {
+        byStore[row.store] = (byStore[row.store] || 0) + Number(row.grams || 0);
+      });
+
+      const summaryLines = Object.entries(byStore)
+        .map(([store, grams]) => `${store}: ${grams.toFixed(2)} g`)
+        .join('\n');
+
+      if (total > 0) {
+        await fetch(`${SUPABASE_URL}/rest/v1/gold_sessions`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify([{
+            total_grams: Number(total.toFixed(2)),
+            summary_text: summaryLines
+          }])
+        });
+
+        await sendTelegramMessage(
+          `Burato Gioielli\nFusione chiusa\nTotale: ${total.toFixed(2)} g\n\n${summaryLines}`
+        );
+      }
+
       await upsertState({
         id: 1,
-        last_reset_at: state.last_reset_at,
+        last_reset_at: new Date().toISOString(),
         last_notified_step: 0,
       });
 
@@ -121,7 +141,6 @@ exports.handler = async function (event) {
         ok: true,
         total,
         currentStep,
-        lastNotifiedStep,
       }),
     };
   } catch (error) {

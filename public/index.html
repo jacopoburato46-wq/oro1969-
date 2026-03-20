@@ -39,10 +39,12 @@
     .quote-grid{
       display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-bottom:18px;
     }
-    .quote-card{padding:22px 24px}
+    .two-col{
+      display:grid; grid-template-columns:1.35fr .95fr; gap:16px; margin-bottom:18px;
+    }
+    .quote-card,.section{padding:22px 24px}
     .big-price{font-size:clamp(2.5rem,7vw,5rem); line-height:1; margin:12px 0 8px; font-weight:800}
     .big-sub{font-size:clamp(1.7rem,4vw,2.4rem); line-height:1.08; margin:10px 0 8px; font-weight:700}
-    .section{padding:24px; margin-bottom:18px}
     .head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px}
     .head h2{margin:0; font-size:1.2rem}
     .pill{
@@ -50,27 +52,33 @@
       border:1px solid var(--line); font-size:13px;
     }
     .pill.success{color:var(--ok)} .pill.error{color:var(--bad)}
-    .form{display:grid; grid-template-columns:1.4fr 1fr auto; gap:14px; align-items:end}
+    .form{display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:14px; align-items:end}
+    .auth-form{display:grid; grid-template-columns:1fr 1fr auto; gap:14px; align-items:end}
     label span{display:block; margin-bottom:8px; font-size:13px; color:#535353; font-weight:600}
     input,select,button{
       width:100%; min-height:54px; border-radius:18px; border:1px solid var(--line); font:inherit;
     }
     input,select{padding:0 16px; background:#fff}
     button{padding:0 20px; background:var(--black); color:#fff; cursor:pointer; font-weight:700}
-    button.reset{background:var(--red)} button:disabled{opacity:.55; cursor:not-allowed}
-    .reset-row{display:grid; grid-template-columns:260px 1fr; gap:14px; align-items:center; margin-top:16px}
+    button.reset{background:var(--red)}
+    button.secondary{background:#fff;color:#111}
+    button:disabled{opacity:.55; cursor:not-allowed}
+    .reset-row{display:grid; grid-template-columns:240px 1fr auto; gap:14px; align-items:center; margin-top:16px}
     .table-wrap{overflow:auto; border-radius:22px; border:1px solid var(--line); background:#fff}
-    table{width:100%; border-collapse:collapse; min-width:560px}
+    table{width:100%; border-collapse:collapse; min-width:720px}
     thead th{text-align:left; background:#faf8f4; color:#6b6b6b; font-size:13px; font-weight:700; padding:14px 18px}
     tbody td{padding:16px 18px; border-top:1px solid #f0ece5; font-size:14px}
-    .right{text-align:right}.empty{text-align:center; color:#888; padding:32px 18px}
+    .right{text-align:right}
+    .empty{text-align:center; color:#888; padding:32px 18px}
     .note{margin-top:12px; font-size:13px; color:#777}
+    .hidden{display:none !important}
+    .stack{display:grid; gap:12px}
+    .session-card{padding:16px; border-radius:18px; background:#fff; border:1px solid var(--line)}
     @media (max-width:960px){
       .page{padding:16px}
       .hero{flex-direction:column}
-      .quote-grid{grid-template-columns:1fr}
-      .form{grid-template-columns:1fr}
-      .reset-row{grid-template-columns:1fr}
+      .quote-grid,.two-col{grid-template-columns:1fr}
+      .form,.auth-form,.reset-row{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -80,289 +88,143 @@
       <div>
         <div class="eyebrow">Burato Gioielli · Rientro Oro</div>
         <h1>Burato Gioielli</h1>
-        <p class="muted">Quotazione live uguale per tutti i negozi. Tabella condivisa e reset globale.</p>
+        <p class="muted">Accesso per singolo negozio, operatore obbligatorio, tabella condivisa e storico fusioni.</p>
       </div>
       <div class="hero-side">
         <div class="small-label">Aggiornamento</div>
         <div id="lastUpdate" class="value">—</div>
-        <div class="small-label" style="margin-top:18px">Fonte</div>
-        <div class="value">Yahoo Finance</div>
+        <div class="small-label" style="margin-top:18px">Negozio / ruolo</div>
+        <div id="userInfo" class="value">Non autenticato</div>
       </div>
     </header>
 
-    <section class="quote-grid">
-      <article class="quote-card card">
-        <div class="small-label">Quotazione Burato</div>
-        <div id="buratoPrice" class="big-price">—</div>
-        <div class="muted">Calcolata automaticamente</div>
-      </article>
-      <article class="quote-card card">
-        <div class="small-label">Oro 24kt live</div>
-        <div id="marketPrice" class="big-sub">—</div>
-        <div class="muted">Valore in euro / grammo</div>
-      </article>
-      <article class="quote-card card">
-        <div class="small-label">Totale ritiri</div>
-        <div id="totalGrams" class="big-sub">0 g</div>
-        <div id="nextAlert" class="muted">Prossimo alert a 100 g</div>
-      </article>
-    </section>
-
-    <section class="card section">
+    <section id="authCard" class="card section">
       <div class="head">
-        <h2>Aggiungi ritiro</h2>
-        <div id="status" class="pill">Pronto</div>
+        <h2>Accesso negozio</h2>
+        <div id="authStatus" class="pill">Accedi</div>
       </div>
 
-      <form id="entryForm" class="form">
+      <form id="loginForm" class="auth-form">
         <label>
-          <span>Negozio</span>
-          <select id="store" required>
-            <option>Jesolo Piazza Milano</option>
-            <option>Jesolo Bafile</option>
-            <option>Mestre</option>
-            <option>Conegliano</option>
-          </select>
+          <span>Email negozio</span>
+          <input id="email" type="email" placeholder="es. mestre@burato.local" required />
         </label>
 
         <label>
-          <span>Grammi ritirati</span>
-          <input id="grams" type="number" min="0.01" step="0.01" placeholder="es. 24.80" required />
+          <span>Password</span>
+          <input id="password" type="password" placeholder="Password" required />
         </label>
 
-        <button id="submitBtn" type="submit">Aggiungi ritiro</button>
+        <button type="submit">Accedi</button>
       </form>
-
-      <div class="reset-row">
-        <button id="resetBtn" class="reset" type="button">Reset dopo fusione</button>
-        <div id="resetNote" class="muted">Azzera tabella e totale corrente per tutti i negozi.</div>
-      </div>
     </section>
 
-    <section class="card section">
-      <div class="head">
-        <h2>Tabella ritiri condivisa</h2>
-        <div id="countEntries" class="muted">0 movimenti</div>
+    <div id="appArea" class="hidden">
+      <section class="quote-grid">
+        <article class="quote-card card">
+          <div class="small-label">Quotazione Burato</div>
+          <div id="buratoPrice" class="big-price">—</div>
+          <div class="muted">Calcolata automaticamente</div>
+        </article>
+        <article class="quote-card card">
+          <div class="small-label">Oro 24kt live</div>
+          <div id="marketPrice" class="big-sub">—</div>
+          <div class="muted">Valore in euro / grammo</div>
+        </article>
+        <article class="quote-card card">
+          <div class="small-label">Totale ritiri</div>
+          <div id="totalGrams" class="big-sub">0 g</div>
+          <div id="nextAlert" class="muted">Prossimo alert a 100 g</div>
+        </article>
+      </section>
+
+      <div class="two-col">
+        <section class="card section">
+          <div class="head">
+            <h2>Aggiungi ritiro</h2>
+            <div id="status" class="pill">Pronto</div>
+          </div>
+
+          <form id="entryForm" class="form">
+            <label>
+              <span>Negozio</span>
+              <input id="storeDisplay" type="text" disabled />
+            </label>
+
+            <label>
+              <span>Operatore</span>
+              <input id="operatorName" type="text" placeholder="Nome operatore" required />
+            </label>
+
+            <label>
+              <span>Grammi ritirati</span>
+              <input id="grams" type="number" min="0.01" step="0.01" placeholder="es. 24.80" required />
+            </label>
+
+            <button id="submitBtn" type="submit">Aggiungi ritiro</button>
+          </form>
+
+          <div class="reset-row">
+            <button id="resetBtn" class="reset hidden" type="button">Chiudi fusione / Reset</button>
+            <div id="resetNote" class="muted">Solo admin può chiudere una fusione.</div>
+            <button id="logoutBtn" class="secondary" type="button">Esci</button>
+          </div>
+        </section>
+
+        <section class="card section">
+          <div class="head">
+            <h2>Storico fusioni</h2>
+            <div id="sessionsCount" class="muted">0 fusioni</div>
+          </div>
+
+          <div id="sessionsList" class="stack">
+            <div class="muted">Nessuna fusione registrata</div>
+          </div>
+        </section>
       </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Negozio</th>
-              <th class="right">Grammi</th>
-            </tr>
-          </thead>
-          <tbody id="entriesBody">
-            <tr><td colspan="2" class="empty">Nessun ritiro registrato</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="note">La pagina si aggiorna automaticamente ogni 5 secondi e resta corretta anche dopo refresh.</div>
-    </section>
+      <section class="card section">
+        <div class="head">
+          <h2>Tabella ritiri condivisa</h2>
+          <div id="countEntries" class="muted">0 movimenti</div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Negozio</th>
+                <th>Operatore</th>
+                <th class="right">Grammi</th>
+                <th>Ora</th>
+              </tr>
+            </thead>
+            <tbody id="entriesBody">
+              <tr><td colspan="4" class="empty">Nessun ritiro registrato</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note">La pagina si aggiorna automaticamente ogni 5 secondi e resta corretta anche dopo refresh.</div>
+      </section>
+    </div>
   </div>
 
 <script>
-(function(){
+(async function(){
   const cfg = window.BURATO_CONFIG || {};
   const supabaseUrl = cfg.supabaseUrl;
   const supabaseAnonKey = cfg.supabaseAnonKey;
   const STEP = 100;
 
   const els = {
+    authCard: document.getElementById('authCard'),
+    appArea: document.getElementById('appArea'),
+    loginForm: document.getElementById('loginForm'),
+    email: document.getElementById('email'),
+    password: document.getElementById('password'),
+    authStatus: document.getElementById('authStatus'),
     marketPrice: document.getElementById('marketPrice'),
     buratoPrice: document.getElementById('buratoPrice'),
     lastUpdate: document.getElementById('lastUpdate'),
-    totalGrams: document.getElementById('totalGrams'),
-    nextAlert: document.getElementById('nextAlert'),
-    countEntries: document.getElementById('countEntries'),
-    entriesBody: document.getElementById('entriesBody'),
-    status: document.getElementById('status'),
-    form: document.getElementById('entryForm'),
-    store: document.getElementById('store'),
-    grams: document.getElementById('grams'),
-    submitBtn: document.getElementById('submitBtn'),
-    resetBtn: document.getElementById('resetBtn'),
-    resetNote: document.getElementById('resetNote')
-  };
-
-  const fmt = (n,d=2)=>new Intl.NumberFormat('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d}).format(Number(n||0));
-  const escapeHtml = (s)=>String(s??'')
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#39;");
-
-  function setStatus(text,type=''){
-    els.status.textContent = text;
-    els.status.className = 'pill' + (type ? ' ' + type : '');
-  }
-
-  if (!window.supabase || !window.supabase.createClient) {
-    setStatus('Libreria Supabase non caricata', 'error');
-    return;
-  }
-
-  if (!supabaseUrl || !supabaseAnonKey || String(supabaseUrl).includes('INCOLLA_') || String(supabaseAnonKey).includes('INCOLLA_')) {
-    setStatus('Configura public/config.js', 'error');
-    return;
-  }
-
-  const client = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-  function render(entries, lastResetAt){
-    const visible = lastResetAt
-      ? entries.filter(item => new Date(item.created_at).getTime() > new Date(lastResetAt).getTime())
-      : entries.slice();
-
-    visible.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-
-    const total = visible.reduce((sum,item)=>sum + Number(item.grams || 0),0);
-    const nextAlertAt = (Math.floor(total / STEP) + 1) * STEP;
-    const remaining = Math.max(0, nextAlertAt - total);
-
-    els.totalGrams.textContent = fmt(total) + ' g';
-    els.nextAlert.textContent = `Mancano ${fmt(remaining)} g al prossimo alert (${fmt(nextAlertAt,0)} g)`;
-    els.countEntries.textContent = `${visible.length} movimenti`;
-    els.resetNote.textContent = lastResetAt
-      ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
-      : 'Azzera tabella e totale corrente per tutti i negozi.';
-
-    if(!visible.length){
-      els.entriesBody.innerHTML = '<tr><td colspan="2" class="empty">Nessun ritiro registrato</td></tr>';
-      return;
-    }
-
-    els.entriesBody.innerHTML = visible.map(entry => `
-      <tr>
-        <td>${escapeHtml(entry.store)}</td>
-        <td class="right"><strong>${fmt(entry.grams)} g</strong></td>
-      </tr>
-    `).join('');
-  }
-
-  async function loadPrice(){
-    const res = await fetch('/api/gold-price');
-    const data = await res.json();
-    if(!data.ok) throw new Error(data.error || 'Errore quotazione');
-
-    els.marketPrice.textContent = fmt(data.marketPrice) + ' €/g';
-    els.buratoPrice.textContent = fmt(data.buratoPrice) + ' €/g';
-    els.lastUpdate.textContent = data.fetchedAtDisplay || new Date().toLocaleString('it-IT');
-  }
-
-  async function ensureStateRow(){
-    const { data, error } = await client.from('gold_state').select('*').eq('id',1).maybeSingle();
-    if (error) throw error;
-
-    if (data) return data;
-
-    const { error: upsertError } = await client.from('gold_state').upsert({ id: 1, last_reset_at: null });
-    if (upsertError) throw upsertError;
-
-    return { id: 1, last_reset_at: null };
-  }
-
-  async function loadSharedData(){
-    const [{ data: entries, error: entriesError }, state] = await Promise.all([
-      client.from('gold_entries').select('*'),
-      ensureStateRow()
-    ]);
-
-    if(entriesError) throw entriesError;
-    render(entries || [], state?.last_reset_at || null);
-  }
-
-  let loading = false;
-  async function loadAll(silent=false){
-    if(loading) return;
-    loading = true;
-    try{
-      await Promise.all([loadPrice(), loadSharedData()]);
-      if(!silent) setStatus('Sincronizzato', 'success');
-    }catch(err){
-      console.error(err);
-      setStatus('Errore di caricamento', 'error');
-    }finally{
-      loading = false;
-    }
-  }
-
-  async function triggerTelegramCheck(action){
-    try{
-      await fetch('/api/telegram-alert', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action })
-      });
-    }catch(err){
-      console.error('Errore telegram-alert:', err);
-    }
-  }
-
-  els.form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-
-    const grams = Number(els.grams.value);
-    const store = els.store.value;
-
-    if(!grams || grams <= 0){
-      setStatus('Inserisci grammi validi','error');
-      return;
-    }
-
-    els.submitBtn.disabled = true;
-    setStatus('Salvataggio…');
-
-    try{
-      const { error } = await client.from('gold_entries').insert([{ store, grams }]);
-      if(error) throw error;
-
-      await triggerTelegramCheck('check');
-
-      els.grams.value = '';
-      await loadAll(true);
-      setStatus('Ritiro aggiunto', 'success');
-    }catch(err){
-      console.error(err);
-      setStatus('Errore salvataggio', 'error');
-    }finally{
-      els.submitBtn.disabled = false;
-    }
-  });
-
-  els.resetBtn.addEventListener('click', async ()=>{
-    if(!confirm('Confermi il reset completo per tutti i negozi?')) return;
-
-    els.resetBtn.disabled = true;
-    setStatus('Reset globale…');
-
-    try{
-      await ensureStateRow();
-
-      const { error } = await client.from('gold_state').upsert({
-        id: 1,
-        last_reset_at: new Date().toISOString()
-      });
-
-      if(error) throw error;
-
-      await triggerTelegramCheck('reset');
-
-      await loadAll(true);
-      setStatus('Reset eseguito', 'success');
-    }catch(err){
-      console.error(err);
-      setStatus('Errore reset', 'error');
-    }finally{
-      els.resetBtn.disabled = false;
-    }
-  });
-
-  loadAll();
-  setInterval(()=>loadAll(true), 5000);
-})();
-</script>
-</body>
-</html>
+    userInfo: document.getElementById ​:contentReference[oaicite:0]{index=0}​​

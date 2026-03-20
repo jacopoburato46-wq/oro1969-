@@ -1,4 +1,4 @@
 window.BURATO_CONFIG = {
-  supabaseUrl: 'INCOLLA_URL',
-  supabaseAnonKey: 'INCOLLA_KEY'
+  supabaseUrl: 'https://hovqaqozkauylepfypcz.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvdnFhcW96a2F1eWxlcGZ5cGN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MjMwODEsImV4cCI6MjA4OTQ5OTA4MX0.sqrsflsTktXG1w71HWmyq2c4iHeEceZItR0myudhpxo'
 };

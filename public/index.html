@@ -187,13 +187,23 @@
   };
 
   const fmt = (n,d=2)=>new Intl.NumberFormat('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d}).format(Number(n||0));
-  const escapeHtml = (s)=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
-  function setStatus(text,type=''){ els.status.textContent = text; els.status.className = 'pill' + (type ? ' ' + type : ''); }
+  const escapeHtml = (s)=>String(s??'')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#39;");
+
+  function setStatus(text,type=''){
+    els.status.textContent = text;
+    els.status.className = 'pill' + (type ? ' ' + type : '');
+  }
 
   if (!window.supabase || !window.supabase.createClient) {
     setStatus('Libreria Supabase non caricata', 'error');
     return;
   }
+
   if (!supabaseUrl || !supabaseAnonKey || String(supabaseUrl).includes('INCOLLA_') || String(supabaseAnonKey).includes('INCOLLA_')) {
     setStatus('Configura public/config.js', 'error');
     return;
@@ -223,13 +233,20 @@
       els.entriesBody.innerHTML = '<tr><td colspan="2" class="empty">Nessun ritiro registrato</td></tr>';
       return;
     }
-    els.entriesBody.innerHTML = visible.map(entry => `<tr><td>${escapeHtml(entry.store)}</td><td class="right"><strong>${fmt(entry.grams)} g</strong></td></tr>`).join('');
+
+    els.entriesBody.innerHTML = visible.map(entry => `
+      <tr>
+        <td>${escapeHtml(entry.store)}</td>
+        <td class="right"><strong>${fmt(entry.grams)} g</strong></td>
+      </tr>
+    `).join('');
   }
 
   async function loadPrice(){
     const res = await fetch('/api/gold-price');
     const data = await res.json();
     if(!data.ok) throw new Error(data.error || 'Errore quotazione');
+
     els.marketPrice.textContent = fmt(data.marketPrice) + ' €/g';
     els.buratoPrice.textContent = fmt(data.buratoPrice) + ' €/g';
     els.lastUpdate.textContent = data.fetchedAtDisplay || new Date().toLocaleString('it-IT');
@@ -238,9 +255,12 @@
   async function ensureStateRow(){
     const { data, error } = await client.from('gold_state').select('*').eq('id',1).maybeSingle();
     if (error) throw error;
+
     if (data) return data;
+
     const { error: upsertError } = await client.from('gold_state').upsert({ id: 1, last_reset_at: null });
     if (upsertError) throw upsertError;
+
     return { id: 1, last_reset_at: null };
   }
 
@@ -249,6 +269,7 @@
       client.from('gold_entries').select('*'),
       ensureStateRow()
     ]);
+
     if(entriesError) throw entriesError;
     render(entries || [], state?.last_reset_at || null);
   }
@@ -268,17 +289,38 @@
     }
   }
 
+  async function triggerTelegramCheck(action){
+    try{
+      await fetch('/api/telegram-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action })
+      });
+    }catch(err){
+      console.error('Errore telegram-alert:', err);
+    }
+  }
+
   els.form.addEventListener('submit', async (e)=>{
     e.preventDefault();
+
     const grams = Number(els.grams.value);
     const store = els.store.value;
-    if(!grams || grams <= 0){ setStatus('Inserisci grammi validi','error'); return; }
+
+    if(!grams || grams <= 0){
+      setStatus('Inserisci grammi validi','error');
+      return;
+    }
 
     els.submitBtn.disabled = true;
     setStatus('Salvataggio…');
+
     try{
       const { error } = await client.from('gold_entries').insert([{ store, grams }]);
       if(error) throw error;
+
+      await triggerTelegramCheck('check');
+
       els.grams.value = '';
       await loadAll(true);
       setStatus('Ritiro aggiunto', 'success');
@@ -292,12 +334,22 @@
 
   els.resetBtn.addEventListener('click', async ()=>{
     if(!confirm('Confermi il reset completo per tutti i negozi?')) return;
+
     els.resetBtn.disabled = true;
     setStatus('Reset globale…');
+
     try{
       await ensureStateRow();
-      const { error } = await client.from('gold_state').upsert({ id: 1, last_reset_at: new Date().toISOString() });
+
+      const { error } = await client.from('gold_state').upsert({
+        id: 1,
+        last_reset_at: new Date().toISOString()
+      });
+
       if(error) throw error;
+
+      await triggerTelegramCheck('reset');
+
       await loadAll(true);
       setStatus('Reset eseguito', 'success');
     }catch(err){

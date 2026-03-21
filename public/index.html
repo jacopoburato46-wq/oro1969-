@@ -3,204 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Burato Gioielli</title>
-
+  <title>Test Login Burato</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
-
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      background: #f5f5f5;
-      color: #111;
-    }
-    .box {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      max-width: 800px;
-    }
-    .hidden {
-      display: none;
-    }
-    input, button {
-      padding: 10px;
-      margin: 5px 5px 5px 0;
-      font-size: 16px;
-    }
-    #loginStatus {
-      margin-top: 10px;
-      color: #b00020;
-      font-weight: 600;
-      white-space: pre-wrap;
-    }
-    .row {
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-    }
+    body { font-family: Arial, sans-serif; padding: 30px; background: #f5f5f5; }
+    .box { background: white; padding: 20px; border-radius: 10px; max-width: 700px; }
+    input, button { padding: 10px; margin: 8px 8px 8px 0; font-size: 16px; }
+    #status { margin-top: 12px; color: #b00020; font-weight: 700; white-space: pre-wrap; }
   </style>
 </head>
 <body>
+  <div class="box">
+    <h1>Test Login Burato</h1>
 
-  <h1>Burato Gioielli</h1>
+    <div>
+      <input id="email" type="email" placeholder="email" />
+      <input id="password" type="password" placeholder="password" />
+      <button id="loginBtn" type="button">Accedi</button>
+    </div>
 
-  <div id="loginBox" class="box">
-    <h3>Login</h3>
-    <input id="email" type="email" placeholder="email" />
-    <input id="password" type="password" placeholder="password" />
-    <button onclick="login()">Accedi</button>
-    <div id="loginStatus"></div>
-  </div>
-
-  <div id="appBox" class="box hidden">
-    <h3 id="userInfo">Utente</h3>
-
-    <input id="operator" placeholder="Operatore" />
-    <input id="grams" type="number" step="0.01" placeholder="Grammi" />
-    <button onclick="addEntry()">Aggiungi</button>
-
-    <h3 id="total">Totale: 0 g</h3>
-
-    <button onclick="resetAll()">Reset</button>
-    <button onclick="logout()">Logout</button>
-
-    <div id="list"></div>
+    <div id="status">Pagina caricata.</div>
   </div>
 
 <script>
-const supabase = window.supabase.createClient(
-  window.BURATO_CONFIG.supabaseUrl,
-  window.BURATO_CONFIG.supabaseAnonKey
-);
+(function () {
+  const statusEl = document.getElementById('status');
+  const btn = document.getElementById('loginBtn');
 
-let currentUser = null;
-let storeName = null;
-
-async function login() {
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const status = document.getElementById('loginStatus');
-
-  status.innerText = 'Tentativo login...';
-
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) {
-      status.innerText = 'ERRORE AUTH: ' + error.message;
-      return;
-    }
-
-    if (!data || !data.user) {
-      status.innerText = 'ERRORE AUTH: utente non restituito';
-      return;
-    }
-
-    currentUser = data.user;
-    status.innerText = 'Login riuscito, cerco negozio...';
-
-    const { data: store, error: storeError } = await supabase
-      .from('store_users')
-      .select('*')
-      .eq('user_id', currentUser.id)
-      .single();
-
-    if (storeError) {
-      status.innerText = 'ERRORE STORE_USERS: ' + storeError.message;
-      return;
-    }
-
-    if (!store) {
-      status.innerText = 'ERRORE STORE_USERS: nessun negozio associato a questo utente';
-      return;
-    }
-
-    storeName = store.store_name;
-
-    document.getElementById('userInfo').innerText = storeName + ' · ' + store.role;
-    document.getElementById('loginBox').classList.add('hidden');
-    document.getElementById('appBox').classList.remove('hidden');
-
-    status.innerText = '';
-    loadData();
-  } catch (e) {
-    status.innerText = 'ERRORE JS: ' + e.message;
+  function setStatus(text) {
+    statusEl.innerText = text;
   }
-}
 
-async function addEntry() {
-  const grams = parseFloat(document.getElementById('grams').value);
-  const operator = document.getElementById('operator').value.trim();
+  setStatus('Script partito.');
 
-  if (!operator) {
-    alert('Inserisci operatore');
+  if (!window.BURATO_CONFIG) {
+    setStatus('ERRORE: window.BURATO_CONFIG non esiste');
     return;
   }
 
-  if (!grams || grams <= 0) {
-    alert('Inserisci grammi validi');
+  if (!window.BURATO_CONFIG.supabaseUrl || !window.BURATO_CONFIG.supabaseAnonKey) {
+    setStatus('ERRORE: config.js presente ma incompleto');
     return;
   }
 
-  const { error } = await supabase.from('gold_entries').insert([
-    {
-      store: storeName,
-      grams,
-      operator_name: operator
+  if (!window.supabase || !window.supabase.createClient) {
+    setStatus('ERRORE: libreria Supabase non caricata');
+    return;
+  }
+
+  const client = window.supabase.createClient(
+    window.BURATO_CONFIG.supabaseUrl,
+    window.BURATO_CONFIG.supabaseAnonKey
+  );
+
+  setStatus('Client Supabase creato correttamente.');
+
+  btn.addEventListener('click', async function () {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    setStatus('Click ricevuto. Tentativo login...');
+
+    try {
+      const { data, error } = await client.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        setStatus('ERRORE AUTH: ' + error.message);
+        return;
+      }
+
+      if (!data || !data.user) {
+        setStatus('ERRORE AUTH: login senza utente');
+        return;
+      }
+
+      setStatus('LOGIN OK: ' + data.user.email);
+    } catch (e) {
+      setStatus('ERRORE JS: ' + e.message);
     }
-  ]);
-
-  if (error) {
-    alert('Errore salvataggio: ' + error.message);
-    return;
-  }
-
-  document.getElementById('grams').value = '';
-  loadData();
-}
-
-async function loadData() {
-  const { data, error } = await supabase.from('gold_entries').select('*').order('created_at', { ascending: false });
-
-  if (error) {
-    document.getElementById('list').innerHTML = '<div>Errore caricamento: ' + error.message + '</div>';
-    return;
-  }
-
-  let total = 0;
-  let html = '';
-
-  data.forEach(r => {
-    total += Number(r.grams || 0);
-    html += `<div class="row">${r.store} - ${r.operator_name || '-'} - ${r.grams} g</div>`;
   });
-
-  document.getElementById('total').innerText = 'Totale: ' + total.toFixed(2) + ' g';
-  document.getElementById('list').innerHTML = html || '<div>Nessun movimento</div>';
-}
-
-async function resetAll() {
-  const { error } = await supabase.from('gold_entries').delete().neq('id', 0);
-
-  if (error) {
-    alert('Errore reset: ' + error.message);
-    return;
-  }
-
-  loadData();
-}
-
-async function logout() {
-  await supabase.auth.signOut();
-  location.reload();
-}
+})();
 </script>
-
 </body>
-</html>
 </html>

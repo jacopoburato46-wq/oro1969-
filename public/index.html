@@ -1599,11 +1599,14 @@ els.saveFormBtn.addEventListener('click', async () => {
   }
   window.printGoldForm = function () {
   alert('funzione printGoldForm partita');
-  fillPrintSheet();
-  setTimeout(() => {
-    alert('sto aprendo window.print()');
+
+  try {
+    fillPrintSheet();
+    alert('fillPrintSheet ok');
     window.print();
-  }, 100);
+  } catch (e) {
+    alert('ERRORE fillPrintSheet: ' + e.message);
+  }
 };
 })();
 </script>

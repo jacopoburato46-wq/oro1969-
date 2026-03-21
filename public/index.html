@@ -702,27 +702,60 @@
     }
   });
 
-  els.resetBtn.addEventListener('click', async () => {
-    if (!currentStore || currentStore.role !== 'admin') return;
+ els.resetBtn.addEventListener('click', async () => {
+  if (!currentStore || currentStore.role !== 'admin') return;
 
-    const ok = window.confirm('Confermi chiusura fusione e reset globale?');
-    if (!ok) return;
+  const ok = window.confirm('Confermi chiusura fusione e reset globale?');
+  if (!ok) return;
 
-    els.resetBtn.disabled = true;
-    setStatus('Chiusura fusione...');
+  els.resetBtn.disabled = true;
+  setStatus('Chiusura fusione...');
 
-    try {
-      await triggerTelegram('reset');
-      await loadOperationalData();
-      setStatus('Fusione chiusa', 'success');
-    } catch (err) {
-      console.error(err);
-      setStatus('Errore reset', 'error');
-    } finally {
-      els.resetBtn.disabled = false;
-    }
-  });
+  try {
+    // 1. prendi tutti i dati attuali
+    const { data: entries, error: entriesError } = await client
+      .from('gold_entries')
+      .select('*');
 
+    if (entriesError) throw entriesError;
+
+    const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
+
+    // 2. crea riassunto
+    const summary = entries.map(e =>
+      `${e.store} - ${e.operator_name} - ${e.grams}g`
+    ).join('\n');
+
+    // 3. salva storico fusione
+    await client.from('gold_sessions').insert([{
+      total_grams: total,
+      summary_text: summary
+    }]);
+
+    // 4. svuota tabella
+    await client.from('gold_entries').delete().neq('id', 0);
+
+    // 5. aggiorna stato reset
+    await client.from('gold_state').update({
+      last_reset_at: new Date().toISOString()
+    }).eq('id', 1);
+
+    // 6. telegram
+    await triggerTelegram('reset');
+
+    // 7. ricarica dati
+    await loadOperationalData();
+
+    setStatus('Reset completato', 'success');
+
+  } catch (err) {
+    console.error(err);
+    setStatus('Errore reset', 'error');
+  } finally {
+    els.resetBtn.disabled = false;
+  }
+});
+  
   els.logoutBtn.addEventListener('click', async () => {
     await client.auth.signOut();
     window.location.reload();

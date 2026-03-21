@@ -439,7 +439,8 @@
 
     entryForm: document.getElementById('entryForm'),
     storeDisplay: document.getElementById('storeDisplay'),
-    operatorName: document.getElementById('operatorName'),
+    clientName: document.getElementById('clientName'),
+schedaNumber: document.getElementById('schedaNumber'),
     grams: document.getElementById('grams'),
     submitBtn: document.getElementById('submitBtn'),
     resetBtn: document.getElementById('resetBtn'),
@@ -559,9 +560,10 @@
       return `
         <tr>
           <td>${escapeHtml(entry.store)}</td>
-          <td>${escapeHtml(entry.operator_name || '-')}</td>
-          <td class="right"><strong>${fmt(entry.grams)} g</strong></td>
-          <td>${when}</td>
+          <td>${escapeHtml(entry.client_name || '-')}</td>
+<td>${escapeHtml(entry.scheda_number || '-')}</td>
+<td class="right"><strong>${fmt(entry.grams)} g</strong></td>
+<td>${when}</td>
         </tr>
       `;
     }).join('');
@@ -674,13 +676,19 @@
   els.entryForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const operatorName = els.operatorName.value.trim();
-    const grams = Number(els.grams.value);
+    const clientName = els.clientName.value.trim();
+const schedaNumber = els.schedaNumber.value.trim();
+const grams = Number(els.grams.value);
 
-    if (!operatorName) {
-      setStatus('Inserisci operatore', 'error');
-      return;
-    }
+if (!clientName) {
+  setStatus('Inserisci cliente', 'error');
+  return;
+}
+
+if (!schedaNumber) {
+  setStatus('Inserisci numero scheda', 'error');
+  return;
+}
 
     if (!grams || grams <= 0) {
       setStatus('Inserisci grammi validi', 'error');
@@ -692,16 +700,18 @@
 
     try {
       const { error } = await client.from('gold_entries').insert([{
-        store: currentStore.store_name,
-        operator_name: operatorName,
-        grams
-      }]);
+  store: currentStore.store_name,
+  client_name: clientName,
+  scheda_number: schedaNumber,
+  grams
+}]);
 
       if (error) throw error;
 
       await triggerTelegram('check');
 
-      els.operatorName.value = '';
+      els.clientName.value = '';
+els.schedaNumber.value = '';
       els.grams.value = '';
 
       await loadOperationalData();
@@ -748,7 +758,7 @@ els.resetBtn.addEventListener('click', async () => {
     const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
 
     const summary = entries.map(e =>
-      `${e.store} - ${e.operator_name} - ${e.grams}g`
+      `${e.store} - ${e.client_name} (#${e.scheda_number}) - ${e.grams}g`
     ).join('\n');
 
     // 4. salva nello storico solo se c'è qualcosa

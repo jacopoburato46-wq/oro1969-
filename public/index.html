@@ -329,7 +329,164 @@
       color:var(--bad);
       white-space:pre-wrap;
     }
+.print-sheet{
+  display:none;
+}
 
+.print-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  border-bottom:1px solid #d9d1c4;
+  padding-bottom:18px;
+  margin-bottom:24px;
+}
+
+.print-brand{
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:.02em;
+}
+
+.print-sub{
+  font-size:12px;
+  color:#666;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-top:6px;
+}
+
+.print-meta{
+  text-align:right;
+  font-size:13px;
+  color:#444;
+}
+
+.print-section{
+  margin-bottom:22px;
+}
+
+.print-section-title{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#7a7a7a;
+  margin-bottom:10px;
+  font-weight:700;
+}
+
+.print-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px 18px;
+}
+
+.print-row{
+  padding:8px 0;
+  border-bottom:1px solid #ece6dc;
+  font-size:14px;
+}
+
+.print-row strong{
+  display:inline-block;
+  min-width:140px;
+}
+
+.print-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.print-table th{
+  text-align:left;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:#666;
+  background:#f7f3ec;
+  padding:12px;
+  border:1px solid #e8e1d5;
+}
+
+.print-table td{
+  padding:12px;
+  border:1px solid #e8e1d5;
+  font-size:14px;
+}
+
+.print-summary{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  margin-top:18px;
+}
+
+.print-summary-box{
+  border:1px solid #e8e1d5;
+  border-radius:14px;
+  padding:16px;
+  background:#fcfaf6;
+}
+
+.print-summary-label{
+  font-size:12px;
+  text-transform:uppercase;
+  color:#777;
+  letter-spacing:.06em;
+  margin-bottom:8px;
+}
+
+.print-summary-value{
+  font-size:26px;
+  font-weight:800;
+}
+
+.print-signatures{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:36px;
+  margin-top:42px;
+}
+
+.print-sign-box{
+  padding-top:50px;
+  border-top:1px solid #444;
+  font-size:13px;
+  color:#444;
+  text-align:center;
+}
+
+.no-print{
+  display:block;
+}
+
+@media print {
+  body{
+    background:#fff !important;
+  }
+
+  .page > *:not(.print-sheet){
+    display:none !important;
+  }
+
+  .print-sheet{
+    display:block !important;
+    background:#fff;
+    color:#111;
+    padding:0;
+    margin:0;
+  }
+
+  .no-print{
+    display:none !important;
+  }
+
+  @page{
+    size:A4;
+    margin:16mm;
+  }
+}
     @media (max-width:960px){
       .page{padding:16px}
       .hero{flex-direction:column}
@@ -573,6 +730,80 @@
         <div class="head">
           <h2>Tabella ritiri condivisa</h2>
           <div id="countEntries" class="muted">0 movimenti</div>
+       <section id="printSheet" class="print-sheet">
+  <div class="print-header">
+    <div>
+      <div class="print-brand">Burato Gioielli</div>
+      <div class="print-sub">Scheda rientro oro</div>
+    </div>
+    <div class="print-meta">
+      <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
+      <div><strong>Negozio:</strong> <span id="printStore">—</span></div>
+      <div><strong>Data:</strong> <span id="printDate">—</span></div>
+    </div>
+  </div>
+
+  <div class="print-section">
+    <div class="print-section-title">Dati cliente</div>
+    <div class="print-grid">
+      <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
+      <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
+      <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
+      <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
+      <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
+      <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> <span id="printIban">—</span></div>
+    </div>
+  </div>
+
+  <div class="print-section">
+    <div class="print-section-title">Documento</div>
+    <div class="print-grid">
+      <div class="print-row"><strong>Tipo:</strong> <span id="printDocumentType">—</span></div>
+      <div class="print-row"><strong>Numero:</strong> <span id="printDocumentNumber">—</span></div>
+      <div class="print-row"><strong>Rilasciato da:</strong> <span id="printDocumentIssuedBy">—</span></div>
+      <div class="print-row"><strong>Scadenza:</strong> <span id="printDocumentExpiry">—</span></div>
+    </div>
+  </div>
+
+  <div class="print-section">
+    <div class="print-section-title">Oggetti conferiti</div>
+    <table class="print-table">
+      <thead>
+        <tr>
+          <th>Descrizione</th>
+          <th>Pezzi</th>
+          <th>Grammi</th>
+        </tr>
+      </thead>
+      <tbody id="printItemsBody">
+        <tr>
+          <td colspan="3">Nessun oggetto</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="print-summary">
+    <div class="print-summary-box">
+      <div class="print-summary-label">Totale grammi</div>
+      <div id="printTotalGrams" class="print-summary-value">0 g</div>
+    </div>
+    <div class="print-summary-box">
+      <div class="print-summary-label">Importo totale</div>
+      <div id="printTotalEur" class="print-summary-value">0 €</div>
+    </div>
+  </div>
+
+  <div class="print-section" style="margin-top:24px;">
+    <div class="print-section-title">Note</div>
+    <div id="printNotes" class="print-row" style="min-height:60px;">—</div>
+  </div>
+
+  <div class="print-signatures">
+    <div class="print-sign-box">Firma cliente</div>
+    <div class="print-sign-box">Firma operatore / negozio</div>
+  </div>
+</section>
         </div>
 
         <div class="table-wrap">
@@ -660,8 +891,27 @@
     saveFormBtn: document.getElementById('saveFormBtn'),
     printFormBtn: document.getElementById('printFormBtn'),
     formTotalGrams: document.getElementById('formTotalGrams'),
-    formTotalEur: document.getElementById('formTotalEur'),
-    formSaveStatus: document.getElementById('formSaveStatus')
+formTotalEur: document.getElementById('formTotalEur'),
+formSaveStatus: document.getElementById('formSaveStatus'),
+
+printSheet: document.getElementById('printSheet'),
+printSchedaNumber: document.getElementById('printSchedaNumber'),
+printStore: document.getElementById('printStore'),
+printDate: document.getElementById('printDate'),
+printClientName: document.getElementById('printClientName'),
+printClientSurname: document.getElementById('printClientSurname'),
+printClientCf: document.getElementById('printClientCf'),
+printClientPhone: document.getElementById('printClientPhone'),
+printClientAddress: document.getElementById('printClientAddress'),
+printIban: document.getElementById('printIban'),
+printDocumentType: document.getElementById('printDocumentType'),
+printDocumentNumber: document.getElementById('printDocumentNumber'),
+printDocumentIssuedBy: document.getElementById('printDocumentIssuedBy'),
+printDocumentExpiry: document.getElementById('printDocumentExpiry'),
+printItemsBody: document.getElementById('printItemsBody'),
+printTotalGrams: document.getElementById('printTotalGrams'),
+printTotalEur: document.getElementById('printTotalEur'),
+printNotes: document.getElementById('printNotes')
   };
 
   function setAuthStatus(text, type = '') {
@@ -896,6 +1146,45 @@ function resetGoldForm(statusText = 'Non salvata') {
     if (!Number.isNaN(numeric) && numeric > 0) {
       els.formQuotePerGram.value = numeric.toFixed(2);
     }
+    function fillPrintSheet() {
+  const { totalGrams, totalEur } = getFormTotals();
+
+  const validItems = formItems.filter(item =>
+    String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0
+  );
+
+  els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
+  els.printStore.textContent = currentStore ? currentStore.store_name : '—';
+  els.printDate.textContent = new Date().toLocaleDateString('it-IT');
+
+  els.printClientName.textContent = els.formClientName.value.trim() || '—';
+  els.printClientSurname.textContent = els.formClientSurname.value.trim() || '—';
+  els.printClientCf.textContent = els.formClientCf.value.trim() || '—';
+  els.printClientPhone.textContent = els.formClientPhone.value.trim() || '—';
+  els.printClientAddress.textContent = els.formClientAddress.value.trim() || '—';
+  els.printIban.textContent = els.formIban.value.trim() || '—';
+
+  els.printDocumentType.textContent = els.formDocumentType.value.trim() || '—';
+  els.printDocumentNumber.textContent = els.formDocumentNumber.value.trim() || '—';
+  els.printDocumentIssuedBy.textContent = els.formDocumentIssuedBy.value.trim() || '—';
+  els.printDocumentExpiry.textContent = els.formDocumentExpiry.value || '—';
+
+  if (!validItems.length) {
+    els.printItemsBody.innerHTML = '<tr><td colspan="3">Nessun oggetto</td></tr>';
+  } else {
+    els.printItemsBody.innerHTML = validItems.map(item => `
+      <tr>
+        <td>${escapeHtml(item.description || '-')}</td>
+        <td>${escapeHtml(item.quantity || 1)}</td>
+        <td>${fmt(item.grams || 0)} g</td>
+      </tr>
+    `).join('');
+  }
+
+  els.printTotalGrams.textContent = fmt(totalGrams) + ' g';
+  els.printTotalEur.textContent = fmt(totalEur) + ' €';
+  els.printNotes.textContent = els.formNotes.value.trim() || '—';
+}
   }
   renderFormItems();
 }
@@ -1155,9 +1444,10 @@ function getGroupedSummaryForTelegram() {
 
   els.formQuotePerGram.addEventListener('input', recalcFormTotals);
 
-  els.printFormBtn.addEventListener('click', () => {
-    window.print();
-  });
+ els.printFormBtn.addEventListener('click', () => {
+  fillPrintSheet();
+  window.print();
+});
 
 els.saveFormBtn.addEventListener('click', async () => {
   if (!currentStore || !currentUser) return;

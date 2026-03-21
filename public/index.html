@@ -641,7 +641,7 @@
           <div class="actions-row">
             <button id="addItemRowBtn" class="secondary" type="button">Aggiungi riga oggetto</button>
             <button id="saveFormBtn" type="button">Salva scheda</button>
-            <button id="printFormBtn" class="secondary" type="button" onclick="printGoldForm()">Stampa</button>
+            <button id="printFormBtn" class="secondary" type="button" onclick="alert('click stampa ok'); printGoldForm();">Stampa</button>
           </div>
 
           <div class="summary-grid">
@@ -1598,8 +1598,10 @@ els.saveFormBtn.addEventListener('click', async () => {
     console.error(err);
   }
   window.printGoldForm = function () {
+  alert('funzione printGoldForm partita');
   fillPrintSheet();
   setTimeout(() => {
+    alert('sto aprendo window.print()');
     window.print();
   }, 100);
 };

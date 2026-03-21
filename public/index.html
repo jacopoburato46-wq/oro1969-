@@ -3,89 +3,742 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Test Login Burato</title>
+  <title>Burato Gioielli</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 30px; background: #f5f5f5; }
-    .box { background: white; padding: 20px; border-radius: 10px; max-width: 700px; }
-    input, button { padding: 10px; margin: 8px 8px 8px 0; font-size: 16px; }
-    #status { margin-top: 12px; color: #b00020; font-weight: 700; white-space: pre-wrap; }
+    :root{
+      --bg1:#efe8dc;
+      --bg2:#f9f8f4;
+      --bg3:#f1ece3;
+      --card:rgba(255,255,255,.92);
+      --line:rgba(17,24,39,.08);
+      --text:#171717;
+      --muted:#666;
+      --black:#111;
+      --soft:#f3ede1;
+      --red:#d93025;
+      --ok:#0f766e;
+      --bad:#b91c1c;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);
+      color:var(--text);
+    }
+
+    .page{
+      max-width:1240px;
+      margin:0 auto;
+      padding:24px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:0 12px 40px rgba(0,0,0,.05);
+      backdrop-filter:blur(10px);
+    }
+
+    .hero{
+      display:flex;
+      justify-content:space-between;
+      gap:24px;
+      padding:28px;
+      margin-bottom:18px;
+    }
+
+    .eyebrow,.small-label{
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-size:12px;
+      color:#7a7a7a;
+    }
+
+    .hero h1{
+      margin:10px 0 8px;
+      font-size:clamp(2rem,5vw,3.8rem);
+      line-height:1;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .hero-side{
+      min-width:220px;
+    }
+
+    .hero-side .value{
+      margin-top:6px;
+      font-weight:600;
+      font-size:15px;
+    }
+
+    .quote-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+      margin-bottom:18px;
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns:1.35fr .95fr;
+      gap:16px;
+      margin-bottom:18px;
+    }
+
+    .quote-card,.section{
+      padding:22px 24px;
+    }
+
+    .big-price{
+      font-size:clamp(2.5rem,7vw,5rem);
+      line-height:1;
+      margin:12px 0 8px;
+      font-weight:800;
+    }
+
+    .big-sub{
+      font-size:clamp(1.7rem,4vw,2.4rem);
+      line-height:1.08;
+      margin:10px 0 8px;
+      font-weight:700;
+    }
+
+    .head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .head h2{
+      margin:0;
+      font-size:1.2rem;
+    }
+
+    .pill{
+      padding:10px 14px;
+      border-radius:999px;
+      background:var(--soft);
+      border:1px solid var(--line);
+      font-size:13px;
+    }
+
+    .pill.success{color:var(--ok)}
+    .pill.error{color:var(--bad)}
+
+    .form{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr auto;
+      gap:14px;
+      align-items:end;
+    }
+
+    .auth-form{
+      display:grid;
+      grid-template-columns:1fr 1fr auto;
+      gap:14px;
+      align-items:end;
+    }
+
+    label span{
+      display:block;
+      margin-bottom:8px;
+      font-size:13px;
+      color:#535353;
+      font-weight:600;
+    }
+
+    input,select,button{
+      width:100%;
+      min-height:54px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      font:inherit;
+    }
+
+    input,select{
+      padding:0 16px;
+      background:#fff;
+    }
+
+    button{
+      padding:0 20px;
+      background:var(--black);
+      color:#fff;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    button.reset{background:var(--red)}
+    button.secondary{
+      background:#fff;
+      color:#111;
+    }
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .reset-row{
+      display:grid;
+      grid-template-columns:240px 1fr auto;
+      gap:14px;
+      align-items:center;
+      margin-top:16px;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:720px;
+    }
+
+    thead th{
+      text-align:left;
+      background:#faf8f4;
+      color:#6b6b6b;
+      font-size:13px;
+      font-weight:700;
+      padding:14px 18px;
+    }
+
+    tbody td{
+      padding:16px 18px;
+      border-top:1px solid #f0ece5;
+      font-size:14px;
+    }
+
+    .right{text-align:right}
+    .empty{
+      text-align:center;
+      color:#888;
+      padding:32px 18px;
+    }
+
+    .note{
+      margin-top:12px;
+      font-size:13px;
+      color:#777;
+    }
+
+    .hidden{display:none !important}
+
+    .stack{
+      display:grid;
+      gap:12px;
+    }
+
+    .session-card{
+      padding:16px;
+      border-radius:18px;
+      background:#fff;
+      border:1px solid var(--line);
+    }
+
+    #authMessage{
+      margin-top:12px;
+      font-size:14px;
+      font-weight:600;
+      color:var(--bad);
+      white-space:pre-wrap;
+    }
+
+    @media (max-width:960px){
+      .page{padding:16px}
+      .hero{flex-direction:column}
+      .quote-grid,.two-col{grid-template-columns:1fr}
+      .form,.auth-form,.reset-row{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>Test Login Burato</h1>
+  <div class="page">
+    <header class="hero card">
+      <div>
+        <div class="eyebrow">Burato Gioielli · Rientro Oro</div>
+        <h1>Burato Gioielli</h1>
+        <p class="muted">Accesso per singolo negozio, operatore obbligatorio, tabella condivisa e storico fusioni.</p>
+      </div>
+      <div class="hero-side">
+        <div class="small-label">Aggiornamento</div>
+        <div id="lastUpdate" class="value">—</div>
+        <div class="small-label" style="margin-top:18px">Negozio / ruolo</div>
+        <div id="userInfo" class="value">Non autenticato</div>
+      </div>
+    </header>
 
-    <div>
-      <input id="email" type="email" placeholder="email" />
-      <input id="password" type="password" placeholder="password" />
-      <button id="loginBtn" type="button">Accedi</button>
+    <section id="authCard" class="card section">
+      <div class="head">
+        <h2>Accesso negozio</h2>
+        <div id="authStatus" class="pill">Accedi</div>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <label>
+          <span>Email negozio</span>
+          <input id="email" type="email" placeholder="es. mestre@burato.local" required />
+        </label>
+
+        <label>
+          <span>Password</span>
+          <input id="password" type="password" placeholder="Password" required />
+        </label>
+
+        <button id="loginBtn" type="submit">Accedi</button>
+      </form>
+
+      <div id="authMessage"></div>
+    </section>
+
+    <div id="appArea" class="hidden">
+      <section class="quote-grid">
+        <article class="quote-card card">
+          <div class="small-label">Quotazione Burato</div>
+          <div id="buratoPrice" class="big-price">—</div>
+          <div class="muted">Calcolata automaticamente</div>
+        </article>
+
+        <article class="quote-card card">
+          <div class="small-label">Oro 24kt live</div>
+          <div id="marketPrice" class="big-sub">—</div>
+          <div class="muted">Valore in euro / grammo</div>
+        </article>
+
+        <article class="quote-card card">
+          <div class="small-label">Totale ritiri</div>
+          <div id="totalGrams" class="big-sub">0 g</div>
+          <div id="nextAlert" class="muted">Prossimo alert a 100 g</div>
+        </article>
+      </section>
+
+      <div class="two-col">
+        <section class="card section">
+          <div class="head">
+            <h2>Aggiungi ritiro</h2>
+            <div id="status" class="pill">Pronto</div>
+          </div>
+
+          <form id="entryForm" class="form">
+            <label>
+              <span>Negozio</span>
+              <input id="storeDisplay" type="text" disabled />
+            </label>
+
+            <label>
+              <span>Operatore</span>
+              <input id="operatorName" type="text" placeholder="Nome operatore" required />
+            </label>
+
+            <label>
+              <span>Grammi ritirati</span>
+              <input id="grams" type="number" min="0.01" step="0.01" placeholder="es. 24.80" required />
+            </label>
+
+            <button id="submitBtn" type="submit">Aggiungi ritiro</button>
+          </form>
+
+          <div class="reset-row">
+            <button id="resetBtn" class="reset hidden" type="button">Chiudi fusione / Reset</button>
+            <div id="resetNote" class="muted">Solo admin può chiudere una fusione.</div>
+            <button id="logoutBtn" class="secondary" type="button">Esci</button>
+          </div>
+        </section>
+
+        <section class="card section">
+          <div class="head">
+            <h2>Storico fusioni</h2>
+            <div id="sessionsCount" class="muted">0 fusioni</div>
+          </div>
+
+          <div id="sessionsList" class="stack">
+            <div class="muted">Nessuna fusione registrata</div>
+          </div>
+        </section>
+      </div>
+
+      <section class="card section">
+        <div class="head">
+          <h2>Tabella ritiri condivisa</h2>
+          <div id="countEntries" class="muted">0 movimenti</div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Negozio</th>
+                <th>Operatore</th>
+                <th class="right">Grammi</th>
+                <th>Ora</th>
+              </tr>
+            </thead>
+            <tbody id="entriesBody">
+              <tr><td colspan="4" class="empty">Nessun ritiro registrato</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note">La pagina si aggiorna automaticamente ogni 5 secondi e resta corretta anche dopo refresh.</div>
+      </section>
     </div>
-
-    <div id="status">Pagina caricata.</div>
   </div>
 
 <script>
-(function () {
-  const statusEl = document.getElementById('status');
-  const btn = document.getElementById('loginBtn');
+(async function () {
+  const cfg = window.BURATO_CONFIG || {};
+  const supabaseUrl = cfg.supabaseUrl;
+  const supabaseAnonKey = cfg.supabaseAnonKey;
+  const STEP = 100;
 
-  function setStatus(text) {
-    statusEl.innerText = text;
+  const els = {
+    authCard: document.getElementById('authCard'),
+    appArea: document.getElementById('appArea'),
+    loginForm: document.getElementById('loginForm'),
+    email: document.getElementById('email'),
+    password: document.getElementById('password'),
+    authStatus: document.getElementById('authStatus'),
+    authMessage: document.getElementById('authMessage'),
+    loginBtn: document.getElementById('loginBtn'),
+
+    marketPrice: document.getElementById('marketPrice'),
+    buratoPrice: document.getElementById('buratoPrice'),
+    lastUpdate: document.getElementById('lastUpdate'),
+    userInfo: document.getElementById('userInfo'),
+    totalGrams: document.getElementById('totalGrams'),
+    nextAlert: document.getElementById('nextAlert'),
+    countEntries: document.getElementById('countEntries'),
+    entriesBody: document.getElementById('entriesBody'),
+    status: document.getElementById('status'),
+
+    entryForm: document.getElementById('entryForm'),
+    storeDisplay: document.getElementById('storeDisplay'),
+    operatorName: document.getElementById('operatorName'),
+    grams: document.getElementById('grams'),
+    submitBtn: document.getElementById('submitBtn'),
+    resetBtn: document.getElementById('resetBtn'),
+    resetNote: document.getElementById('resetNote'),
+    logoutBtn: document.getElementById('logoutBtn'),
+
+    sessionsCount: document.getElementById('sessionsCount'),
+    sessionsList: document.getElementById('sessionsList')
+  };
+
+  function setAuthStatus(text, type = '') {
+    els.authStatus.textContent = text;
+    els.authStatus.className = 'pill' + (type ? ' ' + type : '');
   }
 
-  setStatus('Script partito.');
-
-  if (!window.BURATO_CONFIG) {
-    setStatus('ERRORE: window.BURATO_CONFIG non esiste');
-    return;
+  function setAuthMessage(text) {
+    els.authMessage.textContent = text || '';
   }
 
-  if (!window.BURATO_CONFIG.supabaseUrl || !window.BURATO_CONFIG.supabaseAnonKey) {
-    setStatus('ERRORE: config.js presente ma incompleto');
-    return;
+  function setStatus(text, type = '') {
+    els.status.textContent = text;
+    els.status.className = 'pill' + (type ? ' ' + type : '');
   }
+
+  const fmt = (n, d = 2) =>
+    new Intl.NumberFormat('it-IT', {
+      minimumFractionDigits: d,
+      maximumFractionDigits: d
+    }).format(Number(n || 0));
+
+  const escapeHtml = (s) => String(s ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 
   if (!window.supabase || !window.supabase.createClient) {
-    setStatus('ERRORE: libreria Supabase non caricata');
+    setAuthMessage('Errore: libreria Supabase non caricata');
     return;
   }
 
-  const client = window.supabase.createClient(
-    window.BURATO_CONFIG.supabaseUrl,
-    window.BURATO_CONFIG.supabaseAnonKey
-  );
+  if (!supabaseUrl || !supabaseAnonKey || String(supabaseUrl).includes('INCOLLA_') || String(supabaseAnonKey).includes('INCOLLA_')) {
+    setAuthMessage('Errore: config.js non configurato correttamente');
+    return;
+  }
 
-  setStatus('Client Supabase creato correttamente.');
+  const client = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+  let currentUser = null;
+  let currentStore = null;
 
-  btn.addEventListener('click', async function () {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
+  async function getProfile(userId) {
+    const { data, error } = await client
+      .from('store_users')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
 
-    setStatus('Click ricevuto. Tentativo login...');
+    if (error) throw error;
+    return data;
+  }
 
-    try {
-      const { data, error } = await client.auth.signInWithPassword({
-        email,
-        password
+  async function loadPrice() {
+    const res = await fetch('/api/gold-price');
+    const data = await res.json();
+
+    if (!data.ok) {
+      throw new Error(data.error || 'Errore quotazione');
+    }
+
+    els.marketPrice.textContent = fmt(data.marketPrice) + ' €/g';
+    els.buratoPrice.textContent = fmt(data.buratoPrice) + ' €/g';
+    els.lastUpdate.textContent = data.fetchedAtDisplay || new Date().toLocaleString('it-IT');
+  }
+
+  async function loadState() {
+    const { data, error } = await client
+      .from('gold_state')
+      .select('*')
+      .eq('id', 1)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  function renderEntries(entries, lastResetAt) {
+    const visible = lastResetAt
+      ? entries.filter(item => new Date(item.created_at).getTime() > new Date(lastResetAt).getTime())
+      : entries.slice();
+
+    visible.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    const total = visible.reduce((sum, item) => sum + Number(item.grams || 0), 0);
+    const nextAlertAt = (Math.floor(total / STEP) + 1) * STEP;
+    const remaining = Math.max(0, nextAlertAt - total);
+
+    els.totalGrams.textContent = fmt(total) + ' g';
+    els.nextAlert.textContent = `Mancano ${fmt(remaining)} g al prossimo alert (${fmt(nextAlertAt, 0)} g)`;
+    els.countEntries.textContent = `${visible.length} movimenti`;
+    els.resetNote.textContent = lastResetAt
+      ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
+      : 'Nessun reset eseguito';
+
+    if (!visible.length) {
+      els.entriesBody.innerHTML = '<tr><td colspan="4" class="empty">Nessun ritiro registrato</td></tr>';
+      return;
+    }
+
+    els.entriesBody.innerHTML = visible.map(entry => {
+      const when = new Date(entry.created_at).toLocaleTimeString('it-IT', {
+        hour: '2-digit',
+        minute: '2-digit'
       });
 
+      return `
+        <tr>
+          <td>${escapeHtml(entry.store)}</td>
+          <td>${escapeHtml(entry.operator_name || '-')}</td>
+          <td class="right"><strong>${fmt(entry.grams)} g</strong></td>
+          <td>${when}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function renderSessions(sessions) {
+    els.sessionsCount.textContent = `${sessions.length} fusioni`;
+
+    if (!sessions.length) {
+      els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>';
+      return;
+    }
+
+    els.sessionsList.innerHTML = sessions.map(s => `
+      <div class="session-card">
+        <div style="font-weight:700;margin-bottom:6px">Fusione chiusa il ${new Date(s.closed_at).toLocaleString('it-IT')}</div>
+        <div class="muted">Totale: ${fmt(s.total_grams)} g</div>
+        <div class="muted" style="margin-top:8px;white-space:pre-line">${escapeHtml(s.summary_text || '')}</div>
+      </div>
+    `).join('');
+  }
+
+  async function loadOperationalData() {
+    const [{ data: entries, error: entriesError }, state, sessionsRes] = await Promise.all([
+      client.from('gold_entries').select('*'),
+      loadState(),
+      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20)
+    ]);
+
+    if (entriesError) throw entriesError;
+    if (sessionsRes.error) throw sessionsRes.error;
+
+    renderEntries(entries || [], state?.last_reset_at || null);
+    renderSessions(sessionsRes.data || []);
+  }
+
+  async function triggerTelegram(action) {
+    try {
+      await fetch('/.netlify/functions/telegram-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action })
+      });
+    } catch (e) {
+      console.error('telegram-alert error', e);
+    }
+  }
+
+  function enterApp(profile) {
+    currentStore = profile;
+    els.userInfo.textContent = `${profile.store_name} · ${profile.role}`;
+    els.storeDisplay.value = profile.store_name;
+    els.authCard.classList.add('hidden');
+    els.appArea.classList.remove('hidden');
+
+    if (profile.role === 'admin') {
+      els.resetBtn.classList.remove('hidden');
+    } else {
+      els.resetBtn.classList.add('hidden');
+    }
+  }
+
+  async function loadAll() {
+    await Promise.all([loadPrice(), loadOperationalData()]);
+    setStatus('Sincronizzato', 'success');
+  }
+
+  els.loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setAuthMessage('');
+    setAuthStatus('Accesso...');
+    els.loginBtn.disabled = true;
+
+    try {
+      const email = els.email.value.trim();
+      const password = els.password.value;
+
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+
       if (error) {
-        setStatus('ERRORE AUTH: ' + error.message);
+        setAuthMessage('ERRORE AUTH: ' + error.message);
+        setAuthStatus('Errore', 'error');
         return;
       }
 
       if (!data || !data.user) {
-        setStatus('ERRORE AUTH: login senza utente');
+        setAuthMessage('ERRORE AUTH: utente non restituito');
+        setAuthStatus('Errore', 'error');
         return;
       }
 
-      setStatus('LOGIN OK: ' + data.user.email);
-    } catch (e) {
-      setStatus('ERRORE JS: ' + e.message);
+      currentUser = data.user;
+
+      const profile = await getProfile(currentUser.id);
+      enterApp(profile);
+      setAuthStatus('Accesso riuscito', 'success');
+
+      await loadAll();
+    } catch (err) {
+      console.error(err);
+      setAuthMessage('ERRORE: ' + err.message);
+      setAuthStatus('Errore', 'error');
+    } finally {
+      els.loginBtn.disabled = false;
     }
   });
+
+  els.entryForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const operatorName = els.operatorName.value.trim();
+    const grams = Number(els.grams.value);
+
+    if (!operatorName) {
+      setStatus('Inserisci operatore', 'error');
+      return;
+    }
+
+    if (!grams || grams <= 0) {
+      setStatus('Inserisci grammi validi', 'error');
+      return;
+    }
+
+    els.submitBtn.disabled = true;
+    setStatus('Salvataggio...');
+
+    try {
+      const { error } = await client.from('gold_entries').insert([{
+        store: currentStore.store_name,
+        operator_name: operatorName,
+        grams
+      }]);
+
+      if (error) throw error;
+
+      await triggerTelegram('check');
+
+      els.operatorName.value = '';
+      els.grams.value = '';
+
+      await loadOperationalData();
+      setStatus('Ritiro aggiunto', 'success');
+    } catch (err) {
+      console.error(err);
+      setStatus('Errore salvataggio', 'error');
+    } finally {
+      els.submitBtn.disabled = false;
+    }
+  });
+
+  els.resetBtn.addEventListener('click', async () => {
+    if (!currentStore || currentStore.role !== 'admin') return;
+
+    const ok = window.confirm('Confermi chiusura fusione e reset globale?');
+    if (!ok) return;
+
+    els.resetBtn.disabled = true;
+    setStatus('Chiusura fusione...');
+
+    try {
+      await triggerTelegram('reset');
+      await loadOperationalData();
+      setStatus('Fusione chiusa', 'success');
+    } catch (err) {
+      console.error(err);
+      setStatus('Errore reset', 'error');
+    } finally {
+      els.resetBtn.disabled = false;
+    }
+  });
+
+  els.logoutBtn.addEventListener('click', async () => {
+    await client.auth.signOut();
+    window.location.reload();
+  });
+
+  try {
+    const { data } = await client.auth.getUser();
+    if (data?.user) {
+      currentUser = data.user;
+      const profile = await getProfile(currentUser.id);
+      enterApp(profile);
+      await loadAll();
+    }
+  } catch (err) {
+    console.error(err);
+  }
 })();
 </script>
 </body>

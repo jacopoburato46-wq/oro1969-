@@ -78,30 +78,12 @@ exports.handler = async function (event) {
     const state = await getState();
 
     if (action === 'reset') {
-      const entries = await getEntriesSince(state.last_reset_at);
-      const total = entries.reduce((sum, row) => sum + Number(row.grams || 0), 0);
-
-      const byStore = {};
-      entries.forEach((row) => {
-        byStore[row.store] = (byStore[row.store] || 0) + Number(row.grams || 0);
-      });
-
-      const summaryLines = Object.entries(byStore)
-        .map(([store, grams]) => `${store}: ${grams.toFixed(2)} g`)
-        .join('\n');
+      const total = Number(body.total || 0);
+      const summary = body.summary || '';
 
       if (total > 0) {
-        await fetch(`${SUPABASE_URL}/rest/v1/gold_sessions`, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify([{
-            total_grams: Number(total.toFixed(2)),
-            summary_text: summaryLines
-          }])
-        });
-
         await sendTelegramMessage(
-          `Burato Gioielli\nFusione chiusa\nTotale: ${total.toFixed(2)} g\n\n${summaryLines}`
+          `Burato Gioielli\nFusione chiusa\nTotale: ${total.toFixed(2)} g\n\n${summary}`
         );
       }
 

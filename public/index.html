@@ -885,11 +885,11 @@
     els.toggleFormBtn.textContent = els.goldFormArea.classList.contains('hidden') ? 'Apri scheda' : 'Chiudi scheda';
   }
 
- function resetGoldForm() {
+function resetGoldForm(statusText = 'Non salvata') {
   els.goldForm.reset();
   els.formStore.value = currentStore ? currentStore.store_name : '';
   formItems = [{ description: '', quantity: 1, grams: '' }];
-  els.formSaveStatus.textContent = 'Non salvata';
+  els.formSaveStatus.textContent = statusText;
   if (els.buratoPrice.textContent && els.buratoPrice.textContent !== '—') {
     const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
     const numeric = parseFloat(raw);
@@ -1279,7 +1279,7 @@ els.saveFormBtn.addEventListener('click', async () => {
     els.formSaveStatus.textContent = `Scheda salvata correttamente (#${schedaNumber})`;
 
     // 7. reset form
-    resetGoldForm();
+    resetGoldForm(`Scheda salvata correttamente (#${schedaNumber})`);
   } catch (err) {
     console.error(err);
     els.formSaveStatus.textContent = 'Errore salvataggio scheda';

@@ -150,6 +150,16 @@
       align-items:end;
     }
 
+    .form-full{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .form-full .full{
+      grid-column:1 / -1;
+    }
+
     label span{
       display:block;
       margin-bottom:8px;
@@ -158,7 +168,7 @@
       font-weight:600;
     }
 
-    input,select,button{
+    input,select,button,textarea{
       width:100%;
       min-height:54px;
       border-radius:18px;
@@ -166,9 +176,15 @@
       font:inherit;
     }
 
-    input,select{
+    input,select,textarea{
       padding:0 16px;
       background:#fff;
+    }
+
+    textarea{
+      min-height:96px;
+      padding:14px 16px;
+      resize:vertical;
     }
 
     button{
@@ -226,6 +242,59 @@
       font-size:14px;
     }
 
+    .items-table-wrap{
+      overflow:auto;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:#fff;
+      margin-top:14px;
+    }
+
+    .items-table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:720px;
+    }
+
+    .items-table th{
+      text-align:left;
+      background:#faf8f4;
+      color:#6b6b6b;
+      font-size:13px;
+      font-weight:700;
+      padding:12px 14px;
+    }
+
+    .items-table td{
+      padding:12px 14px;
+      border-top:1px solid #f0ece5;
+    }
+
+    .items-table input{
+      min-height:44px;
+    }
+
+    .actions-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .summary-box{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+    }
+
     .right{text-align:right}
     .empty{
       text-align:center;
@@ -265,7 +334,8 @@
       .page{padding:16px}
       .hero{flex-direction:column}
       .quote-grid,.two-col{grid-template-columns:1fr}
-      .form,.auth-form,.reset-row{grid-template-columns:1fr}
+      .form,.auth-form,.reset-row,.form-full{grid-template-columns:1fr}
+      .summary-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -309,6 +379,123 @@
     </section>
 
     <div id="appArea" class="hidden">
+
+      <section class="card section">
+        <div class="head">
+          <h2>Nuova scheda rientro oro</h2>
+          <button id="toggleFormBtn" class="secondary" type="button">Apri scheda</button>
+        </div>
+
+        <div id="goldFormArea" class="hidden">
+          <form id="goldForm" class="form-full">
+            <label>
+              <span>N° scheda</span>
+              <input id="formSchedaNumber" type="text" placeholder="es. 2026-001" required />
+            </label>
+
+            <label>
+              <span>Negozio</span>
+              <input id="formStore" type="text" disabled />
+            </label>
+
+            <label>
+              <span>Nome cliente</span>
+              <input id="formClientName" type="text" required />
+            </label>
+
+            <label>
+              <span>Cognome cliente</span>
+              <input id="formClientSurname" type="text" />
+            </label>
+
+            <label>
+              <span>Codice fiscale</span>
+              <input id="formClientCf" type="text" />
+            </label>
+
+            <label>
+              <span>Telefono</span>
+              <input id="formClientPhone" type="text" />
+            </label>
+
+            <label class="full">
+              <span>Indirizzo</span>
+              <input id="formClientAddress" type="text" />
+            </label>
+
+            <label>
+              <span>Tipo documento</span>
+              <input id="formDocumentType" type="text" placeholder="Carta identità / Patente / Passaporto" />
+            </label>
+
+            <label>
+              <span>Numero documento</span>
+              <input id="formDocumentNumber" type="text" />
+            </label>
+
+            <label>
+              <span>Rilasciato da</span>
+              <input id="formDocumentIssuedBy" type="text" />
+            </label>
+
+            <label>
+              <span>Scadenza documento</span>
+              <input id="formDocumentExpiry" type="date" />
+            </label>
+
+            <label class="full">
+              <span>IBAN cliente</span>
+              <input id="formIban" type="text" />
+            </label>
+
+            <label>
+              <span>Quotazione €/g</span>
+              <input id="formQuotePerGram" type="number" step="0.01" />
+            </label>
+
+            <label class="full">
+              <span>Note</span>
+              <input id="formNotes" type="text" />
+            </label>
+          </form>
+
+          <div class="items-table-wrap">
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Descrizione oggetto</th>
+                  <th>Numero pezzi</th>
+                  <th>Grammi</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody id="formItemsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="actions-row">
+            <button id="addItemRowBtn" class="secondary" type="button">Aggiungi riga oggetto</button>
+            <button id="saveFormBtn" type="button">Salva scheda</button>
+            <button id="printFormBtn" class="secondary" type="button">Stampa</button>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="small-label">Totale grammi</div>
+              <div id="formTotalGrams" class="big-sub">0 g</div>
+            </div>
+            <div class="summary-box">
+              <div class="small-label">Totale euro</div>
+              <div id="formTotalEur" class="big-sub">0 €</div>
+            </div>
+            <div class="summary-box">
+              <div class="small-label">Stato scheda</div>
+              <div id="formSaveStatus" class="muted">Non salvata</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="quote-grid">
         <article class="quote-card card">
           <div class="small-label">Quotazione Burato</div>
@@ -343,14 +530,14 @@
             </label>
 
             <label>
-  <span>Cliente</span>
-  <input id="clientName" type="text" placeholder="Nome cliente" required />
-</label>
+              <span>Cliente</span>
+              <input id="clientName" type="text" placeholder="Nome cliente" required />
+            </label>
 
-<label>
-  <span>N° scheda</span>
-  <input id="schedaNumber" type="text" placeholder="es. 12345" required />
-</label>
+            <label>
+              <span>N° scheda</span>
+              <input id="schedaNumber" type="text" placeholder="es. 12345" required />
+            </label>
 
             <label>
               <span>Grammi ritirati</span>
@@ -394,13 +581,13 @@
               <tr>
                 <th>Negozio</th>
                 <th>Cliente</th>
-<th>N° scheda</th>
-<th class="right">Grammi</th>
-<th>Ora</th>
+                <th>N° scheda</th>
+                <th class="right">Grammi</th>
+                <th>Ora</th>
               </tr>
             </thead>
             <tbody id="entriesBody">
-              <tr><td colspan="4" class="empty">Nessun ritiro registrato</td></tr>
+              <tr><td colspan="5" class="empty">Nessun ritiro registrato</td></tr>
             </tbody>
           </table>
         </div>
@@ -440,7 +627,7 @@
     entryForm: document.getElementById('entryForm'),
     storeDisplay: document.getElementById('storeDisplay'),
     clientName: document.getElementById('clientName'),
-schedaNumber: document.getElementById('schedaNumber'),
+    schedaNumber: document.getElementById('schedaNumber'),
     grams: document.getElementById('grams'),
     submitBtn: document.getElementById('submitBtn'),
     resetBtn: document.getElementById('resetBtn'),
@@ -449,7 +636,32 @@ schedaNumber: document.getElementById('schedaNumber'),
 
     sessionsCount: document.getElementById('sessionsCount'),
     sessionsList: document.getElementById('sessionsList'),
-    clearSessionsBtn: document.getElementById('clearSessionsBtn')
+    clearSessionsBtn: document.getElementById('clearSessionsBtn'),
+
+    toggleFormBtn: document.getElementById('toggleFormBtn'),
+    goldFormArea: document.getElementById('goldFormArea'),
+    goldForm: document.getElementById('goldForm'),
+    formSchedaNumber: document.getElementById('formSchedaNumber'),
+    formStore: document.getElementById('formStore'),
+    formClientName: document.getElementById('formClientName'),
+    formClientSurname: document.getElementById('formClientSurname'),
+    formClientCf: document.getElementById('formClientCf'),
+    formClientPhone: document.getElementById('formClientPhone'),
+    formClientAddress: document.getElementById('formClientAddress'),
+    formDocumentType: document.getElementById('formDocumentType'),
+    formDocumentNumber: document.getElementById('formDocumentNumber'),
+    formDocumentIssuedBy: document.getElementById('formDocumentIssuedBy'),
+    formDocumentExpiry: document.getElementById('formDocumentExpiry'),
+    formIban: document.getElementById('formIban'),
+    formQuotePerGram: document.getElementById('formQuotePerGram'),
+    formNotes: document.getElementById('formNotes'),
+    formItemsBody: document.getElementById('formItemsBody'),
+    addItemRowBtn: document.getElementById('addItemRowBtn'),
+    saveFormBtn: document.getElementById('saveFormBtn'),
+    printFormBtn: document.getElementById('printFormBtn'),
+    formTotalGrams: document.getElementById('formTotalGrams'),
+    formTotalEur: document.getElementById('formTotalEur'),
+    formSaveStatus: document.getElementById('formSaveStatus')
   };
 
   function setAuthStatus(text, type = '') {
@@ -492,6 +704,9 @@ schedaNumber: document.getElementById('schedaNumber'),
   const client = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
   let currentUser = null;
   let currentStore = null;
+  let formItems = [
+    { description: '', quantity: 1, grams: '' }
+  ];
 
   async function getProfile(userId) {
     const { data, error } = await client
@@ -547,7 +762,7 @@ schedaNumber: document.getElementById('schedaNumber'),
       : 'Nessun reset eseguito';
 
     if (!visible.length) {
-      els.entriesBody.innerHTML = '<tr><td colspan="4" class="empty">Nessun ritiro registrato</td></tr>';
+      els.entriesBody.innerHTML = '<tr><td colspan="5" class="empty">Nessun ritiro registrato</td></tr>';
       return;
     }
 
@@ -561,9 +776,9 @@ schedaNumber: document.getElementById('schedaNumber'),
         <tr>
           <td>${escapeHtml(entry.store)}</td>
           <td>${escapeHtml(entry.client_name || '-')}</td>
-<td>${escapeHtml(entry.scheda_number || '-')}</td>
-<td class="right"><strong>${fmt(entry.grams)} g</strong></td>
-<td>${when}</td>
+          <td>${escapeHtml(entry.scheda_number || '-')}</td>
+          <td class="right"><strong>${fmt(entry.grams)} g</strong></td>
+          <td>${when}</td>
         </tr>
       `;
     }).join('');
@@ -600,17 +815,83 @@ schedaNumber: document.getElementById('schedaNumber'),
     renderSessions(sessionsRes.data || []);
   }
 
- async function triggerTelegram(action, payload = {}) {
-  try {
-    await fetch('/.netlify/functions/telegram-alert', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, ...payload })
-    });
-  } catch (e) {
-    console.error('telegram-alert error', e);
+  async function triggerTelegram(action, payload = {}) {
+    try {
+      await fetch('/.netlify/functions/telegram-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ...payload })
+      });
+    } catch (e) {
+      console.error('telegram-alert error', e);
+    }
   }
-}
+
+  function renderFormItems() {
+    els.formItemsBody.innerHTML = formItems.map((item, index) => `
+      <tr>
+        <td>
+          <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
+        </td>
+        <td>
+          <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
+        </td>
+        <td>
+          <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
+        </td>
+        <td>
+          <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
+        </td>
+      </tr>
+    `).join('');
+
+    bindFormItemEvents();
+    recalcFormTotals();
+  }
+
+  function bindFormItemEvents() {
+    els.formItemsBody.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const index = Number(e.target.dataset.index);
+        const field = e.target.dataset.field;
+        formItems[index][field] = e.target.value;
+        recalcFormTotals();
+      });
+    });
+
+    els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = Number(btn.dataset.index);
+        formItems.splice(index, 1);
+        if (!formItems.length) {
+          formItems.push({ description: '', quantity: 1, grams: '' });
+        }
+        renderFormItems();
+      });
+    });
+  }
+
+  function recalcFormTotals() {
+    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
+    const quote = Number(els.formQuotePerGram.value || 0);
+    const totalEur = totalGrams * quote;
+
+    els.formTotalGrams.textContent = fmt(totalGrams) + ' g';
+    els.formTotalEur.textContent = fmt(totalEur) + ' €';
+  }
+
+  function openGoldForm() {
+    els.goldFormArea.classList.toggle('hidden');
+    els.toggleFormBtn.textContent = els.goldFormArea.classList.contains('hidden') ? 'Apri scheda' : 'Chiudi scheda';
+  }
+
+  function resetGoldForm() {
+    els.goldForm.reset();
+    els.formStore.value = currentStore ? currentStore.store_name : '';
+    formItems = [{ description: '', quantity: 1, grams: '' }];
+    els.formSaveStatus.textContent = 'Non salvata';
+    renderFormItems();
+  }
 
   function enterApp(profile) {
     currentStore = profile;
@@ -626,6 +907,15 @@ schedaNumber: document.getElementById('schedaNumber'),
       els.resetBtn.classList.add('hidden');
       els.clearSessionsBtn.classList.add('hidden');
     }
+
+    els.formStore.value = profile.store_name;
+    if (!els.formQuotePerGram.value || Number(els.formQuotePerGram.value) === 0) {
+      const currentBurato = parseFloat((els.buratoPrice.textContent || '0').replace(/\./g, '').replace(',', '.'));
+      if (!Number.isNaN(currentBurato) && currentBurato > 0) {
+        els.formQuotePerGram.value = currentBurato.toFixed(2).replace(',', '.');
+      }
+    }
+    renderFormItems();
   }
 
   async function loadAll() {
@@ -677,18 +967,18 @@ schedaNumber: document.getElementById('schedaNumber'),
     e.preventDefault();
 
     const clientName = els.clientName.value.trim();
-const schedaNumber = els.schedaNumber.value.trim();
-const grams = Number(els.grams.value);
+    const schedaNumber = els.schedaNumber.value.trim();
+    const grams = Number(els.grams.value);
 
-if (!clientName) {
-  setStatus('Inserisci cliente', 'error');
-  return;
-}
+    if (!clientName) {
+      setStatus('Inserisci cliente', 'error');
+      return;
+    }
 
-if (!schedaNumber) {
-  setStatus('Inserisci numero scheda', 'error');
-  return;
-}
+    if (!schedaNumber) {
+      setStatus('Inserisci numero scheda', 'error');
+      return;
+    }
 
     if (!grams || grams <= 0) {
       setStatus('Inserisci grammi validi', 'error');
@@ -700,18 +990,18 @@ if (!schedaNumber) {
 
     try {
       const { error } = await client.from('gold_entries').insert([{
-  store: currentStore.store_name,
-  client_name: clientName,
-  scheda_number: schedaNumber,
-  grams
-}]);
+        store: currentStore.store_name,
+        client_name: clientName,
+        scheda_number: schedaNumber,
+        grams
+      }]);
 
       if (error) throw error;
 
       await triggerTelegram('check');
 
       els.clientName.value = '';
-els.schedaNumber.value = '';
+      els.schedaNumber.value = '';
       els.grams.value = '';
 
       await loadOperationalData();
@@ -724,88 +1014,79 @@ els.schedaNumber.value = '';
     }
   });
 
-els.resetBtn.addEventListener('click', async () => {
-  if (!currentStore || currentStore.role !== 'admin') return;
+  els.resetBtn.addEventListener('click', async () => {
+    if (!currentStore || currentStore.role !== 'admin') return;
 
-  const ok = window.confirm('Confermi chiusura fusione e reset globale?');
-  if (!ok) return;
+    const ok = window.confirm('Confermi chiusura fusione e reset globale?');
+    if (!ok) return;
 
-  els.resetBtn.disabled = true;
-  setStatus('Chiusura fusione...');
+    els.resetBtn.disabled = true;
+    setStatus('Chiusura fusione...');
 
-  try {
-    // 1. leggi stato corrente
-    const { data: state, error: stateError } = await client
-      .from('gold_state')
-      .select('*')
-      .eq('id', 1)
-      .single();
+    try {
+      const { data: state, error: stateError } = await client
+        .from('gold_state')
+        .select('*')
+        .eq('id', 1)
+        .single();
 
-    if (stateError) throw stateError;
+      if (stateError) throw stateError;
 
-    // 2. leggi tutti i ritiri
-    const { data: allEntries, error: entriesError } = await client
-      .from('gold_entries')
-      .select('*');
+      const { data: allEntries, error: entriesError } = await client
+        .from('gold_entries')
+        .select('*');
 
-    if (entriesError) throw entriesError;
+      if (entriesError) throw entriesError;
 
-    // 3. prendi solo quelli successivi all'ultimo reset
-    const entries = state?.last_reset_at
-      ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
-      : allEntries;
+      const entries = state?.last_reset_at
+        ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
+        : allEntries;
 
-    const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
+      const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
 
-    const summary = entries.map(e =>
-      `${e.store} - ${e.client_name} (#${e.scheda_number}) - ${e.grams}g`
-    ).join('\n');
+      const summary = entries.map(e =>
+        `${e.store} - ${e.client_name} (#${e.scheda_number}) - ${e.grams}g`
+      ).join('\n');
 
-    // 4. salva nello storico solo se c'è qualcosa
-    if (entries.length > 0) {
-      const { error: sessionError } = await client.from('gold_sessions').insert([{
-        total_grams: total,
-        summary_text: summary
-      }]);
+      if (entries.length > 0) {
+        const { error: sessionError } = await client.from('gold_sessions').insert([{
+          total_grams: total,
+          summary_text: summary
+        }]);
 
-      if (sessionError) throw sessionError;
+        if (sessionError) throw sessionError;
+      }
+
+      const { error: deleteError } = await client
+        .from('gold_entries')
+        .delete()
+        .neq('id', 0);
+
+      if (deleteError) throw deleteError;
+
+      const { error: updateStateError } = await client
+        .from('gold_state')
+        .update({
+          last_reset_at: new Date().toISOString()
+        })
+        .eq('id', 1);
+
+      if (updateStateError) throw updateStateError;
+
+      await triggerTelegram('reset', {
+        total,
+        summary
+      });
+
+      await loadOperationalData();
+      setStatus('Reset completato', 'success');
+    } catch (err) {
+      console.error(err);
+      setStatus('Errore reset', 'error');
+    } finally {
+      els.resetBtn.disabled = false;
     }
-
-    // 5. svuota la tabella ritiri
-    const { error: deleteError } = await client
-      .from('gold_entries')
-      .delete()
-      .neq('id', 0);
-
-    if (deleteError) throw deleteError;
-
-    // 6. aggiorna il reset
-    const { error: updateStateError } = await client
-      .from('gold_state')
-      .update({
-        last_reset_at: new Date().toISOString()
-      })
-      .eq('id', 1);
-
-    if (updateStateError) throw updateStateError;
-
-    // 7. telegram
-   await triggerTelegram('reset', {
-  total,
-  summary
-});
-
-    // 8. ricarica UI
-    await loadOperationalData();
-
-    setStatus('Reset completato', 'success');
-  } catch (err) {
-    console.error(err);
-    setStatus('Errore reset', 'error');
-  } finally {
-    els.resetBtn.disabled = false;
-  }
-});
+  });
 
   els.clearSessionsBtn.addEventListener('click', async () => {
     if (!currentStore || currentStore.role !== 'admin') return;
@@ -832,6 +1113,23 @@ els.resetBtn.addEventListener('click', async () => {
     } finally {
       els.clearSessionsBtn.disabled = false;
     }
+  });
+
+  els.toggleFormBtn.addEventListener('click', openGoldForm);
+
+  els.addItemRowBtn.addEventListener('click', () => {
+    formItems.push({ description: '', quantity: 1, grams: '' });
+    renderFormItems();
+  });
+
+  els.formQuotePerGram.addEventListener('input', recalcFormTotals);
+
+  els.printFormBtn.addEventListener('click', () => {
+    window.print();
+  });
+
+  els.saveFormBtn.addEventListener('click', () => {
+    els.formSaveStatus.textContent = 'UI pronta, salvataggio database nello step successivo';
   });
 
   els.logoutBtn.addEventListener('click', async () => {

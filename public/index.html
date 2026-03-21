@@ -774,7 +774,10 @@ els.resetBtn.addEventListener('click', async () => {
     if (updateStateError) throw updateStateError;
 
     // 7. telegram
-    await triggerTelegram('reset');
+   await triggerTelegram('reset', {
+  total,
+  summary
+});
 
     // 8. ricarica UI
     await loadOperationalData();

@@ -708,50 +708,85 @@
     }
   });
 
-  els.resetBtn.addEventListener('click', async () => {
-    if (!currentStore || currentStore.role !== 'admin') return;
+els.resetBtn.addEventListener('click', async () => {
+  if (!currentStore || currentStore.role !== 'admin') return;
 
-    const ok = window.confirm('Confermi chiusura fusione e reset globale?');
-    if (!ok) return;
+  const ok = window.confirm('Confermi chiusura fusione e reset globale?');
+  if (!ok) return;
 
-    els.resetBtn.disabled = true;
-    setStatus('Chiusura fusione...');
+  els.resetBtn.disabled = true;
+  setStatus('Chiusura fusione...');
 
-    try {
-      const { data: entries, error: entriesError } = await client
-        .from('gold_entries')
-        .select('*');
+  try {
+    // 1. leggi stato corrente
+    const { data: state, error: stateError } = await client
+      .from('gold_state')
+      .select('*')
+      .eq('id', 1)
+      .single();
 
-      if (entriesError) throw entriesError;
+    if (stateError) throw stateError;
 
-      const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
+    // 2. leggi tutti i ritiri
+    const { data: allEntries, error: entriesError } = await client
+      .from('gold_entries')
+      .select('*');
 
-      const summary = entries.map(e =>
-        `${e.store} - ${e.operator_name} - ${e.grams}g`
-      ).join('\n');
+    if (entriesError) throw entriesError;
 
-      await client.from('gold_sessions').insert([{
+    // 3. prendi solo quelli successivi all'ultimo reset
+    const entries = state?.last_reset_at
+      ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
+      : allEntries;
+
+    const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
+
+    const summary = entries.map(e =>
+      `${e.store} - ${e.operator_name} - ${e.grams}g`
+    ).join('\n');
+
+    // 4. salva nello storico solo se c'è qualcosa
+    if (entries.length > 0) {
+      const { error: sessionError } = await client.from('gold_sessions').insert([{
         total_grams: total,
         summary_text: summary
       }]);
 
-      await client.from('gold_entries').delete().neq('id', 0);
-
-      await client.from('gold_state').update({
-        last_reset_at: new Date().toISOString()
-      }).eq('id', 1);
-
-      await triggerTelegram('reset');
-      await loadOperationalData();
-
-      setStatus('Reset completato', 'success');
-    } catch (err) {
-      console.error(err);
-      setStatus('Errore reset', 'error');
-    } finally {
-      els.resetBtn.disabled = false;
+      if (sessionError) throw sessionError;
     }
-  });
+
+    // 5. svuota la tabella ritiri
+    const { error: deleteError } = await client
+      .from('gold_entries')
+      .delete()
+      .neq('id', 0);
+
+    if (deleteError) throw deleteError;
+
+    // 6. aggiorna il reset
+    const { error: updateStateError } = await client
+      .from('gold_state')
+      .update({
+        last_reset_at: new Date().toISOString()
+      })
+      .eq('id', 1);
+
+    if (updateStateError) throw updateStateError;
+
+    // 7. telegram
+    await triggerTelegram('reset');
+
+    // 8. ricarica UI
+    await loadOperationalData();
+
+    setStatus('Reset completato', 'success');
+  } catch (err) {
+    console.error(err);
+    setStatus('Errore reset', 'error');
+  } finally {
+    els.resetBtn.disabled = false;
+  }
+});
 
   els.clearSessionsBtn.addEventListener('click', async () => {
     if (!currentStore || currentStore.role !== 'admin') return;

@@ -592,17 +592,17 @@
     renderSessions(sessionsRes.data || []);
   }
 
-  async function triggerTelegram(action) {
-    try {
-      await fetch('/.netlify/functions/telegram-alert', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action })
-      });
-    } catch (e) {
-      console.error('telegram-alert error', e);
-    }
+ async function triggerTelegram(action, payload = {}) {
+  try {
+    await fetch('/.netlify/functions/telegram-alert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, ...payload })
+    });
+  } catch (e) {
+    console.error('telegram-alert error', e);
   }
+}
 
   function enterApp(profile) {
     currentStore = profile;

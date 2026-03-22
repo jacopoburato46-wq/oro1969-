@@ -1056,6 +1056,36 @@
     }
   }
 
+  async function sendFormEmailArchive(form, items) {
+    try {
+      const payload = {
+        form: {
+          ...form,
+          created_at_display: new Date().toLocaleString('it-IT')
+        },
+        items
+      };
+
+      const response = await fetch('/.netlify/functions/send-form-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        console.error('send-form-email error:', result);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('send-form-email network error:', error);
+      return false;
+    }
+  }
+
   function renderFormItems() {
     els.formItemsBody.innerHTML = formItems.map((item, index) => `
       <tr>
@@ -1516,6 +1546,8 @@
 
       if (itemsError) throw itemsError;
 
+      const archiveEmailSent = await sendFormEmailArchive(insertedForm, itemsPayload);
+
       // ponte tecnico temporaneo per alert/reset/storico fusioni
       const { error: entryError } = await client
         .from('gold_entries')
@@ -1530,8 +1562,14 @@
 
       await triggerTelegram('check');
       await loadOperationalData();
-      resetGoldForm(`Scheda salvata correttamente (#${schedaNumber})`);
-      setStatus('Scheda salvata', 'success');
+
+      if (archiveEmailSent) {
+        resetGoldForm(`Scheda salvata correttamente (#${schedaNumber}) · Mail archivio inviata`);
+        setStatus('Scheda salvata + mail inviata', 'success');
+      } else {
+        resetGoldForm(`Scheda salvata correttamente (#${schedaNumber}) · Mail archivio NON inviata`);
+        setStatus('Scheda salvata, ma mail non inviata', 'error');
+      }
     } catch (err) {
       console.error(err);
       els.formSaveStatus.textContent = 'Errore salvataggio scheda';

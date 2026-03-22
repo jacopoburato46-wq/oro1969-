@@ -89,7 +89,7 @@
 
     .two-col{
       display:grid;
-      grid-template-columns:1.35fr .95fr;
+      grid-template-columns:1.05fr .95fr;
       gap:16px;
       margin-bottom:18px;
     }
@@ -135,13 +135,6 @@
 
     .pill.success{color:var(--ok)}
     .pill.error{color:var(--bad)}
-
-    .form{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr auto;
-      gap:14px;
-      align-items:end;
-    }
 
     .auth-form{
       display:grid;
@@ -206,12 +199,12 @@
       cursor:not-allowed;
     }
 
-    .reset-row{
+    .control-row{
       display:grid;
-      grid-template-columns:240px 1fr auto;
+      grid-template-columns:220px 1fr auto;
       gap:14px;
       align-items:center;
-      margin-top:16px;
+      margin-top:10px;
     }
 
     .table-wrap{
@@ -224,7 +217,7 @@
     table{
       width:100%;
       border-collapse:collapse;
-      min-width:720px;
+      min-width:900px;
     }
 
     thead th{
@@ -397,6 +390,7 @@
       width:100%;
       border-collapse:collapse;
       margin-top:10px;
+      min-width:0;
     }
 
     .print-table th{
@@ -485,7 +479,7 @@
       .page{padding:16px}
       .hero{flex-direction:column}
       .quote-grid,.two-col{grid-template-columns:1fr}
-      .form,.auth-form,.reset-row,.form-full{grid-template-columns:1fr}
+      .auth-form,.form-full,.control-row{grid-template-columns:1fr}
       .summary-grid{grid-template-columns:1fr}
     }
   </style>
@@ -496,7 +490,7 @@
       <div>
         <div class="eyebrow">Burato Gioielli · Rientro Oro</div>
         <h1>Burato Gioielli</h1>
-        <p class="muted">Accesso per singolo negozio, operatore obbligatorio, tabella condivisa e storico fusioni.</p>
+        <p class="muted">Accesso per singolo negozio, compilazione scheda completa, alert Telegram e archivio ristampabile.</p>
       </div>
       <div class="hero-side">
         <div class="small-label">Aggiornamento</div>
@@ -661,7 +655,7 @@
         </article>
 
         <article class="quote-card card">
-          <div class="small-label">Totale ritiri</div>
+          <div class="small-label">Totale periodo attivo</div>
           <div id="totalGrams" class="big-sub">0 g</div>
           <div id="nextAlert" class="muted">Prossimo alert a 100 g</div>
         </article>
@@ -670,35 +664,13 @@
       <div class="two-col">
         <section class="card section">
           <div class="head">
-            <h2>Aggiungi ritiro</h2>
+            <h2>Controllo sessione</h2>
             <div id="status" class="pill">Pronto</div>
           </div>
 
-          <form id="entryForm" class="form">
-            <label>
-              <span>Negozio</span>
-              <input id="storeDisplay" type="text" disabled />
-            </label>
+          <div class="muted">Le schede salvate alimentano automaticamente totale grammi, alert Telegram e storico fusioni.</div>
 
-            <label>
-              <span>Cliente</span>
-              <input id="clientName" type="text" placeholder="Nome cliente" required />
-            </label>
-
-            <label>
-              <span>N° scheda</span>
-              <input id="schedaNumber" type="text" placeholder="es. 12345" required />
-            </label>
-
-            <label>
-              <span>Grammi ritirati</span>
-              <input id="grams" type="number" min="0.01" step="0.01" placeholder="es. 24.80" required />
-            </label>
-
-            <button id="submitBtn" type="submit">Aggiungi ritiro</button>
-          </form>
-
-          <div class="reset-row">
+          <div class="control-row">
             <button id="resetBtn" class="reset hidden" type="button">Chiudi fusione / Reset</button>
             <div id="resetNote" class="muted">Solo admin può chiudere una fusione.</div>
             <button id="logoutBtn" class="secondary" type="button">Esci</button>
@@ -722,28 +694,30 @@
 
       <section class="card section">
         <div class="head">
-          <h2>Tabella ritiri condivisa</h2>
-          <div id="countEntries" class="muted">0 movimenti</div>
+          <h2>Archivio schede salvate</h2>
+          <div id="formsCount" class="muted">0 schede</div>
         </div>
 
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Negozio</th>
-                <th>Cliente</th>
+                <th>Data</th>
                 <th>N° scheda</th>
+                <th>Cliente</th>
+                <th>Negozio</th>
                 <th class="right">Grammi</th>
-                <th>Ora</th>
+                <th class="right">Euro</th>
+                <th>Azioni</th>
               </tr>
             </thead>
-            <tbody id="entriesBody">
-              <tr><td colspan="5" class="empty">Nessun ritiro registrato</td></tr>
+            <tbody id="formsBody">
+              <tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>
             </tbody>
           </table>
         </div>
 
-        <div class="note">La pagina si aggiorna automaticamente ogni 5 secondi e resta corretta anche dopo refresh.</div>
+        <div class="note">Da qui puoi controllare, ristampare e verificare tutte le schede già registrate.</div>
       </section>
 
     </div>
@@ -848,16 +822,8 @@
     userInfo: document.getElementById('userInfo'),
     totalGrams: document.getElementById('totalGrams'),
     nextAlert: document.getElementById('nextAlert'),
-    countEntries: document.getElementById('countEntries'),
-    entriesBody: document.getElementById('entriesBody'),
     status: document.getElementById('status'),
 
-    entryForm: document.getElementById('entryForm'),
-    storeDisplay: document.getElementById('storeDisplay'),
-    clientName: document.getElementById('clientName'),
-    schedaNumber: document.getElementById('schedaNumber'),
-    grams: document.getElementById('grams'),
-    submitBtn: document.getElementById('submitBtn'),
     resetBtn: document.getElementById('resetBtn'),
     resetNote: document.getElementById('resetNote'),
     logoutBtn: document.getElementById('logoutBtn'),
@@ -890,6 +856,9 @@
     formTotalGrams: document.getElementById('formTotalGrams'),
     formTotalEur: document.getElementById('formTotalEur'),
     formSaveStatus: document.getElementById('formSaveStatus'),
+
+    formsCount: document.getElementById('formsCount'),
+    formsBody: document.getElementById('formsBody'),
 
     printSheet: document.getElementById('printSheet'),
     printSchedaNumber: document.getElementById('printSchedaNumber'),
@@ -990,47 +959,6 @@
     return data;
   }
 
-  function renderEntries(entries, lastResetAt) {
-    const visible = lastResetAt
-      ? entries.filter(item => new Date(item.created_at).getTime() > new Date(lastResetAt).getTime())
-      : entries.slice();
-
-    visible.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-    const total = visible.reduce((sum, item) => sum + Number(item.grams || 0), 0);
-    const nextAlertAt = (Math.floor(total / STEP) + 1) * STEP;
-    const remaining = Math.max(0, nextAlertAt - total);
-
-    els.totalGrams.textContent = fmt(total) + ' g';
-    els.nextAlert.textContent = `Mancano ${fmt(remaining)} g al prossimo alert (${fmt(nextAlertAt, 0)} g)`;
-    els.countEntries.textContent = `${visible.length} movimenti`;
-    els.resetNote.textContent = lastResetAt
-      ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
-      : 'Nessun reset eseguito';
-
-    if (!visible.length) {
-      els.entriesBody.innerHTML = '<tr><td colspan="5" class="empty">Nessun ritiro registrato</td></tr>';
-      return;
-    }
-
-    els.entriesBody.innerHTML = visible.map(entry => {
-      const when = new Date(entry.created_at).toLocaleTimeString('it-IT', {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-
-      return `
-        <tr>
-          <td>${escapeHtml(entry.store)}</td>
-          <td>${escapeHtml(entry.client_name || '-')}</td>
-          <td>${escapeHtml(entry.scheda_number || '-')}</td>
-          <td class="right"><strong>${fmt(entry.grams)} g</strong></td>
-          <td>${when}</td>
-        </tr>
-      `;
-    }).join('');
-  }
-
   function renderSessions(sessions) {
     els.sessionsCount.textContent = `${sessions.length} fusioni`;
 
@@ -1048,18 +976,72 @@
     `).join('');
   }
 
+  function renderForms(forms, lastResetAt) {
+    const visibleForms = lastResetAt
+      ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
+      : forms.slice();
+
+    const totalPeriod = visibleForms.reduce((sum, form) => sum + Number(form.total_grams || 0), 0);
+    const nextAlertAt = (Math.floor(totalPeriod / STEP) + 1) * STEP;
+    const remaining = Math.max(0, nextAlertAt - totalPeriod);
+
+    els.totalGrams.textContent = fmt(totalPeriod) + ' g';
+    els.nextAlert.textContent = `Mancano ${fmt(remaining)} g al prossimo alert (${fmt(nextAlertAt, 0)} g)`;
+    els.resetNote.textContent = lastResetAt
+      ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
+      : 'Nessun reset eseguito';
+
+    els.formsCount.textContent = `${forms.length} schede`;
+
+    if (!forms.length) {
+      els.formsBody.innerHTML = '<tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>';
+      return;
+    }
+
+    els.formsBody.innerHTML = forms.map(form => `
+      <tr>
+        <td>${new Date(form.created_at).toLocaleString('it-IT')}</td>
+        <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
+        <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
+        <td>${escapeHtml(form.store || '-')}</td>
+        <td class="right">${fmt(form.total_grams || 0)} g</td>
+        <td class="right">${fmt(form.total_eur || 0)} €</td>
+        <td>
+          <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
+            Ristampa
+          </button>
+        </td>
+      </tr>
+    `).join('');
+
+    bindFormsActions();
+  }
+
+  function bindFormsActions() {
+    els.formsBody.querySelectorAll('button[data-action="reprint-form"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const formId = btn.dataset.id;
+        await reprintSavedForm(formId);
+      });
+    });
+  }
+
   async function loadOperationalData() {
-    const [{ data: entries, error: entriesError }, state, sessionsRes] = await Promise.all([
-      client.from('gold_entries').select('*'),
+    const [
+      state,
+      sessionsRes,
+      formsRes
+    ] = await Promise.all([
       loadState(),
-      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20)
+      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
+      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
     ]);
 
-    if (entriesError) throw entriesError;
     if (sessionsRes.error) throw sessionsRes.error;
+    if (formsRes.error) throw formsRes.error;
 
-    renderEntries(entries || [], state?.last_reset_at || null);
     renderSessions(sessionsRes.data || []);
+    renderForms(formsRes.data || [], state?.last_reset_at || null);
   }
 
   async function triggerTelegram(action, payload = {}) {
@@ -1189,6 +1171,68 @@
     els.printNotes.textContent = els.formNotes.value.trim() || '—';
   }
 
+  function fillPrintSheetFromSaved(form, items) {
+    els.printSchedaNumber.textContent = form.scheda_number || '—';
+    els.printStore.textContent = form.store || '—';
+    els.printDate.textContent = form.created_at ? new Date(form.created_at).toLocaleDateString('it-IT') : '—';
+
+    els.printClientName.textContent = form.client_name || '—';
+    els.printClientSurname.textContent = form.client_surname || '—';
+    els.printClientCf.textContent = form.client_cf || '—';
+    els.printClientPhone.textContent = form.client_phone || '—';
+    els.printClientAddress.textContent = form.client_address || '—';
+    els.printIban.textContent = form.iban || '—';
+
+    els.printDocumentType.textContent = form.document_type || '—';
+    els.printDocumentNumber.textContent = form.document_number || '—';
+    els.printDocumentIssuedBy.textContent = form.document_issued_by || '—';
+    els.printDocumentExpiry.textContent = form.document_expiry || '—';
+
+    if (!items.length) {
+      els.printItemsBody.innerHTML = '<tr><td colspan="3">Nessun oggetto</td></tr>';
+    } else {
+      els.printItemsBody.innerHTML = items.map(item => `
+        <tr>
+          <td>${escapeHtml(item.description || '-')}</td>
+          <td>${escapeHtml(item.quantity || 1)}</td>
+          <td>${fmt(item.grams || 0)} g</td>
+        </tr>
+      `).join('');
+    }
+
+    els.printTotalGrams.textContent = fmt(form.total_grams || 0) + ' g';
+    els.printTotalEur.textContent = fmt(form.total_eur || 0) + ' €';
+    els.printNotes.textContent = form.notes || '—';
+  }
+
+  async function reprintSavedForm(formId) {
+    try {
+      const { data: form, error: formError } = await client
+        .from('gold_forms')
+        .select('*')
+        .eq('id', formId)
+        .single();
+
+      if (formError) throw formError;
+
+      const { data: items, error: itemsError } = await client
+        .from('gold_form_items')
+        .select('*')
+        .eq('form_id', formId)
+        .order('id', { ascending: true });
+
+      if (itemsError) throw itemsError;
+
+      fillPrintSheetFromSaved(form, items || []);
+      setTimeout(() => {
+        window.print();
+      }, 100);
+    } catch (err) {
+      console.error(err);
+      alert('Errore ristampa scheda');
+    }
+  }
+
   function getFormTotals() {
     const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
     const quotePerGram = Number(els.formQuotePerGram.value || 0);
@@ -1201,21 +1245,9 @@
     };
   }
 
-  function getGroupedSummaryForTelegram() {
-    const byStore = {};
-    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
-
-    byStore[currentStore.store_name] = totalGrams;
-
-    return Object.entries(byStore)
-      .map(([store, grams]) => `${store}: ${Number(grams).toFixed(2)} g`)
-      .join('\n');
-  }
-
   function enterApp(profile) {
     currentStore = profile;
     els.userInfo.textContent = `${profile.store_name} · ${profile.role}`;
-    els.storeDisplay.value = profile.store_name;
     els.authCard.classList.add('hidden');
     els.appArea.classList.remove('hidden');
 
@@ -1229,12 +1261,6 @@
 
     els.formStore.value = profile.store_name;
     resetGoldForm();
-    if (!els.formQuotePerGram.value || Number(els.formQuotePerGram.value) === 0) {
-      const currentBurato = parseFloat((els.buratoPrice.textContent || '0').replace(/\./g, '').replace(',', '.'));
-      if (!Number.isNaN(currentBurato) && currentBurato > 0) {
-        els.formQuotePerGram.value = currentBurato.toFixed(2);
-      }
-    }
     renderFormItems();
   }
 
@@ -1280,57 +1306,6 @@
       setAuthStatus('Errore', 'error');
     } finally {
       els.loginBtn.disabled = false;
-    }
-  });
-
-  els.entryForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const clientName = els.clientName.value.trim();
-    const schedaNumber = els.schedaNumber.value.trim();
-    const grams = Number(els.grams.value);
-
-    if (!clientName) {
-      setStatus('Inserisci cliente', 'error');
-      return;
-    }
-
-    if (!schedaNumber) {
-      setStatus('Inserisci numero scheda', 'error');
-      return;
-    }
-
-    if (!grams || grams <= 0) {
-      setStatus('Inserisci grammi validi', 'error');
-      return;
-    }
-
-    els.submitBtn.disabled = true;
-    setStatus('Salvataggio...');
-
-    try {
-      const { error } = await client.from('gold_entries').insert([{
-        store: currentStore.store_name,
-        client_name: clientName,
-        scheda_number: schedaNumber,
-        grams
-      }]);
-
-      if (error) throw error;
-
-      await triggerTelegram('check');
-
-      els.clientName.value = '';
-      els.schedaNumber.value = '';
-      els.grams.value = '';
-
-      await loadOperationalData();
-      setStatus('Ritiro aggiunto', 'success');
-    } catch (err) {
-      console.error(err);
-      setStatus('Errore salvataggio', 'error');
-    } finally {
-      els.submitBtn.disabled = false;
     }
   });
 
@@ -1541,6 +1516,7 @@
 
       if (itemsError) throw itemsError;
 
+      // ponte tecnico temporaneo per alert/reset/storico fusioni
       const { error: entryError } = await client
         .from('gold_entries')
         .insert([{
@@ -1555,9 +1531,11 @@
       await triggerTelegram('check');
       await loadOperationalData();
       resetGoldForm(`Scheda salvata correttamente (#${schedaNumber})`);
+      setStatus('Scheda salvata', 'success');
     } catch (err) {
       console.error(err);
       els.formSaveStatus.textContent = 'Errore salvataggio scheda';
+      setStatus('Errore salvataggio', 'error');
     } finally {
       els.saveFormBtn.disabled = false;
     }

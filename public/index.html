@@ -458,41 +458,21 @@
       text-align:center;
     }
 
-    .no-print{
-      display:block;
-    }
-
     @media print {
       body{
         background:#fff !important;
-      }
-
-      .page{
-        display:block !important;
       }
 
       .page > *{
         display:none !important;
       }
 
-      #appArea{
+      #printSheet{
         display:block !important;
-      }
-
-      #appArea > *{
-        display:none !important;
-      }
-
-      .print-sheet{
-        display:block !important;
-        background:#fff;
-        color:#111;
-        padding:0;
-        margin:0;
-      }
-
-      .no-print{
-        display:none !important;
+        background:#fff !important;
+        color:#111 !important;
+        padding:0 !important;
+        margin:0 !important;
       }
 
       @page{
@@ -766,82 +746,83 @@
         <div class="note">La pagina si aggiorna automaticamente ogni 5 secondi e resta corretta anche dopo refresh.</div>
       </section>
 
-      <section id="printSheet" class="print-sheet">
-        <div class="print-header">
-          <div>
-            <div class="print-brand">Burato Gioielli</div>
-            <div class="print-sub">Scheda rientro oro</div>
-          </div>
-          <div class="print-meta">
-            <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
-            <div><strong>Negozio:</strong> <span id="printStore">—</span></div>
-            <div><strong>Data:</strong> <span id="printDate">—</span></div>
-          </div>
-        </div>
-
-        <div class="print-section">
-          <div class="print-section-title">Dati cliente</div>
-          <div class="print-grid">
-            <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
-            <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
-            <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
-            <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
-            <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
-            <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> <span id="printIban">—</span></div>
-          </div>
-        </div>
-
-        <div class="print-section">
-          <div class="print-section-title">Documento</div>
-          <div class="print-grid">
-            <div class="print-row"><strong>Tipo:</strong> <span id="printDocumentType">—</span></div>
-            <div class="print-row"><strong>Numero:</strong> <span id="printDocumentNumber">—</span></div>
-            <div class="print-row"><strong>Rilasciato da:</strong> <span id="printDocumentIssuedBy">—</span></div>
-            <div class="print-row"><strong>Scadenza:</strong> <span id="printDocumentExpiry">—</span></div>
-          </div>
-        </div>
-
-        <div class="print-section">
-          <div class="print-section-title">Oggetti conferiti</div>
-          <table class="print-table">
-            <thead>
-              <tr>
-                <th>Descrizione</th>
-                <th>Pezzi</th>
-                <th>Grammi</th>
-              </tr>
-            </thead>
-            <tbody id="printItemsBody">
-              <tr>
-                <td colspan="3">Nessun oggetto</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="print-summary">
-          <div class="print-summary-box">
-            <div class="print-summary-label">Totale grammi</div>
-            <div id="printTotalGrams" class="print-summary-value">0 g</div>
-          </div>
-          <div class="print-summary-box">
-            <div class="print-summary-label">Importo totale</div>
-            <div id="printTotalEur" class="print-summary-value">0 €</div>
-          </div>
-        </div>
-
-        <div class="print-section" style="margin-top:24px;">
-          <div class="print-section-title">Note</div>
-          <div id="printNotes" class="print-row" style="min-height:60px;">—</div>
-        </div>
-
-        <div class="print-signatures">
-          <div class="print-sign-box">Firma cliente</div>
-          <div class="print-sign-box">Firma operatore / negozio</div>
-        </div>
-      </section>
-
     </div>
+
+    <section id="printSheet" class="print-sheet">
+      <div class="print-header">
+        <div>
+          <div class="print-brand">Burato Gioielli</div>
+          <div class="print-sub">Scheda rientro oro</div>
+        </div>
+        <div class="print-meta">
+          <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
+          <div><strong>Negozio:</strong> <span id="printStore">—</span></div>
+          <div><strong>Data:</strong> <span id="printDate">—</span></div>
+        </div>
+      </div>
+
+      <div class="print-section">
+        <div class="print-section-title">Dati cliente</div>
+        <div class="print-grid">
+          <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
+          <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
+          <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
+          <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
+          <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
+          <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> <span id="printIban">—</span></div>
+        </div>
+      </div>
+
+      <div class="print-section">
+        <div class="print-section-title">Documento</div>
+        <div class="print-grid">
+          <div class="print-row"><strong>Tipo:</strong> <span id="printDocumentType">—</span></div>
+          <div class="print-row"><strong>Numero:</strong> <span id="printDocumentNumber">—</span></div>
+          <div class="print-row"><strong>Rilasciato da:</strong> <span id="printDocumentIssuedBy">—</span></div>
+          <div class="print-row"><strong>Scadenza:</strong> <span id="printDocumentExpiry">—</span></div>
+        </div>
+      </div>
+
+      <div class="print-section">
+        <div class="print-section-title">Oggetti conferiti</div>
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>Descrizione</th>
+              <th>Pezzi</th>
+              <th>Grammi</th>
+            </tr>
+          </thead>
+          <tbody id="printItemsBody">
+            <tr>
+              <td colspan="3">Nessun oggetto</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="print-summary">
+        <div class="print-summary-box">
+          <div class="print-summary-label">Totale grammi</div>
+          <div id="printTotalGrams" class="print-summary-value">0 g</div>
+        </div>
+        <div class="print-summary-box">
+          <div class="print-summary-label">Importo totale</div>
+          <div id="printTotalEur" class="print-summary-value">0 €</div>
+        </div>
+      </div>
+
+      <div class="print-section" style="margin-top:24px;">
+        <div class="print-section-title">Note</div>
+        <div id="printNotes" class="print-row" style="min-height:60px;">—</div>
+      </div>
+
+      <div class="print-signatures">
+        <div class="print-sign-box">Firma cliente</div>
+        <div class="print-sign-box">Firma operatore / negozio</div>
+      </div>
+    </section>
+
   </div>
 
 <script>

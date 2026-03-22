@@ -329,172 +329,178 @@
       color:var(--bad);
       white-space:pre-wrap;
     }
-.print-sheet{
-  display:none;
-}
 
-.print-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  border-bottom:1px solid #d9d1c4;
-  padding-bottom:18px;
-  margin-bottom:24px;
-}
+    .print-sheet{
+      display:none;
+    }
 
-.print-brand{
-  font-size:28px;
-  font-weight:800;
-  letter-spacing:.02em;
-}
+    .print-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      border-bottom:1px solid #d9d1c4;
+      padding-bottom:18px;
+      margin-bottom:24px;
+    }
 
-.print-sub{
-  font-size:12px;
-  color:#666;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  margin-top:6px;
-}
+    .print-brand{
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
 
-.print-meta{
-  text-align:right;
-  font-size:13px;
-  color:#444;
-}
+    .print-sub{
+      font-size:12px;
+      color:#666;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-top:6px;
+    }
 
-.print-section{
-  margin-bottom:22px;
-}
+    .print-meta{
+      text-align:right;
+      font-size:13px;
+      color:#444;
+    }
 
-.print-section-title{
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:#7a7a7a;
-  margin-bottom:10px;
-  font-weight:700;
-}
+    .print-section{
+      margin-bottom:22px;
+    }
 
-.print-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px 18px;
-}
+    .print-section-title{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:#7a7a7a;
+      margin-bottom:10px;
+      font-weight:700;
+    }
 
-.print-row{
-  padding:8px 0;
-  border-bottom:1px solid #ece6dc;
-  font-size:14px;
-}
+    .print-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px 18px;
+    }
 
-.print-row strong{
-  display:inline-block;
-  min-width:140px;
-}
+    .print-row{
+      padding:8px 0;
+      border-bottom:1px solid #ece6dc;
+      font-size:14px;
+    }
 
-.print-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-}
+    .print-row strong{
+      display:inline-block;
+      min-width:140px;
+    }
 
-.print-table th{
-  text-align:left;
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  color:#666;
-  background:#f7f3ec;
-  padding:12px;
-  border:1px solid #e8e1d5;
-}
+    .print-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
 
-.print-table td{
-  padding:12px;
-  border:1px solid #e8e1d5;
-  font-size:14px;
-}
+    .print-table th{
+      text-align:left;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:#666;
+      background:#f7f3ec;
+      padding:12px;
+      border:1px solid #e8e1d5;
+    }
 
-.print-summary{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:18px;
-  margin-top:18px;
-}
+    .print-table td{
+      padding:12px;
+      border:1px solid #e8e1d5;
+      font-size:14px;
+    }
 
-.print-summary-box{
-  border:1px solid #e8e1d5;
-  border-radius:14px;
-  padding:16px;
-  background:#fcfaf6;
-}
+    .print-summary{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+      margin-top:18px;
+    }
 
-.print-summary-label{
-  font-size:12px;
-  text-transform:uppercase;
-  color:#777;
-  letter-spacing:.06em;
-  margin-bottom:8px;
-}
+    .print-summary-box{
+      border:1px solid #e8e1d5;
+      border-radius:14px;
+      padding:16px;
+      background:#fcfaf6;
+    }
 
-.print-summary-value{
-  font-size:26px;
-  font-weight:800;
-}
+    .print-summary-label{
+      font-size:12px;
+      text-transform:uppercase;
+      color:#777;
+      letter-spacing:.06em;
+      margin-bottom:8px;
+    }
 
-.print-signatures{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:36px;
-  margin-top:42px;
-}
+    .print-summary-value{
+      font-size:26px;
+      font-weight:800;
+    }
 
-.print-sign-box{
-  padding-top:50px;
-  border-top:1px solid #444;
-  font-size:13px;
-  color:#444;
-  text-align:center;
-}
+    .print-signatures{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:36px;
+      margin-top:42px;
+    }
 
-.no-print{
-  display:block;
-}
+    .print-sign-box{
+      padding-top:50px;
+      border-top:1px solid #444;
+      font-size:13px;
+      color:#444;
+      text-align:center;
+    }
 
-@media print {
-  body{
-    background:#fff !important;
-  }
+    .no-print{
+      display:block;
+    }
 
-  .page{
-  display:block !important;
-}
+    @media print {
+      body{
+        background:#fff !important;
+      }
 
-.page > *{
-  display:none !important;
-}
+      .page{
+        display:block !important;
+      }
 
-.print-sheet{
-  display:block !important;
-}
+      .page > *{
+        display:none !important;
+      }
 
-  .print-sheet{
-    display:block !important;
-    background:#fff;
-    color:#111;
-    padding:0;
-    margin:0;
-  }
+      #appArea{
+        display:block !important;
+      }
 
-  .no-print{
-    display:none !important;
-  }
+      #appArea > *{
+        display:none !important;
+      }
 
-  @page{
-    size:A4;
-    margin:16mm;
-  }
-}
+      .print-sheet{
+        display:block !important;
+        background:#fff;
+        color:#111;
+        padding:0;
+        margin:0;
+      }
+
+      .no-print{
+        display:none !important;
+      }
+
+      @page{
+        size:A4;
+        margin:16mm;
+      }
+    }
+
     @media (max-width:960px){
       .page{padding:16px}
       .hero{flex-direction:column}
@@ -641,7 +647,7 @@
           <div class="actions-row">
             <button id="addItemRowBtn" class="secondary" type="button">Aggiungi riga oggetto</button>
             <button id="saveFormBtn" type="button">Salva scheda</button>
-            <button id="printFormBtn" class="secondary" type="button" onclick="alert('click stampa ok'); printGoldForm();">Stampa</button>
+            <button id="printFormBtn" class="secondary" type="button" onclick="printGoldForm()">Stampa</button>
           </div>
 
           <div class="summary-grid">
@@ -738,80 +744,6 @@
         <div class="head">
           <h2>Tabella ritiri condivisa</h2>
           <div id="countEntries" class="muted">0 movimenti</div>
-       <section id="printSheet" class="print-sheet">
-  <div class="print-header">
-    <div>
-      <div class="print-brand">Burato Gioielli</div>
-      <div class="print-sub">Scheda rientro oro</div>
-    </div>
-    <div class="print-meta">
-      <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
-      <div><strong>Negozio:</strong> <span id="printStore">—</span></div>
-      <div><strong>Data:</strong> <span id="printDate">—</span></div>
-    </div>
-  </div>
-
-  <div class="print-section">
-    <div class="print-section-title">Dati cliente</div>
-    <div class="print-grid">
-      <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
-      <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
-      <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
-      <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
-      <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
-      <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> <span id="printIban">—</span></div>
-    </div>
-  </div>
-
-  <div class="print-section">
-    <div class="print-section-title">Documento</div>
-    <div class="print-grid">
-      <div class="print-row"><strong>Tipo:</strong> <span id="printDocumentType">—</span></div>
-      <div class="print-row"><strong>Numero:</strong> <span id="printDocumentNumber">—</span></div>
-      <div class="print-row"><strong>Rilasciato da:</strong> <span id="printDocumentIssuedBy">—</span></div>
-      <div class="print-row"><strong>Scadenza:</strong> <span id="printDocumentExpiry">—</span></div>
-    </div>
-  </div>
-
-  <div class="print-section">
-    <div class="print-section-title">Oggetti conferiti</div>
-    <table class="print-table">
-      <thead>
-        <tr>
-          <th>Descrizione</th>
-          <th>Pezzi</th>
-          <th>Grammi</th>
-        </tr>
-      </thead>
-      <tbody id="printItemsBody">
-        <tr>
-          <td colspan="3">Nessun oggetto</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="print-summary">
-    <div class="print-summary-box">
-      <div class="print-summary-label">Totale grammi</div>
-      <div id="printTotalGrams" class="print-summary-value">0 g</div>
-    </div>
-    <div class="print-summary-box">
-      <div class="print-summary-label">Importo totale</div>
-      <div id="printTotalEur" class="print-summary-value">0 €</div>
-    </div>
-  </div>
-
-  <div class="print-section" style="margin-top:24px;">
-    <div class="print-section-title">Note</div>
-    <div id="printNotes" class="print-row" style="min-height:60px;">—</div>
-  </div>
-
-  <div class="print-signatures">
-    <div class="print-sign-box">Firma cliente</div>
-    <div class="print-sign-box">Firma operatore / negozio</div>
-  </div>
-</section>
         </div>
 
         <div class="table-wrap">
@@ -833,6 +765,82 @@
 
         <div class="note">La pagina si aggiorna automaticamente ogni 5 secondi e resta corretta anche dopo refresh.</div>
       </section>
+
+      <section id="printSheet" class="print-sheet">
+        <div class="print-header">
+          <div>
+            <div class="print-brand">Burato Gioielli</div>
+            <div class="print-sub">Scheda rientro oro</div>
+          </div>
+          <div class="print-meta">
+            <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
+            <div><strong>Negozio:</strong> <span id="printStore">—</span></div>
+            <div><strong>Data:</strong> <span id="printDate">—</span></div>
+          </div>
+        </div>
+
+        <div class="print-section">
+          <div class="print-section-title">Dati cliente</div>
+          <div class="print-grid">
+            <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
+            <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
+            <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
+            <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
+            <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
+            <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> <span id="printIban">—</span></div>
+          </div>
+        </div>
+
+        <div class="print-section">
+          <div class="print-section-title">Documento</div>
+          <div class="print-grid">
+            <div class="print-row"><strong>Tipo:</strong> <span id="printDocumentType">—</span></div>
+            <div class="print-row"><strong>Numero:</strong> <span id="printDocumentNumber">—</span></div>
+            <div class="print-row"><strong>Rilasciato da:</strong> <span id="printDocumentIssuedBy">—</span></div>
+            <div class="print-row"><strong>Scadenza:</strong> <span id="printDocumentExpiry">—</span></div>
+          </div>
+        </div>
+
+        <div class="print-section">
+          <div class="print-section-title">Oggetti conferiti</div>
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th>Descrizione</th>
+                <th>Pezzi</th>
+                <th>Grammi</th>
+              </tr>
+            </thead>
+            <tbody id="printItemsBody">
+              <tr>
+                <td colspan="3">Nessun oggetto</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="print-summary">
+          <div class="print-summary-box">
+            <div class="print-summary-label">Totale grammi</div>
+            <div id="printTotalGrams" class="print-summary-value">0 g</div>
+          </div>
+          <div class="print-summary-box">
+            <div class="print-summary-label">Importo totale</div>
+            <div id="printTotalEur" class="print-summary-value">0 €</div>
+          </div>
+        </div>
+
+        <div class="print-section" style="margin-top:24px;">
+          <div class="print-section-title">Note</div>
+          <div id="printNotes" class="print-row" style="min-height:60px;">—</div>
+        </div>
+
+        <div class="print-signatures">
+          <div class="print-sign-box">Firma cliente</div>
+          <div class="print-sign-box">Firma operatore / negozio</div>
+        </div>
+      </section>
+
     </div>
   </div>
 
@@ -899,27 +907,27 @@
     saveFormBtn: document.getElementById('saveFormBtn'),
     printFormBtn: document.getElementById('printFormBtn'),
     formTotalGrams: document.getElementById('formTotalGrams'),
-formTotalEur: document.getElementById('formTotalEur'),
-formSaveStatus: document.getElementById('formSaveStatus'),
+    formTotalEur: document.getElementById('formTotalEur'),
+    formSaveStatus: document.getElementById('formSaveStatus'),
 
-printSheet: document.getElementById('printSheet'),
-printSchedaNumber: document.getElementById('printSchedaNumber'),
-printStore: document.getElementById('printStore'),
-printDate: document.getElementById('printDate'),
-printClientName: document.getElementById('printClientName'),
-printClientSurname: document.getElementById('printClientSurname'),
-printClientCf: document.getElementById('printClientCf'),
-printClientPhone: document.getElementById('printClientPhone'),
-printClientAddress: document.getElementById('printClientAddress'),
-printIban: document.getElementById('printIban'),
-printDocumentType: document.getElementById('printDocumentType'),
-printDocumentNumber: document.getElementById('printDocumentNumber'),
-printDocumentIssuedBy: document.getElementById('printDocumentIssuedBy'),
-printDocumentExpiry: document.getElementById('printDocumentExpiry'),
-printItemsBody: document.getElementById('printItemsBody'),
-printTotalGrams: document.getElementById('printTotalGrams'),
-printTotalEur: document.getElementById('printTotalEur'),
-printNotes: document.getElementById('printNotes')
+    printSheet: document.getElementById('printSheet'),
+    printSchedaNumber: document.getElementById('printSchedaNumber'),
+    printStore: document.getElementById('printStore'),
+    printDate: document.getElementById('printDate'),
+    printClientName: document.getElementById('printClientName'),
+    printClientSurname: document.getElementById('printClientSurname'),
+    printClientCf: document.getElementById('printClientCf'),
+    printClientPhone: document.getElementById('printClientPhone'),
+    printClientAddress: document.getElementById('printClientAddress'),
+    printIban: document.getElementById('printIban'),
+    printDocumentType: document.getElementById('printDocumentType'),
+    printDocumentNumber: document.getElementById('printDocumentNumber'),
+    printDocumentIssuedBy: document.getElementById('printDocumentIssuedBy'),
+    printDocumentExpiry: document.getElementById('printDocumentExpiry'),
+    printItemsBody: document.getElementById('printItemsBody'),
+    printTotalGrams: document.getElementById('printTotalGrams'),
+    printTotalEur: document.getElementById('printTotalEur'),
+    printNotes: document.getElementById('printNotes')
   };
 
   function setAuthStatus(text, type = '') {
@@ -1143,83 +1151,86 @@ printNotes: document.getElementById('printNotes')
     els.toggleFormBtn.textContent = els.goldFormArea.classList.contains('hidden') ? 'Apri scheda' : 'Chiudi scheda';
   }
 
-function resetGoldForm(statusText = 'Non salvata') {
-  els.goldForm.reset();
-  els.formStore.value = currentStore ? currentStore.store_name : '';
-  formItems = [{ description: '', quantity: 1, grams: '' }];
-  els.formSaveStatus.textContent = statusText;
-  if (els.buratoPrice.textContent && els.buratoPrice.textContent !== '—') {
-    const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
-    const numeric = parseFloat(raw);
-    if (!Number.isNaN(numeric) && numeric > 0) {
-      els.formQuotePerGram.value = numeric.toFixed(2);
+  function resetGoldForm(statusText = 'Non salvata') {
+    els.goldForm.reset();
+    els.formStore.value = currentStore ? currentStore.store_name : '';
+    formItems = [{ description: '', quantity: 1, grams: '' }];
+    els.formSaveStatus.textContent = statusText;
+
+    if (els.buratoPrice.textContent && els.buratoPrice.textContent !== '—') {
+      const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
+      const numeric = parseFloat(raw);
+      if (!Number.isNaN(numeric) && numeric > 0) {
+        els.formQuotePerGram.value = numeric.toFixed(2);
+      }
     }
-    function fillPrintSheet() {
-  const { totalGrams, totalEur } = getFormTotals();
 
-  const validItems = formItems.filter(item =>
-    String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0
-  );
-
-  els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
-  els.printStore.textContent = currentStore ? currentStore.store_name : '—';
-  els.printDate.textContent = new Date().toLocaleDateString('it-IT');
-
-  els.printClientName.textContent = els.formClientName.value.trim() || '—';
-  els.printClientSurname.textContent = els.formClientSurname.value.trim() || '—';
-  els.printClientCf.textContent = els.formClientCf.value.trim() || '—';
-  els.printClientPhone.textContent = els.formClientPhone.value.trim() || '—';
-  els.printClientAddress.textContent = els.formClientAddress.value.trim() || '—';
-  els.printIban.textContent = els.formIban.value.trim() || '—';
-
-  els.printDocumentType.textContent = els.formDocumentType.value.trim() || '—';
-  els.printDocumentNumber.textContent = els.formDocumentNumber.value.trim() || '—';
-  els.printDocumentIssuedBy.textContent = els.formDocumentIssuedBy.value.trim() || '—';
-  els.printDocumentExpiry.textContent = els.formDocumentExpiry.value || '—';
-
-  if (!validItems.length) {
-    els.printItemsBody.innerHTML = '<tr><td colspan="3">Nessun oggetto</td></tr>';
-  } else {
-    els.printItemsBody.innerHTML = validItems.map(item => `
-      <tr>
-        <td>${escapeHtml(item.description || '-')}</td>
-        <td>${escapeHtml(item.quantity || 1)}</td>
-        <td>${fmt(item.grams || 0)} g</td>
-      </tr>
-    `).join('');
+    renderFormItems();
   }
 
-  els.printTotalGrams.textContent = fmt(totalGrams) + ' g';
-  els.printTotalEur.textContent = fmt(totalEur) + ' €';
-  els.printNotes.textContent = els.formNotes.value.trim() || '—';
-}
+  function fillPrintSheet() {
+    const { totalGrams, totalEur } = getFormTotals();
+
+    const validItems = formItems.filter(item =>
+      String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0
+    );
+
+    els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
+    els.printStore.textContent = currentStore ? currentStore.store_name : '—';
+    els.printDate.textContent = new Date().toLocaleDateString('it-IT');
+
+    els.printClientName.textContent = els.formClientName.value.trim() || '—';
+    els.printClientSurname.textContent = els.formClientSurname.value.trim() || '—';
+    els.printClientCf.textContent = els.formClientCf.value.trim() || '—';
+    els.printClientPhone.textContent = els.formClientPhone.value.trim() || '—';
+    els.printClientAddress.textContent = els.formClientAddress.value.trim() || '—';
+    els.printIban.textContent = els.formIban.value.trim() || '—';
+
+    els.printDocumentType.textContent = els.formDocumentType.value.trim() || '—';
+    els.printDocumentNumber.textContent = els.formDocumentNumber.value.trim() || '—';
+    els.printDocumentIssuedBy.textContent = els.formDocumentIssuedBy.value.trim() || '—';
+    els.printDocumentExpiry.textContent = els.formDocumentExpiry.value || '—';
+
+    if (!validItems.length) {
+      els.printItemsBody.innerHTML = '<tr><td colspan="3">Nessun oggetto</td></tr>';
+    } else {
+      els.printItemsBody.innerHTML = validItems.map(item => `
+        <tr>
+          <td>${escapeHtml(item.description || '-')}</td>
+          <td>${escapeHtml(item.quantity || 1)}</td>
+          <td>${fmt(item.grams || 0)} g</td>
+        </tr>
+      `).join('');
+    }
+
+    els.printTotalGrams.textContent = fmt(totalGrams) + ' g';
+    els.printTotalEur.textContent = fmt(totalEur) + ' €';
+    els.printNotes.textContent = els.formNotes.value.trim() || '—';
   }
-  renderFormItems();
-}
 
   function getFormTotals() {
-  const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
-  const quotePerGram = Number(els.formQuotePerGram.value || 0);
-  const totalEur = totalGrams * quotePerGram;
+    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
+    const quotePerGram = Number(els.formQuotePerGram.value || 0);
+    const totalEur = totalGrams * quotePerGram;
 
-  return {
-    totalGrams: Number(totalGrams.toFixed(2)),
-    quotePerGram: Number(quotePerGram.toFixed(2)),
-    totalEur: Number(totalEur.toFixed(2))
-  };
-}
+    return {
+      totalGrams: Number(totalGrams.toFixed(2)),
+      quotePerGram: Number(quotePerGram.toFixed(2)),
+      totalEur: Number(totalEur.toFixed(2))
+    };
+  }
 
-function getGroupedSummaryForTelegram() {
-  const byStore = {};
-  const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
+  function getGroupedSummaryForTelegram() {
+    const byStore = {};
+    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
 
-  byStore[currentStore.store_name] = totalGrams;
+    byStore[currentStore.store_name] = totalGrams;
 
-  return Object.entries(byStore)
-    .map(([store, grams]) => `${store}: ${Number(grams).toFixed(2)} g`)
-    .join('\\n');
-}
-  
+    return Object.entries(byStore)
+      .map(([store, grams]) => `${store}: ${Number(grams).toFixed(2)} g`)
+      .join('\n');
+  }
+
   function enterApp(profile) {
     currentStore = profile;
     els.userInfo.textContent = `${profile.store_name} · ${profile.role}`;
@@ -1240,7 +1251,7 @@ function getGroupedSummaryForTelegram() {
     if (!els.formQuotePerGram.value || Number(els.formQuotePerGram.value) === 0) {
       const currentBurato = parseFloat((els.buratoPrice.textContent || '0').replace(/\./g, '').replace(',', '.'));
       if (!Number.isNaN(currentBurato) && currentBurato > 0) {
-        els.formQuotePerGram.value = currentBurato.toFixed(2).replace(',', '.');
+        els.formQuotePerGram.value = currentBurato.toFixed(2);
       }
     }
     renderFormItems();
@@ -1452,134 +1463,124 @@ function getGroupedSummaryForTelegram() {
 
   els.formQuotePerGram.addEventListener('input', recalcFormTotals);
 
-els.saveFormBtn.addEventListener('click', async () => {
-  if (!currentStore || !currentUser) return;
+  els.saveFormBtn.addEventListener('click', async () => {
+    if (!currentStore || !currentUser) return;
 
-  const schedaNumber = els.formSchedaNumber.value.trim();
-  const clientName = els.formClientName.value.trim();
-  const clientSurname = els.formClientSurname.value.trim();
-  const clientCf = els.formClientCf.value.trim();
-  const clientPhone = els.formClientPhone.value.trim();
-  const clientAddress = els.formClientAddress.value.trim();
-  const documentType = els.formDocumentType.value.trim();
-  const documentNumber = els.formDocumentNumber.value.trim();
-  const documentIssuedBy = els.formDocumentIssuedBy.value.trim();
-  const documentExpiry = els.formDocumentExpiry.value || null;
-  const iban = els.formIban.value.trim();
-  const notes = els.formNotes.value.trim();
+    const schedaNumber = els.formSchedaNumber.value.trim();
+    const clientName = els.formClientName.value.trim();
+    const clientSurname = els.formClientSurname.value.trim();
+    const clientCf = els.formClientCf.value.trim();
+    const clientPhone = els.formClientPhone.value.trim();
+    const clientAddress = els.formClientAddress.value.trim();
+    const documentType = els.formDocumentType.value.trim();
+    const documentNumber = els.formDocumentNumber.value.trim();
+    const documentIssuedBy = els.formDocumentIssuedBy.value.trim();
+    const documentExpiry = els.formDocumentExpiry.value || null;
+    const iban = els.formIban.value.trim();
+    const notes = els.formNotes.value.trim();
 
-  const validItems = formItems.filter(item =>
-    String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0
-  );
+    const validItems = formItems.filter(item =>
+      String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0
+    );
 
-  if (!schedaNumber) {
-    els.formSaveStatus.textContent = 'Inserisci N° scheda';
-    return;
-  }
-
-  if (!clientName) {
-    els.formSaveStatus.textContent = 'Inserisci nome cliente';
-    return;
-  }
-
-  if (!validItems.length) {
-    els.formSaveStatus.textContent = 'Inserisci almeno un oggetto valido';
-    return;
-  }
-
-  const { totalGrams, quotePerGram, totalEur } = getFormTotals();
-
-  if (!quotePerGram || quotePerGram <= 0) {
-    els.formSaveStatus.textContent = 'Inserisci quotazione valida';
-    return;
-  }
-
-  els.saveFormBtn.disabled = true;
-  els.formSaveStatus.textContent = 'Salvataggio in corso...';
-
-  try {
-    // 1. evita duplicato scheda
-    const { data: existingForm, error: existingError } = await client
-      .from('gold_forms')
-      .select('id')
-      .eq('scheda_number', schedaNumber)
-      .maybeSingle();
-
-    if (existingError) throw existingError;
-    if (existingForm) {
-      els.formSaveStatus.textContent = 'Numero scheda già esistente';
+    if (!schedaNumber) {
+      els.formSaveStatus.textContent = 'Inserisci N° scheda';
       return;
     }
 
-    // 2. salva testata
-    const { data: insertedForm, error: formError } = await client
-      .from('gold_forms')
-      .insert([{
-        scheda_number: schedaNumber,
-        store: currentStore.store_name,
-        created_by_user_id: currentUser.id,
-        client_name: clientName,
-        client_surname: clientSurname,
-        client_cf: clientCf,
-        client_phone: clientPhone,
-        client_address: clientAddress,
-        document_type: documentType,
-        document_number: documentNumber,
-        document_issued_by: documentIssuedBy,
-        document_expiry: documentExpiry,
-        iban,
-        quote_per_gram: quotePerGram,
-        total_grams: totalGrams,
-        total_eur: totalEur,
-        notes
-      }])
-      .select()
-      .single();
+    if (!clientName) {
+      els.formSaveStatus.textContent = 'Inserisci nome cliente';
+      return;
+    }
 
-    if (formError) throw formError;
+    if (!validItems.length) {
+      els.formSaveStatus.textContent = 'Inserisci almeno un oggetto valido';
+      return;
+    }
 
-    // 3. salva righe oggetti
-    const itemsPayload = validItems.map(item => ({
-      form_id: insertedForm.id,
-      description: String(item.description || '').trim(),
-      quantity: Number(item.quantity || 1),
-      grams: Number(item.grams || 0)
-    }));
+    const { totalGrams, quotePerGram, totalEur } = getFormTotals();
 
-    const { error: itemsError } = await client
-      .from('gold_form_items')
-      .insert(itemsPayload);
+    if (!quotePerGram || quotePerGram <= 0) {
+      els.formSaveStatus.textContent = 'Inserisci quotazione valida';
+      return;
+    }
 
-    if (itemsError) throw itemsError;
+    els.saveFormBtn.disabled = true;
+    els.formSaveStatus.textContent = 'Salvataggio in corso...';
 
-    // 4. bridge temporaneo: continua ad alimentare gold_entries
-    const { error: entryError } = await client
-      .from('gold_entries')
-      .insert([{
-        store: currentStore.store_name,
-        client_name: clientName,
-        scheda_number: schedaNumber,
-        grams: totalGrams
-      }]);
+    try {
+      const { data: existingForm, error: existingError } = await client
+        .from('gold_forms')
+        .select('id')
+        .eq('scheda_number', schedaNumber)
+        .maybeSingle();
 
-    if (entryError) throw entryError;
+      if (existingError) throw existingError;
+      if (existingForm) {
+        els.formSaveStatus.textContent = 'Numero scheda già esistente';
+        return;
+      }
 
-    // 5. telegram soglie
-    await triggerTelegram('check');
+      const { data: insertedForm, error: formError } = await client
+        .from('gold_forms')
+        .insert([{
+          scheda_number: schedaNumber,
+          store: currentStore.store_name,
+          created_by_user_id: currentUser.id,
+          client_name: clientName,
+          client_surname: clientSurname,
+          client_cf: clientCf,
+          client_phone: clientPhone,
+          client_address: clientAddress,
+          document_type: documentType,
+          document_number: documentNumber,
+          document_issued_by: documentIssuedBy,
+          document_expiry: documentExpiry,
+          iban,
+          quote_per_gram: quotePerGram,
+          total_grams: totalGrams,
+          total_eur: totalEur,
+          notes
+        }])
+        .select()
+        .single();
 
-    // 6. aggiorna UI
-    await loadOperationalData();
-    els.formSaveStatus.textContent = `Scheda salvata correttamente (#${schedaNumber})`;
+      if (formError) throw formError;
 
-    // 7. reset form
-    resetGoldForm(`Scheda salvata correttamente (#${schedaNumber})`);
-  } catch (err) {
-    console.error(err);
-    els.formSaveStatus.textContent = 'Errore salvataggio scheda';
-  } finally {
-    els.saveFormBtn.disabled = false;
-  }
-});
+      const itemsPayload = validItems.map(item => ({
+        form_id: insertedForm.id,
+        description: String(item.description || '').trim(),
+        quantity: Number(item.quantity || 1),
+        grams: Number(item.grams || 0)
+      }));
+
+      const { error: itemsError } = await client
+        .from('gold_form_items')
+        .insert(itemsPayload);
+
+      if (itemsError) throw itemsError;
+
+      const { error: entryError } = await client
+        .from('gold_entries')
+        .insert([{
+          store: currentStore.store_name,
+          client_name: clientName,
+          scheda_number: schedaNumber,
+          grams: totalGrams
+        }]);
+
+      if (entryError) throw entryError;
+
+      await triggerTelegram('check');
+      await loadOperationalData();
+      resetGoldForm(`Scheda salvata correttamente (#${schedaNumber})`);
+    } catch (err) {
+      console.error(err);
+      els.formSaveStatus.textContent = 'Errore salvataggio scheda';
+    } finally {
+      els.saveFormBtn.disabled = false;
+    }
+  });
 
   els.logoutBtn.addEventListener('click', async () => {
     await client.auth.signOut();
@@ -1597,17 +1598,13 @@ els.saveFormBtn.addEventListener('click', async () => {
   } catch (err) {
     console.error(err);
   }
-  window.printGoldForm = function () {
-  alert('funzione printGoldForm partita');
 
-  try {
+  window.printGoldForm = function () {
     fillPrintSheet();
-    alert('fillPrintSheet ok');
-    window.print();
-  } catch (e) {
-    alert('ERRORE fillPrintSheet: ' + e.message);
-  }
-};
+    setTimeout(() => {
+      window.print();
+    }, 100);
+  };
 })();
 </script>
 </body>

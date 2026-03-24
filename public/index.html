@@ -738,7 +738,7 @@
 
     </div>
 
-    <section id="printSheet" class="print-sheet">
+   <section id="printSheet" class="print-sheet">
   <div class="print-header">
     <div>
       <div class="print-brand">Burato Gioielli</div>
@@ -794,10 +794,25 @@
   <div class="print-summary">
     <div class="print-summary-box">
       <div class="print-summary-label">Totale grammi</div>
-      <
-
+      <div id="printTotalGrams" class="print-summary-value">0 g</div>
+    </div>
+    <div class="print-summary-box">
+      <div class="print-summary-label">Importo totale</div>
+      <div id="printTotalEur" class="print-summary-value">0 €</div>
+    </div>
   </div>
 
+  <div class="print-section" style="margin-top:10px;">
+    <div class="print-section-title">Note</div>
+    <div id="printNotes" class="print-row" style="min-height:40px;">—</div>
+  </div>
+
+  <div class="print-signatures">
+    <div class="print-sign-box">Firma cliente</div>
+    <div class="print-sign-box">Firma operatore</div>
+  </div>
+     
+</section>
 <script>
 (async function () {
   const cfg = window.BURATO_CONFIG || {};

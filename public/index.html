@@ -31,6 +31,13 @@
       --radius-lg:22px;
       --radius-md:18px;
       --radius-sm:14px;
+      .quote-grid.store-view{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.two-col.store-view{
+  grid-template-columns:1fr;
+}
     }
 
     *{box-sizing:border-box}
@@ -819,15 +826,15 @@
           <div class="muted">Valore attuale in euro / grammo</div>
         </article>
 
-        <article class="quote-card card">
+        <article id="adminStatsCard" class="quote-card card">
           <div class="small-label">Totale periodo attivo</div>
           <div id="totalGrams" class="big-sub">0 g</div>
           <div id="nextAlert" class="muted">Prossimo alert a 100 g</div>
         </article>
       </section>
 
-      <div class="two-col">
-        <section class="card section">
+      <div id="dashboardGrid" class="two-col">
+        <section id="sessionCard" class="card section">
           <div class="head">
             <div>
               <div class="small-label" style="margin-bottom:6px;">Controllo</div>
@@ -836,16 +843,22 @@
             <div id="status" class="pill">Pronto</div>
           </div>
 
-          <div class="muted">Le schede salvate aggiornano automaticamente totale grammi, alert Telegram, archivio e storico fusioni.</div>
+          <div id="sessionAdminArea">
+  <div class="muted">Le schede salvate alimentano automaticamente totale grammi, alert Telegram e storico fusioni.</div>
 
-          <div class="control-row">
-            <button id="resetBtn" class="reset hidden" type="button">Chiudi fusione / Reset</button>
-            <div id="resetNote" class="muted">Solo admin può chiudere una fusione.</div>
-            <button id="logoutBtn" class="secondary" type="button">Esci</button>
-          </div>
+  <div class="control-row">
+    <button id="resetBtn" class="reset hidden" type="button">Chiudi fusione / Reset</button>
+    <div id="resetNote" class="muted">Solo admin può chiudere una fusione.</div>
+    <div></div>
+  </div>
+</div>
+
+<div class="actions-row" style="margin-top:14px;">
+  <button id="logoutBtn" class="secondary" type="button" style="width:auto;min-width:140px;">Esci</button>
+</div>
         </section>
 
-        <section class="card section">
+        <section id="adminFusioniCard" class="card section">
           <div class="head">
             <div>
               <div class="small-label" style="margin-bottom:6px;">Storico</div>

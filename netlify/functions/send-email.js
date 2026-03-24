@@ -13,7 +13,7 @@ exports.handler = async (event) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        from: "Archivio Oro <<archivio@archiviooro.com>>",
+        from: "Archivio Oro <archivio@archiviooro.com>",
         to: ["jacopo.burato@burato1969.com"],
         subject: `Nuova scheda oro - ${data.numeroScheda}`,
         html: htmlContent

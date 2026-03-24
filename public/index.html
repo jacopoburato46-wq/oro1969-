@@ -1374,14 +1374,25 @@
       const { data: allEntries, error: entriesError } = await client
         .from('gold_entries')
         .select('*');
+      
+      const { data: allForms, error: formsError } = await client
+  .from('gold_forms')
+  .select('*');
+
+if (formsError) throw formsError;
 
       if (entriesError) throw entriesError;
 
       const entries = state?.last_reset_at
-        ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
-        : allEntries;
+  ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
+  : allEntries;
 
-      const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
+const formsInPeriod = state?.last_reset_at
+  ? allForms.filter(f => new Date(f.created_at).getTime() > new Date(state.last_reset_at).getTime())
+  : allForms;
+
+const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
+const totalEur = formsInPeriod.reduce((sum, f) => sum + Number(f.total_eur || 0), 0);
 
       const summary = entries.map(e =>
         `${e.store} - ${e.client_name} (#${e.scheda_number}) - ${e.grams}g`
@@ -1413,9 +1424,10 @@
       if (updateStateError) throw updateStateError;
 
       await triggerTelegram('reset', {
-        total,
-        summary
-      });
+  total,
+  totalEur,
+  summary
+});
 
       await loadOperationalData();
       setStatus('Reset completato', 'success');

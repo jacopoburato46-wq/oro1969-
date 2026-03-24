@@ -14,7 +14,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         from: "Archivio Oro <archivio@archiviooro.com>",
-        to: ["jacopo.burato@burato1969.com"],
+        to: ["jacopoburato46@icloud.com"],
         subject: `Nuova scheda oro - ${data.numeroScheda}`,
         html: htmlContent
       })

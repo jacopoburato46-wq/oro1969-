@@ -50,7 +50,7 @@ exports.handler = async function (event) {
     }
 
     async function getEntriesSince(lastResetAt) {
-      let url = `${SUPABASE_URL}/rest/v1/gold_entries?select=store,operator_name,grams,created_at`;
+      let url = `${SUPABASE_URL}/rest/v1/gold_entries?select=store,client_name,scheda_number,grams,created_at`;
       if (lastResetAt) {
         url += `&created_at=gt.${encodeURIComponent(lastResetAt)}`;
       }
@@ -79,12 +79,21 @@ exports.handler = async function (event) {
 
     if (action === 'reset') {
       const total = Number(body.total || 0);
+      const totalEur = Number(body.totalEur || 0);
       const summary = body.summary || '';
 
-      if (total > 0) {
-        await sendTelegramMessage(
-          `Burato Gioielli\nFusione chiusa\nTotale: ${total.toFixed(2)} g\n\n${summary}`
-        );
+      if (total > 0 || totalEur > 0) {
+        const message =
+`🔴 Burato Gioielli
+Fusione chiusa
+
+Totale grammi: ${total.toFixed(2)} g
+Totale euro pagati: € ${totalEur.toFixed(2)}
+
+Schede:
+${summary || 'Nessuna scheda'}`;
+
+        await sendTelegramMessage(message);
       }
 
       await upsertState({

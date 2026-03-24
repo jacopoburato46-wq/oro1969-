@@ -31,13 +31,6 @@
       --radius-lg:22px;
       --radius-md:18px;
       --radius-sm:14px;
-      .quote-grid.store-view{
-  grid-template-columns:repeat(2,minmax(0,1fr));
-}
-
-.two-col.store-view{
-  grid-template-columns:1fr;
-}
     }
 
     *{box-sizing:border-box}
@@ -140,11 +133,24 @@
       margin-bottom:20px;
     }
 
+    .quote-grid.store-view{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .quote-grid.store-view .quote-card{
+      transform:scale(1.03);
+      border:1.5px solid rgba(176,138,82,.25);
+    }
+
     .two-col{
       display:grid;
       grid-template-columns:1.08fr .92fr;
       gap:18px;
       margin-bottom:20px;
+    }
+
+    .two-col.store-view{
+      grid-template-columns:1fr;
     }
 
     .quote-card,.section{
@@ -638,6 +644,7 @@
       .page{padding:16px}
       .hero{flex-direction:column;padding:24px}
       .quote-grid,.two-col{grid-template-columns:1fr}
+      .quote-grid.store-view{grid-template-columns:1fr}
       .auth-form,.form-full,.control-row{grid-template-columns:1fr}
       .summary-grid{grid-template-columns:1fr}
       .hero-side{min-width:0}
@@ -844,18 +851,18 @@
           </div>
 
           <div id="sessionAdminArea">
-  <div class="muted">Le schede salvate alimentano automaticamente totale grammi, alert Telegram e storico fusioni.</div>
+            <div class="muted">Le schede salvate alimentano automaticamente totale grammi, alert Telegram e storico fusioni.</div>
 
-  <div class="control-row">
-    <button id="resetBtn" class="reset hidden" type="button">Chiudi fusione / Reset</button>
-    <div id="resetNote" class="muted">Solo admin può chiudere una fusione.</div>
-    <div></div>
-  </div>
-</div>
+            <div class="control-row">
+              <button id="resetBtn" class="reset hidden" type="button">Chiudi fusione / Reset</button>
+              <div id="resetNote" class="muted">Solo admin può chiudere una fusione.</div>
+              <div></div>
+            </div>
+          </div>
 
-<div class="actions-row" style="margin-top:14px;">
-  <button id="logoutBtn" class="secondary" type="button" style="width:auto;min-width:140px;">Esci</button>
-</div>
+          <div class="actions-row" style="margin-top:14px;">
+            <button id="logoutBtn" class="secondary" type="button" style="width:auto;min-width:140px;">Esci</button>
+          </div>
         </section>
 
         <section id="adminFusioniCard" class="card section">
@@ -906,6 +913,12 @@
 
         <div class="note">Da qui puoi controllare, ristampare e verificare tutte le schede già registrate.</div>
       </section>
+
+      <div id="storeLogoutArea" class="card section hidden" style="margin-top:20px;">
+        <div class="actions-row" style="margin-top:0;">
+          <button id="logoutBtnStore" class="secondary" type="button" style="width:auto;min-width:140px;">Esci</button>
+        </div>
+      </div>
 
     </div>
 
@@ -1013,6 +1026,7 @@
     resetBtn: document.getElementById('resetBtn'),
     resetNote: document.getElementById('resetNote'),
     logoutBtn: document.getElementById('logoutBtn'),
+    logoutBtnStore: document.getElementById('logoutBtnStore'),
 
     sessionsCount: document.getElementById('sessionsCount'),
     sessionsList: document.getElementById('sessionsList'),
@@ -1063,7 +1077,14 @@
     printItemsBody: document.getElementById('printItemsBody'),
     printTotalGrams: document.getElementById('printTotalGrams'),
     printTotalEur: document.getElementById('printTotalEur'),
-    printNotes: document.getElementById('printNotes')
+    printNotes: document.getElementById('printNotes'),
+
+    quoteGrid: document.getElementById('quoteGrid'),
+    dashboardGrid: document.getElementById('dashboardGrid'),
+    adminStatsCard: document.getElementById('adminStatsCard'),
+    sessionCard: document.getElementById('sessionCard'),
+    adminFusioniCard: document.getElementById('adminFusioniCard'),
+    storeLogoutArea: document.getElementById('storeLogoutArea')
   };
 
   function setAuthStatus(text, type = '') {
@@ -1076,6 +1097,7 @@
   }
 
   function setStatus(text, type = '') {
+    if (!els.status) return;
     els.status.textContent = text;
     els.status.className = 'pill' + (type ? ' ' + type : '');
   }
@@ -1463,16 +1485,32 @@
 
   function enterApp(profile) {
     currentStore = profile;
+
     els.userInfo.textContent = `${profile.store_name} · ${profile.role}`;
     els.authCard.classList.add('hidden');
     els.appArea.classList.remove('hidden');
 
-    if (profile.role === 'admin') {
-      els.resetBtn.classList.remove('hidden');
-      els.clearSessionsBtn.classList.remove('hidden');
+    const isAdmin = profile.role === 'admin';
+
+    els.resetBtn.classList.toggle('hidden', !isAdmin);
+    els.clearSessionsBtn.classList.toggle('hidden', !isAdmin);
+
+    els.adminStatsCard.classList.toggle('hidden', !isAdmin);
+    els.sessionCard.classList.toggle('hidden', !isAdmin);
+    els.adminFusioniCard.classList.toggle('hidden', !isAdmin);
+
+    els.quoteGrid.classList.toggle('store-view', !isAdmin);
+    els.dashboardGrid.classList.toggle('store-view', !isAdmin);
+
+    els.storeLogoutArea.classList.toggle('hidden', isAdmin);
+
+    if (!isAdmin) {
+      els.goldFormArea.classList.remove('hidden');
+      els.toggleFormBtn.classList.add('hidden');
     } else {
-      els.resetBtn.classList.add('hidden');
-      els.clearSessionsBtn.classList.add('hidden');
+      els.goldFormArea.classList.add('hidden');
+      els.toggleFormBtn.classList.remove('hidden');
+      els.toggleFormBtn.textContent = 'Apri scheda';
     }
 
     els.formStore.value = profile.store_name;
@@ -1775,10 +1813,13 @@
     }
   });
 
-  els.logoutBtn.addEventListener('click', async () => {
+  async function doLogout() {
     await client.auth.signOut();
     window.location.reload();
-  });
+  }
+
+  els.logoutBtn.addEventListener('click', doLogout);
+  els.logoutBtnStore.addEventListener('click', doLogout);
 
   try {
     const { data } = await client.auth.getUser();

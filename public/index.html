@@ -693,6 +693,101 @@
         padding:24px;
         min-height:auto;
       }
+      /* ====== UPGRADE ESTETICO V6 (NON TOCCA LOGICA) ====== */
+
+:root{
+  --gold:#c6a769;
+  --gold-soft:rgba(198,167,105,.14);
+}
+
+/* transizioni globali */
+*{
+  transition:all .15s ease;
+}
+
+/* HERO più premium */
+.hero h1{
+  font-weight:900;
+  letter-spacing:-0.06em;
+  color:#111;
+}
+
+.hero-left .hero-mini{
+  background:linear-gradient(135deg,#fff,#f5efe6);
+  border:1px solid rgba(198,167,105,.25);
+}
+
+/* QUOTE CARD upgrade */
+.quote-card{
+  background:linear-gradient(160deg,#ffffff,#f8f3ea);
+  border:1px solid rgba(198,167,105,.25);
+}
+
+.quote-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 20px 50px rgba(0,0,0,.08);
+}
+
+/* prezzi */
+.big-price{
+  color:#111;
+}
+
+.big-sub{
+  color:#2a2a2a;
+}
+
+/* BOTTONI più eleganti */
+button{
+  background:linear-gradient(135deg,#1a1a1a,#2d2d2d);
+  border:1px solid rgba(0,0,0,.2);
+}
+
+button.secondary{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.08);
+}
+
+button:hover{
+  transform:translateY(-1px);
+}
+
+/* INPUT migliorati */
+input,select,textarea{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.08);
+}
+
+input:focus,select:focus{
+  border-color:rgba(198,167,105,.8);
+  box-shadow:0 0 0 3px rgba(198,167,105,.18);
+}
+
+/* TABELLA più pulita */
+.items-table td{
+  background:#fff;
+}
+
+.items-table tr:hover td{
+  background:#faf7f2;
+}
+
+/* evidenzia € */
+.items-table td:nth-child(5){
+  font-weight:700;
+  color:#111;
+}
+
+/* scrollbar premium */
+::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:rgba(198,167,105,.4);
+  border-radius:10px;
+}
       .hero-side{
         grid-template-columns:1fr;
       }

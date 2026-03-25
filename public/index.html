@@ -2135,7 +2135,6 @@ input:focus,select:focus{
 
       if (entryError) throw entryError;
 
-      await triggerTelegram('check');
       await loadOperationalData();
 
       if (archiveEmailSent) {

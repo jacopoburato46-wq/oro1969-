@@ -19,26 +19,30 @@
       --muted-2:#919191;
       --soft:#f6efe4;
       --soft-2:#fcf8f2;
-      --gold:#b08a52;
-      --gold-soft:rgba(176,138,82,.12);
+      --gold:#c6a769;
+      --gold-soft:rgba(198,167,105,.14);
       --ok:#0f766e;
       --bad:#b91c1c;
-      --shadow:0 18px 48px rgba(0,0,0,.06);
-      --shadow-soft:0 10px 28px rgba(0,0,0,.045);
-      --radius-xl:32px;
-      --radius-lg:24px;
-      --radius-md:18px;
-      --radius-sm:14px;
+      --shadow:0 22px 60px rgba(0,0,0,.06);
+      --shadow-soft:0 12px 30px rgba(0,0,0,.05);
+      --radius-xl:28px;
+      --radius-lg:22px;
+      --radius-md:16px;
+      --radius-sm:12px;
     }
 
-    *{box-sizing:border-box}
+    *{
+      box-sizing:border-box;
+      transition:all .15s ease;
+    }
+
     html,body{margin:0;padding:0}
     html{scroll-behavior:smooth}
 
     body{
       font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(255,255,255,.85), transparent 26%),
+        radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 30%),
         linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 48%,var(--bg3) 100%);
       color:var(--text);
       min-height:100vh;
@@ -52,7 +56,7 @@
 
     .card{
       background:var(--card);
-      border:1px solid var(--line);
+      border:1px solid rgba(0,0,0,.05);
       border-radius:var(--radius-xl);
       box-shadow:var(--shadow);
       backdrop-filter:blur(12px);
@@ -76,8 +80,8 @@
       position:absolute;
       inset:0;
       background:
-        radial-gradient(circle at 86% 20%, rgba(176,138,82,.12), transparent 24%),
-        radial-gradient(circle at 100% 100%, rgba(176,138,82,.07), transparent 28%);
+        radial-gradient(circle at 86% 20%, rgba(198,167,105,.14), transparent 24%),
+        radial-gradient(circle at 100% 100%, rgba(198,167,105,.08), transparent 28%);
       pointer-events:none;
     }
 
@@ -93,9 +97,11 @@
       margin:10px 0 0;
       font-size:clamp(2.5rem,5vw,4.6rem);
       line-height:.94;
-      letter-spacing:-.055em;
+      letter-spacing:-.06em;
       position:relative;
       z-index:1;
+      font-weight:900;
+      color:#111;
     }
 
     .hero-left{
@@ -110,8 +116,8 @@
       gap:8px;
       padding:10px 14px;
       border-radius:999px;
-      background:rgba(255,255,255,.72);
-      border:1px solid rgba(17,24,39,.06);
+      background:linear-gradient(135deg,#fff,#f5efe6);
+      border:1px solid rgba(198,167,105,.25);
       color:#5f5f5f;
       font-size:12px;
       font-weight:700;
@@ -128,7 +134,7 @@
     }
 
     .hero-info-card{
-      background:rgba(255,255,255,.78);
+      background:rgba(255,255,255,.82);
       border:1px solid rgba(17,24,39,.06);
       border-radius:22px;
       padding:16px 18px;
@@ -171,8 +177,8 @@
     .quote-card{
       position:relative;
       overflow:hidden;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.98), rgba(251,249,245,.96));
+      background:linear-gradient(160deg,#ffffff,#f8f3ea);
+      border:1px solid rgba(198,167,105,.25);
     }
 
     .quote-card::before{
@@ -196,8 +202,13 @@
       pointer-events:none;
     }
 
+    .quote-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 20px 50px rgba(0,0,0,.08);
+    }
+
     .quote-grid.store-view .quote-card{
-      border:1.5px solid rgba(176,138,82,.22);
+      border:1.5px solid rgba(198,167,105,.22);
       box-shadow:0 16px 38px rgba(0,0,0,.055);
     }
 
@@ -207,6 +218,7 @@
       margin:14px 0 8px;
       font-weight:900;
       letter-spacing:-.065em;
+      color:#111;
     }
 
     .big-sub{
@@ -215,6 +227,7 @@
       margin:14px 0 8px;
       font-weight:850;
       letter-spacing:-.05em;
+      color:#2a2a2a;
     }
 
     .two-col{
@@ -300,7 +313,6 @@
       width:100%;
       min-height:54px;
       border-radius:18px;
-      border:1px solid var(--line);
       font:inherit;
     }
 
@@ -309,13 +321,13 @@
       background:#fff;
       color:var(--text);
       outline:none;
-      transition:border-color .18s ease, box-shadow .18s ease, transform .12s ease;
+      border:1px solid rgba(0,0,0,.08);
       box-shadow:inset 0 1px 0 rgba(255,255,255,.55);
     }
 
     input:focus,select:focus,textarea:focus{
-      border-color:rgba(176,138,82,.6);
-      box-shadow:0 0 0 4px rgba(176,138,82,.12);
+      border-color:rgba(198,167,105,.8);
+      box-shadow:0 0 0 3px rgba(198,167,105,.18);
     }
 
     input:disabled{
@@ -331,13 +343,12 @@
 
     button{
       padding:0 20px;
-      background:linear-gradient(135deg,#111,#262626);
+      background:linear-gradient(135deg,#1a1a1a,#2d2d2d);
       color:#fff;
       cursor:pointer;
       font-weight:850;
       letter-spacing:.01em;
-      transition:transform .15s ease, box-shadow .18s ease, opacity .18s ease;
-      border:1px solid rgba(0,0,0,.08);
+      border:1px solid rgba(0,0,0,.2);
       box-shadow:0 10px 20px rgba(0,0,0,.12);
     }
 
@@ -357,6 +368,7 @@
     button.secondary{
       background:#fff;
       color:#111;
+      border:1px solid rgba(0,0,0,.08);
       box-shadow:0 8px 18px rgba(0,0,0,.05);
     }
 
@@ -410,10 +422,6 @@
       vertical-align:middle;
     }
 
-    tbody tr{
-      transition:background .14s ease;
-    }
-
     tbody tr:hover{
       background:#fcfaf7;
     }
@@ -448,6 +456,16 @@
       padding:12px 14px;
       border-top:1px solid #f1ece4;
       vertical-align:middle;
+      background:#fff;
+    }
+
+    .items-table tr:hover td{
+      background:#faf7f2;
+    }
+
+    .items-table td:nth-child(5){
+      font-weight:700;
+      color:#111;
     }
 
     .items-table input{
@@ -478,6 +496,7 @@
     }
 
     .right{text-align:right}
+
     .empty{
       text-align:center;
       color:#888;
@@ -656,6 +675,16 @@
       text-align:center;
     }
 
+    ::-webkit-scrollbar{
+      width:8px;
+      height:8px;
+    }
+
+    ::-webkit-scrollbar-thumb{
+      background:rgba(198,167,105,.4);
+      border-radius:10px;
+    }
+
     @media print {
       html,body{
         background:#fff !important;
@@ -693,101 +722,6 @@
         padding:24px;
         min-height:auto;
       }
-      /* ====== UPGRADE ESTETICO V6 (NON TOCCA LOGICA) ====== */
-
-:root{
-  --gold:#c6a769;
-  --gold-soft:rgba(198,167,105,.14);
-}
-
-/* transizioni globali */
-*{
-  transition:all .15s ease;
-}
-
-/* HERO più premium */
-.hero h1{
-  font-weight:900;
-  letter-spacing:-0.06em;
-  color:#111;
-}
-
-.hero-left .hero-mini{
-  background:linear-gradient(135deg,#fff,#f5efe6);
-  border:1px solid rgba(198,167,105,.25);
-}
-
-/* QUOTE CARD upgrade */
-.quote-card{
-  background:linear-gradient(160deg,#ffffff,#f8f3ea);
-  border:1px solid rgba(198,167,105,.25);
-}
-
-.quote-card:hover{
-  transform:translateY(-2px);
-  box-shadow:0 20px 50px rgba(0,0,0,.08);
-}
-
-/* prezzi */
-.big-price{
-  color:#111;
-}
-
-.big-sub{
-  color:#2a2a2a;
-}
-
-/* BOTTONI più eleganti */
-button{
-  background:linear-gradient(135deg,#1a1a1a,#2d2d2d);
-  border:1px solid rgba(0,0,0,.2);
-}
-
-button.secondary{
-  background:#fff;
-  border:1px solid rgba(0,0,0,.08);
-}
-
-button:hover{
-  transform:translateY(-1px);
-}
-
-/* INPUT migliorati */
-input,select,textarea{
-  background:#fff;
-  border:1px solid rgba(0,0,0,.08);
-}
-
-input:focus,select:focus{
-  border-color:rgba(198,167,105,.8);
-  box-shadow:0 0 0 3px rgba(198,167,105,.18);
-}
-
-/* TABELLA più pulita */
-.items-table td{
-  background:#fff;
-}
-
-.items-table tr:hover td{
-  background:#faf7f2;
-}
-
-/* evidenzia € */
-.items-table td:nth-child(5){
-  font-weight:700;
-  color:#111;
-}
-
-/* scrollbar premium */
-::-webkit-scrollbar{
-  width:8px;
-  height:8px;
-}
-
-::-webkit-scrollbar-thumb{
-  background:rgba(198,167,105,.4);
-  border-radius:10px;
-}
       .hero-side{
         grid-template-columns:1fr;
       }
@@ -863,10 +797,10 @@ input:focus,select:focus{
         </article>
 
         <article id="adminStatsCard" class="quote-card card">
-  <div class="small-label">Oro puro attivo</div>
-  <div id="totalGrams" class="big-sub">0 g</div>
-  <div id="nextAlert" class="muted">Equivalente puro attualmente in casa</div>
-</article>
+          <div class="small-label">Oro puro attivo</div>
+          <div id="totalGrams" class="big-sub">0 g</div>
+          <div id="nextAlert" class="muted">Equivalente puro attualmente in casa</div>
+        </article>
       </section>
 
       <section class="card section">
@@ -956,11 +890,11 @@ input:focus,select:focus{
               <thead>
                 <tr>
                   <th>Descrizione oggetto</th>
-<th>Caratura</th>
-<th>Numero pezzi</th>
-<th>Grammi</th>
-<th>€</th>
-<th>Azioni</th>
+                  <th>Caratura</th>
+                  <th>Numero pezzi</th>
+                  <th>Grammi</th>
+                  <th>€</th>
+                  <th>Azioni</th>
                 </tr>
               </thead>
               <tbody id="formItemsBody"></tbody>
@@ -1113,14 +1047,14 @@ input:focus,select:focus{
           <thead>
             <tr>
               <th style="width:52%;">Descrizione</th>
-<th style="width:16%; text-align:center;">Caratura</th>
-<th style="width:12%; text-align:center;">Pezzi</th>
-<th style="width:20%; text-align:right;">Grammi</th>
+              <th style="width:16%; text-align:center;">Caratura</th>
+              <th style="width:12%; text-align:center;">Pezzi</th>
+              <th style="width:20%; text-align:right;">Grammi</th>
             </tr>
           </thead>
           <tbody id="printItemsBody">
             <tr>
-              <td colspan="3">Nessun oggetto</td>
+              <td colspan="4">Nessun oggetto</td>
             </tr>
           </tbody>
         </table>
@@ -1254,13 +1188,13 @@ input:focus,select:focus{
   }
 
   function getPureFactor(karat) {
-  if (karat === '18') return 730 / 1000;
-  if (karat === '14') return 565 / 1000;
-  if (karat === '9') return 355 / 1000;
-  if (karat === '800') return 800 / 1000;
-  return 730 / 1000;
-}
-  
+    if (karat === '18') return 730 / 1000;
+    if (karat === '14') return 565 / 1000;
+    if (karat === '9') return 355 / 1000;
+    if (karat === '800') return 800 / 1000;
+    return 730 / 1000;
+  }
+
   const fmt = (n, d = 2) =>
     new Intl.NumberFormat('it-IT', {
       minimumFractionDigits: d,
@@ -1284,12 +1218,26 @@ input:focus,select:focus{
     return;
   }
 
+  let priceRefreshInterval = null;
+
+  function startAutoRefresh() {
+    if (priceRefreshInterval) return;
+
+    priceRefreshInterval = setInterval(async () => {
+      try {
+        await loadPrice();
+      } catch (err) {
+        console.error('Errore aggiornamento quotazione', err);
+      }
+    }, 5 * 60 * 1000);
+  }
+
   const client = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
   let currentUser = null;
   let currentStore = null;
   let formItems = [
-  { description: '', quantity: 1, grams: '', karat: '18' }
-];
+    { description: '', quantity: 1, grams: '', karat: '18' }
+  ];
 
   async function getProfile(userId) {
     const { data, error } = await client
@@ -1327,69 +1275,69 @@ input:focus,select:focus{
   }
 
   function renderSessions(sessions) {
-  els.sessionsCount.textContent = `${sessions.length} fusioni`;
+    els.sessionsCount.textContent = `${sessions.length} fusioni`;
 
-  if (!sessions.length) {
-    els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>';
-    return;
+    if (!sessions.length) {
+      els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>';
+      return;
+    }
+
+    els.sessionsList.innerHTML = sessions.map(s => `
+      <div class="session-card">
+        <div style="font-weight:800;margin-bottom:12px;font-size:16px;">
+          Fusione chiusa il ${new Date(s.closed_at).toLocaleString('it-IT')}
+        </div>
+
+        <div class="print-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;">
+          <div class="muted"><strong>Totale grammi ritirati:</strong> ${fmt(s.total_grams)} g</div>
+          <div class="muted"><strong>Totale puro ritirato:</strong> ${s.pure_grams != null ? `${fmt(s.pure_grams)} g` : '—'}</div>
+
+          <div class="muted"><strong>Prezzo fonderia:</strong> ${s.foundry_price_per_gram != null ? `${fmt(s.foundry_price_per_gram)} €/g` : '—'}</div>
+          <div class="muted"><strong>Totale pagato:</strong> ${s.total_paid_clients != null ? `${fmt(s.total_paid_clients)} €` : '—'}</div>
+
+          <div class="muted"><strong>Totale incassato:</strong> ${s.total_fusion_revenue != null ? `${fmt(s.total_fusion_revenue)} €` : '—'}</div>
+          <div class="muted"><strong>Margine:</strong> ${s.gross_margin != null ? `${fmt(s.gross_margin)} €` : '—'}</div>
+        </div>
+      </div>
+    `).join('');
   }
-
-  els.sessionsList.innerHTML = sessions.map(s => `
-    <div class="session-card">
-      <div style="font-weight:800;margin-bottom:12px;font-size:16px;">
-        Fusione chiusa il ${new Date(s.closed_at).toLocaleString('it-IT')}
-      </div>
-
-      <div class="print-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;">
-        <div class="muted"><strong>Totale grammi ritirati:</strong> ${fmt(s.total_grams)} g</div>
-        <div class="muted"><strong>Totale puro ritirato:</strong> ${s.pure_grams != null ? `${fmt(s.pure_grams)} g` : '—'}</div>
-
-        <div class="muted"><strong>Prezzo fonderia:</strong> ${s.foundry_price_per_gram != null ? `${fmt(s.foundry_price_per_gram)} €/g` : '—'}</div>
-        <div class="muted"><strong>Totale pagato:</strong> ${s.total_paid_clients != null ? `${fmt(s.total_paid_clients)} €` : '—'}</div>
-
-        <div class="muted"><strong>Totale incassato:</strong> ${s.total_fusion_revenue != null ? `${fmt(s.total_fusion_revenue)} €` : '—'}</div>
-        <div class="muted"><strong>Margine:</strong> ${s.gross_margin != null ? `${fmt(s.gross_margin)} €` : '—'}</div>
-      </div>
-    </div>
-  `).join('');
-}
 
   function renderForms(forms, lastResetAt, pureGramsActive = 0) {
-  const visibleForms = lastResetAt
-    ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
-    : forms.slice();
+    els.totalGrams.textContent = fmt(pureGramsActive) + ' g';
 
-  els.totalGrams.textContent = fmt(pureGramsActive) + ' g';
-  els.nextAlert.textContent = 'Equivalente puro attualmente in casa';
-  els.resetNote.textContent = lastResetAt
-    ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
-    : 'Nessun reset eseguito';
+    const nextPureAlertAt = Math.ceil(pureGramsActive / PURE_ALERT_STEP) * PURE_ALERT_STEP || PURE_ALERT_STEP;
+    const remainingPure = Math.max(0, nextPureAlertAt - pureGramsActive);
+    els.nextAlert.textContent = `Mancano ${fmt(remainingPure)} g al prossimo alert puro (${fmt(nextPureAlertAt, 0)} g)`;
 
-  els.formsCount.textContent = `${forms.length} schede`;
+    els.resetNote.textContent = lastResetAt
+      ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
+      : 'Nessun reset eseguito';
 
-  if (!forms.length) {
-    els.formsBody.innerHTML = '<tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>';
-    return;
+    els.formsCount.textContent = `${forms.length} schede`;
+
+    if (!forms.length) {
+      els.formsBody.innerHTML = '<tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>';
+      return;
+    }
+
+    els.formsBody.innerHTML = forms.map(form => `
+      <tr>
+        <td>${new Date(form.created_at).toLocaleString('it-IT')}</td>
+        <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
+        <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
+        <td>${escapeHtml(form.store || '-')}</td>
+        <td class="right">${fmt(form.total_grams || 0)} g</td>
+        <td class="right">${fmt(form.total_eur || 0)} €</td>
+        <td>
+          <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
+            Ristampa
+          </button>
+        </td>
+      </tr>
+    `).join('');
+
+    bindFormsActions();
   }
-
-  els.formsBody.innerHTML = forms.map(form => `
-    <tr>
-      <td>${new Date(form.created_at).toLocaleString('it-IT')}</td>
-      <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
-      <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
-      <td>${escapeHtml(form.store || '-')}</td>
-      <td class="right">${fmt(form.total_grams || 0)} g</td>
-      <td class="right">${fmt(form.total_eur || 0)} €</td>
-      <td>
-        <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
-          Ristampa
-        </button>
-      </td>
-    </tr>
-  `).join('');
-
-  bindFormsActions();
-}
 
   function bindFormsActions() {
     els.formsBody.querySelectorAll('button[data-action="reprint-form"]').forEach(btn => {
@@ -1401,69 +1349,67 @@ input:focus,select:focus{
   }
 
   async function loadOperationalData() {
-  const [
-    state,
-    sessionsRes,
-    formsRes
-  ] = await Promise.all([
-    loadState(),
-    client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
-    client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
-  ]);
+    const [
+      state,
+      sessionsRes,
+      formsRes
+    ] = await Promise.all([
+      loadState(),
+      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
+      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
+    ]);
 
-  if (sessionsRes.error) throw sessionsRes.error;
-  if (formsRes.error) throw formsRes.error;
+    if (sessionsRes.error) throw sessionsRes.error;
+    if (formsRes.error) throw formsRes.error;
 
-  const forms = formsRes.data || [];
-  const lastResetAt = state?.last_reset_at || null;
+    const forms = formsRes.data || [];
+    const lastResetAt = state?.last_reset_at || null;
 
-  const visibleForms = lastResetAt
-    ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
-    : forms.slice();
+    const visibleForms = lastResetAt
+      ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
+      : forms.slice();
 
-  let pureGramsActive = 0;
+    let pureGramsActive = 0;
 
-  if (visibleForms.length) {
-    const formIds = visibleForms.map(f => f.id);
+    if (visibleForms.length) {
+      const formIds = visibleForms.map(f => f.id);
 
-    const { data: itemsRes, error: itemsError } = await client
-      .from('gold_form_items')
-      .select('*')
-      .in('form_id', formIds);
+      const { data: itemsRes, error: itemsError } = await client
+        .from('gold_form_items')
+        .select('*')
+        .in('form_id', formIds);
 
-    if (itemsError) throw itemsError;
+      if (itemsError) throw itemsError;
 
-    pureGramsActive = (itemsRes || []).reduce((sum, item) => {
-      const grams = Number(item.grams || 0);
-      const factor = getPureFactor(item.karat || '18');
-      return sum + (grams * factor);
-    }, 0);
+      pureGramsActive = (itemsRes || []).reduce((sum, item) => {
+        const grams = Number(item.grams || 0);
+        const factor = getPureFactor(item.karat || '18');
+        return sum + (grams * factor);
+      }, 0);
+    }
+
+    const currentPureThreshold = Math.floor(pureGramsActive / PURE_ALERT_STEP) * PURE_ALERT_STEP;
+    const lastPureAlertSent = Number(state?.last_pure_alert_sent || 0);
+
+    if (currentPureThreshold >= PURE_ALERT_STEP && currentPureThreshold > lastPureAlertSent) {
+      await triggerTelegram('pure_alert', {
+        pureGrams: Number(pureGramsActive.toFixed(2)),
+        threshold: Number(currentPureThreshold.toFixed(2))
+      });
+
+      const { error: alertStateError } = await client
+        .from('gold_state')
+        .update({
+          last_pure_alert_sent: currentPureThreshold
+        })
+        .eq('id', 1);
+
+      if (alertStateError) throw alertStateError;
+    }
+
+    renderSessions(sessionsRes.data || []);
+    renderForms(forms, lastResetAt, pureGramsActive);
   }
-
-  // ===== ALERT TELEGRAM OGNI 300g DI PURO =====
-  const currentPureThreshold = Math.floor(pureGramsActive / PURE_ALERT_STEP) * PURE_ALERT_STEP;
-  const lastPureAlertSent = Number(state?.last_pure_alert_sent || 0);
-
-  if (currentPureThreshold >= PURE_ALERT_STEP && currentPureThreshold > lastPureAlertSent) {
-    await triggerTelegram('pure_alert', {
-      pureGrams: Number(pureGramsActive.toFixed(2)),
-      threshold: Number(currentPureThreshold.toFixed(2))
-    });
-
-    const { error: alertStateError } = await client
-      .from('gold_state')
-      .update({
-        last_pure_alert_sent: currentPureThreshold
-      })
-      .eq('id', 1);
-
-    if (alertStateError) throw alertStateError;
-  }
-  // ===== FINE ALERT TELEGRAM =====
-
-  renderSessions(sessionsRes.data || []);
-  renderForms(forms, lastResetAt, pureGramsActive);
-}
 
   async function triggerTelegram(action, payload = {}) {
     try {
@@ -1508,119 +1454,115 @@ input:focus,select:focus{
   }
 
   function renderFormItems() {
-  els.formItemsBody.innerHTML = formItems.map((item, index) => `
-    <tr>
-      <td>
-        <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
-      </td>
-      
-      <td>
-        <select data-field="karat" data-index="${index}">
-          <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
-          <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
-          <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
-          <option value="800" ${item.karat === '800' ? 'selected' : ''}>Argento 800</option>
-        </select>
-      </td>
+    els.formItemsBody.innerHTML = formItems.map((item, index) => `
+      <tr>
+        <td>
+          <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
+        </td>
 
-      <td>
-        <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
-      </td>
+        <td>
+          <select data-field="karat" data-index="${index}">
+            <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
+            <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
+            <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
+            <option value="800" ${item.karat === '800' ? 'selected' : ''}>Argento 800</option>
+          </select>
+        </td>
 
-      <td>
-        <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
-      </td>
+        <td>
+          <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
+        </td>
 
-      <td>
-        <div>${calcItemValue(item).toFixed(2)} €</div>
-      </td>
+        <td>
+          <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
+        </td>
 
-      <td>
-        <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
-      </td>
-    </tr>
-  `).join('');
+        <td>
+          <div>${calcItemValue(item).toFixed(2)} €</div>
+        </td>
 
-  bindFormItemEvents();
-  recalcFormTotals();
-}
-  
-  function calcItemValue(item) {
-  const grams = Number(item.grams || 0);
-  const karat = item.karat || '18';
+        <td>
+          <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
+        </td>
+      </tr>
+    `).join('');
 
-  const quote18 = Number(els.formQuotePerGram.value || 0);
-
-  if (quote18 > 0) {
-    // 🔥 CALCOLO DERIVATO DALLA QUOTAZIONE 18KT
-    let multiplier = 1;
-
-    if (karat === '14') multiplier = 565 / 730;
-    if (karat === '9') multiplier = 355 / 730;
-    if (karat === '800') multiplier = 800 / 1000;
-
-    const pricePerGram = quote18 * multiplier;
-
-    return grams * pricePerGram;
+    bindFormItemEvents();
+    recalcFormTotals();
   }
 
-  // fallback (solo se non c'è quotazione)
-  const marketRaw = els.marketPrice.textContent
-    .replace(' €/g', '')
-    .replace(/\./g, '')
-    .replace(',', '.');
+  function calcItemValue(item) {
+    const grams = Number(item.grams || 0);
+    const karat = item.karat || '18';
 
-  const market = parseFloat(marketRaw);
-  if (isNaN(market)) return 0;
+    const quote18 = Number(els.formQuotePerGram.value || 0);
 
-  const net24 = market - 15;
-  const base = net24 / 1000;
+    if (quote18 > 0) {
+      let multiplier = 1;
 
-  let multiplier = 730;
-  if (karat === '14') multiplier = 565;
-  if (karat === '9') multiplier = 355;
-  if (karat === '800') multiplier = 800;
+      if (karat === '14') multiplier = 565 / 730;
+      if (karat === '9') multiplier = 355 / 730;
+      if (karat === '800') multiplier = 800 / 1000;
 
-  return grams * (base * multiplier);
-}
+      const pricePerGram = quote18 * multiplier;
+      return grams * pricePerGram;
+    }
+
+    const marketRaw = els.marketPrice.textContent
+      .replace(' €/g', '')
+      .replace(/\./g, '')
+      .replace(',', '.');
+
+    const market = parseFloat(marketRaw);
+    if (isNaN(market)) return 0;
+
+    const net24 = market - 15;
+    const base = net24 / 1000;
+
+    let multiplier = 730;
+    if (karat === '14') multiplier = 565;
+    if (karat === '9') multiplier = 355;
+    if (karat === '800') multiplier = 800;
+
+    return grams * (base * multiplier);
+  }
 
   function bindFormItemEvents() {
-  els.formItemsBody.querySelectorAll('input, select').forEach(input => {
-    input.addEventListener('input', (e) => {
-      const index = Number(e.target.dataset.index);
-      const field = e.target.dataset.field;
+    els.formItemsBody.querySelectorAll('input, select').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const index = Number(e.target.dataset.index);
+        const field = e.target.dataset.field;
 
-      formItems[index][field] = e.target.value;
-
-      recalcFormTotals();
-      updateRowValue(index);
+        formItems[index][field] = e.target.value;
+        recalcFormTotals();
+        updateRowValue(index);
+      });
     });
-  });
 
-  els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const index = Number(btn.dataset.index);
-      formItems.splice(index, 1);
+    els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = Number(btn.dataset.index);
+        formItems.splice(index, 1);
 
-      if (!formItems.length) {
-        formItems.push({ description: '', quantity: 1, grams: '', karat: '18' });
-      }
+        if (!formItems.length) {
+          formItems.push({ description: '', quantity: 1, grams: '', karat: '18' });
+        }
 
-      renderFormItems();
+        renderFormItems();
+      });
     });
-  });
-}
+  }
 
   function recalcFormTotals() {
-  const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
+    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
 
-  const totalEur = formItems.reduce((sum, item) => {
-    return sum + calcItemValue(item);
-  }, 0);
+    const totalEur = formItems.reduce((sum, item) => {
+      return sum + calcItemValue(item);
+    }, 0);
 
-  els.formTotalGrams.textContent = fmt(totalGrams) + ' g';
-  els.formTotalEur.textContent = fmt(totalEur) + ' €';
-}
+    els.formTotalGrams.textContent = fmt(totalGrams) + ' g';
+    els.formTotalEur.textContent = fmt(totalEur) + ' €';
+  }
 
   function openGoldForm() {
     els.goldFormArea.classList.toggle('hidden');
@@ -1668,16 +1610,16 @@ input:focus,select:focus{
     els.printDocumentExpiry.textContent = els.formDocumentExpiry.value || '—';
 
     if (!validItems.length) {
-      els.printItemsBody.innerHTML = '<tr><td colspan="3">Nessun oggetto</td></tr>';
+      els.printItemsBody.innerHTML = '<tr><td colspan="4">Nessun oggetto</td></tr>';
     } else {
       els.printItemsBody.innerHTML = validItems.map(item => `
-  <tr>
-    <td>${escapeHtml(item.description || '-')}</td>
-    <td style="text-align:center;">${item.karat || '18'} kt</td>
-    <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
-    <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
-  </tr>
-`).join('');
+        <tr>
+          <td>${escapeHtml(item.description || '-')}</td>
+          <td style="text-align:center;">${item.karat || '18'} kt</td>
+          <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
+          <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
+        </tr>
+      `).join('');
     }
 
     els.printTotalGrams.textContent = fmt(totalGrams) + ' g';
@@ -1703,17 +1645,17 @@ input:focus,select:focus{
     els.printDocumentExpiry.textContent = form.document_expiry || '—';
 
     if (!items.length) {
-  els.printItemsBody.innerHTML = '<tr><td colspan="4">Nessun oggetto</td></tr>';
-} else {
-  els.printItemsBody.innerHTML = items.map(item => `
-    <tr>
-      <td>${escapeHtml(item.description || '-')}</td>
-      <td style="text-align:center;">${item.karat || '18'} kt</td>
-      <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
-      <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
-    </tr>
-  `).join('');
-}
+      els.printItemsBody.innerHTML = '<tr><td colspan="4">Nessun oggetto</td></tr>';
+    } else {
+      els.printItemsBody.innerHTML = items.map(item => `
+        <tr>
+          <td>${escapeHtml(item.description || '-')}</td>
+          <td style="text-align:center;">${item.karat || '18'} kt</td>
+          <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
+          <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
+        </tr>
+      `).join('');
+    }
 
     els.printTotalGrams.textContent = fmt(form.total_grams || 0) + ' g';
     els.printTotalEur.textContent = fmt(form.total_eur || 0) + ' €';
@@ -1747,32 +1689,32 @@ input:focus,select:focus{
       alert('Errore ristampa scheda');
     }
   }
-  
+
   function updateRowValue(index) {
-  const row = els.formItemsBody.querySelectorAll('tr')[index];
-  if (!row) return;
+    const row = els.formItemsBody.querySelectorAll('tr')[index];
+    if (!row) return;
 
-  const valueCell = row.children[4]; // colonna €
-  const value = calcItemValue(formItems[index]);
+    const valueCell = row.children[4];
+    const value = calcItemValue(formItems[index]);
 
-  valueCell.innerHTML = value.toFixed(2) + ' €';
-}
+    valueCell.innerHTML = value.toFixed(2) + ' €';
+  }
 
   function getFormTotals() {
-  const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
+    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
 
-  let totalEur = 0;
+    let totalEur = 0;
 
-  formItems.forEach(item => {
-    totalEur += calcItemValue(item);
-  });
+    formItems.forEach(item => {
+      totalEur += calcItemValue(item);
+    });
 
-  return {
-    totalGrams: Number(totalGrams.toFixed(2)),
-    quotePerGram: Number(els.formQuotePerGram.value || 0),
-    totalEur: Number(totalEur.toFixed(2))
-  };
-}
+    return {
+      totalGrams: Number(totalGrams.toFixed(2)),
+      quotePerGram: Number(els.formQuotePerGram.value || 0),
+      totalEur: Number(totalEur.toFixed(2))
+    };
+  }
 
   function enterApp(profile) {
     currentStore = profile;
@@ -1845,6 +1787,7 @@ input:focus,select:focus{
       setAuthStatus('Accesso riuscito', 'success');
 
       await loadAll();
+      startAutoRefresh();
     } catch (err) {
       console.error(err);
       setAuthMessage('ERRORE: ' + err.message);
@@ -1855,138 +1798,139 @@ input:focus,select:focus{
   });
 
   els.resetBtn.addEventListener('click', async () => {
-  if (!currentStore || currentStore.role !== 'admin') return;
+    if (!currentStore || currentStore.role !== 'admin') return;
 
-  const foundryPriceInput = window.prompt('Inserisci prezzo concordato fonderia €/g PURO', '');
-  if (foundryPriceInput === null) return;
+    const foundryPriceInput = window.prompt('Inserisci prezzo concordato fonderia €/g PURO', '');
+    if (foundryPriceInput === null) return;
 
-  const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
-  if (!foundryPrice || foundryPrice <= 0) {
-    alert('Prezzo fonderia non valido');
-    return;
-  }
+    const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
+    if (!foundryPrice || foundryPrice <= 0) {
+      alert('Prezzo fonderia non valido');
+      return;
+    }
 
-  const ok = window.confirm(`Confermi chiusura fusione e reset globale con prezzo fonderia ${foundryPrice.toFixed(2)} €/g puro?`);
-  if (!ok) return;
+    const ok = window.confirm(`Confermi chiusura fusione e reset globale con prezzo fonderia ${foundryPrice.toFixed(2)} €/g puro?`);
+    if (!ok) return;
 
-  els.resetBtn.disabled = true;
-  setStatus('Chiusura fusione...');
+    els.resetBtn.disabled = true;
+    setStatus('Chiusura fusione...');
 
-  try {
-    const { data: state, error: stateError } = await client
-      .from('gold_state')
-      .select('*')
-      .eq('id', 1)
-      .single();
-
-    if (stateError) throw stateError;
-
-    const { data: allEntries, error: entriesError } = await client
-      .from('gold_entries')
-      .select('*');
-
-    const { data: allForms, error: formsError } = await client
-      .from('gold_forms')
-      .select('*');
-
-    if (formsError) throw formsError;
-    if (entriesError) throw entriesError;
-
-    const entries = state?.last_reset_at
-      ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
-      : allEntries;
-
-    const formsInPeriod = state?.last_reset_at
-      ? allForms.filter(f => new Date(f.created_at).getTime() > new Date(state.last_reset_at).getTime())
-      : allForms;
-
-    const formIdsInPeriod = formsInPeriod.map(f => f.id);
-
-    let itemsInPeriod = [];
-    if (formIdsInPeriod.length) {
-      const { data: allItems, error: itemsError } = await client
-        .from('gold_form_items')
+    try {
+      const { data: state, error: stateError } = await client
+        .from('gold_state')
         .select('*')
-        .in('form_id', formIdsInPeriod);
+        .eq('id', 1)
+        .single();
 
-      if (itemsError) throw itemsError;
-      itemsInPeriod = allItems || [];
+      if (stateError) throw stateError;
+
+      const { data: allEntries, error: entriesError } = await client
+        .from('gold_entries')
+        .select('*');
+
+      const { data: allForms, error: formsError } = await client
+        .from('gold_forms')
+        .select('*');
+
+      if (formsError) throw formsError;
+      if (entriesError) throw entriesError;
+
+      const entries = state?.last_reset_at
+        ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
+        : allEntries;
+
+      const formsInPeriod = state?.last_reset_at
+        ? allForms.filter(f => new Date(f.created_at).getTime() > new Date(state.last_reset_at).getTime())
+        : allForms;
+
+      const formIdsInPeriod = formsInPeriod.map(f => f.id);
+
+      let itemsInPeriod = [];
+      if (formIdsInPeriod.length) {
+        const { data: allItems, error: itemsError } = await client
+          .from('gold_form_items')
+          .select('*')
+          .in('form_id', formIdsInPeriod);
+
+        if (itemsError) throw itemsError;
+        itemsInPeriod = allItems || [];
+      }
+
+      const totalGrams = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
+      const totalPaidToClients = formsInPeriod.reduce((sum, f) => sum + Number(f.total_eur || 0), 0);
+
+      const totalPureGrams = itemsInPeriod.reduce((sum, item) => {
+        const grams = Number(item.grams || 0);
+        const factor = getPureFactor(item.karat || '18');
+        return sum + (grams * factor);
+      }, 0);
+
+      const totalFusionRevenue = totalPureGrams * foundryPrice;
+      const grossMargin = totalFusionRevenue - totalPaidToClients;
+
+      const summary = formsInPeriod.map(form => {
+        return `${form.store} - ${form.client_name} (#${form.scheda_number}) - ${Number(form.total_grams || 0)}g - pagato ${fmt(form.total_eur || 0)}€`;
+      }).join('\n');
+
+      const extendedSummary =
+        `Prezzo fonderia puro: ${fmt(foundryPrice)} €/g\n` +
+        `Totale ritirato: ${fmt(totalGrams)} g\n` +
+        `Totale puro equivalente: ${fmt(totalPureGrams)} g\n` +
+        `Totale pagato clienti: ${fmt(totalPaidToClients)} €\n` +
+        `Totale incassato fusione: ${fmt(totalFusionRevenue)} €\n` +
+        `Margine lordo: ${fmt(grossMargin)} €\n\n` +
+        summary;
+
+      if (entries.length > 0 || formsInPeriod.length > 0) {
+        const { error: sessionError } = await client.from('gold_sessions').insert([{
+          total_grams: totalGrams,
+          summary_text: extendedSummary,
+          foundry_price_per_gram: foundryPrice,
+          pure_grams: Number(totalPureGrams.toFixed(2)),
+          total_paid_clients: Number(totalPaidToClients.toFixed(2)),
+          total_fusion_revenue: Number(totalFusionRevenue.toFixed(2)),
+          gross_margin: Number(grossMargin.toFixed(2))
+        }]);
+
+        if (sessionError) throw sessionError;
+      }
+
+      const { error: deleteError } = await client
+        .from('gold_entries')
+        .delete()
+        .neq('id', 0);
+
+      if (deleteError) throw deleteError;
+
+      const { error: updateStateError } = await client
+        .from('gold_state')
+        .update({
+          last_reset_at: new Date().toISOString(),
+          last_pure_alert_sent: 0
+        })
+        .eq('id', 1);
+
+      if (updateStateError) throw updateStateError;
+
+      await triggerTelegram('reset', {
+        closedAt: new Date().toLocaleString('it-IT'),
+        totalGrams: Number(totalGrams.toFixed(2)),
+        totalPureGrams: Number(totalPureGrams.toFixed(2)),
+        foundryPrice: Number(foundryPrice.toFixed(2)),
+        totalPaidToClients: Number(totalPaidToClients.toFixed(2)),
+        totalFusionRevenue: Number(totalFusionRevenue.toFixed(2)),
+        grossMargin: Number(grossMargin.toFixed(2))
+      });
+
+      await loadOperationalData();
+      setStatus('Reset completato', 'success');
+    } catch (err) {
+      console.error(err);
+      setStatus('Errore reset', 'error');
+    } finally {
+      els.resetBtn.disabled = false;
     }
-
-    const totalGrams = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
-    const totalPaidToClients = formsInPeriod.reduce((sum, f) => sum + Number(f.total_eur || 0), 0);
-
-    const totalPureGrams = itemsInPeriod.reduce((sum, item) => {
-      const grams = Number(item.grams || 0);
-      const factor = getPureFactor(item.karat || '18');
-      return sum + (grams * factor);
-    }, 0);
-
-    const totalFusionRevenue = totalPureGrams * foundryPrice;
-    const grossMargin = totalFusionRevenue - totalPaidToClients;
-
-    const summary = formsInPeriod.map(form => {
-      return `${form.store} - ${form.client_name} (#${form.scheda_number}) - ${Number(form.total_grams || 0)}g - pagato ${fmt(form.total_eur || 0)}€`;
-    }).join('\n');
-
-    const extendedSummary =
-      `Prezzo fonderia puro: ${fmt(foundryPrice)} €/g\n` +
-      `Totale ritirato: ${fmt(totalGrams)} g\n` +
-      `Totale puro equivalente: ${fmt(totalPureGrams)} g\n` +
-      `Totale pagato clienti: ${fmt(totalPaidToClients)} €\n` +
-      `Totale incassato fusione: ${fmt(totalFusionRevenue)} €\n` +
-      `Margine lordo: ${fmt(grossMargin)} €\n\n` +
-      summary;
-
-    if (entries.length > 0 || formsInPeriod.length > 0) {
-      const { error: sessionError } = await client.from('gold_sessions').insert([{
-        total_grams: totalGrams,
-        summary_text: extendedSummary,
-        foundry_price_per_gram: foundryPrice,
-        pure_grams: Number(totalPureGrams.toFixed(2)),
-        total_paid_clients: Number(totalPaidToClients.toFixed(2)),
-        total_fusion_revenue: Number(totalFusionRevenue.toFixed(2)),
-        gross_margin: Number(grossMargin.toFixed(2))
-      }]);
-
-      if (sessionError) throw sessionError;
-    }
-
-    const { error: deleteError } = await client
-      .from('gold_entries')
-      .delete()
-      .neq('id', 0);
-
-    if (deleteError) throw deleteError;
-
-    const { error: updateStateError } = await client
-      .from('gold_state')
-      .update({
-        last_reset_at: new Date().toISOString()
-      })
-      .eq('id', 1);
-
-    if (updateStateError) throw updateStateError;
-
-    await triggerTelegram('reset', {
-  closedAt: new Date().toLocaleString('it-IT'),
-  totalGrams: Number(totalGrams.toFixed(2)),
-  totalPureGrams: Number(totalPureGrams.toFixed(2)),
-  foundryPrice: Number(foundryPrice.toFixed(2)),
-  totalPaidToClients: Number(totalPaidToClients.toFixed(2)),
-  totalFusionRevenue: Number(totalFusionRevenue.toFixed(2)),
-  grossMargin: Number(grossMargin.toFixed(2))
-});
-
-    await loadOperationalData();
-    setStatus('Reset completato', 'success');
-  } catch (err) {
-    console.error(err);
-    setStatus('Errore reset', 'error');
-  } finally {
-    els.resetBtn.disabled = false;
-  }
-});
+  });
 
   els.clearSessionsBtn.addEventListener('click', async () => {
     if (!currentStore || currentStore.role !== 'admin') return;
@@ -2022,7 +1966,10 @@ input:focus,select:focus{
     renderFormItems();
   });
 
-  els.formQuotePerGram.addEventListener('input', recalcFormTotals);
+  els.formQuotePerGram.addEventListener('input', () => {
+    recalcFormTotals();
+    renderFormItems();
+  });
 
   els.saveFormBtn.addEventListener('click', async () => {
     if (!currentStore || !currentUser) return;
@@ -2109,12 +2056,12 @@ input:focus,select:focus{
       if (formError) throw formError;
 
       const itemsPayload = validItems.map(item => ({
-  form_id: insertedForm.id,
-  description: String(item.description || '').trim(),
-  quantity: Number(item.quantity || 1),
-  grams: Number(item.grams || 0),
-  karat: item.karat || '18'
-}));
+        form_id: insertedForm.id,
+        description: String(item.description || '').trim(),
+        quantity: Number(item.quantity || 1),
+        grams: Number(item.grams || 0),
+        karat: item.karat || '18'
+      }));
 
       const { error: itemsError } = await client
         .from('gold_form_items')
@@ -2168,6 +2115,7 @@ input:focus,select:focus{
       const profile = await getProfile(currentUser.id);
       enterApp(profile);
       await loadAll();
+      startAutoRefresh();
     }
   } catch (err) {
     console.error(err);

@@ -1389,6 +1389,15 @@
   
   function calcItemValue(item) {
   const grams = Number(item.grams || 0);
+
+  // 👉 se esiste quotazione manuale → usa quella
+  const manualQuote = Number(els.formQuotePerGram.value || 0);
+
+  if (manualQuote > 0) {
+    return grams * manualQuote;
+  }
+
+  // 👉 altrimenti usa calcolo automatico
   const karat = item.karat || '18';
 
   const marketRaw = els.marketPrice.textContent
@@ -1585,16 +1594,28 @@
 }
 
   function getFormTotals() {
-    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
-    const quotePerGram = Number(els.formQuotePerGram.value || 0);
-    const totalEur = totalGrams * quotePerGram;
+  const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
 
-    return {
-      totalGrams: Number(totalGrams.toFixed(2)),
-      quotePerGram: Number(quotePerGram.toFixed(2)),
-      totalEur: Number(totalEur.toFixed(2))
-    };
-  }
+  const manualQuote = Number(els.formQuotePerGram.value || 0);
+
+  let totalEur = 0;
+
+  formItems.forEach(item => {
+    const grams = Number(item.grams || 0);
+
+    if (manualQuote > 0) {
+      totalEur += grams * manualQuote;
+    } else {
+      totalEur += calcItemValue(item);
+    }
+  });
+
+  return {
+    totalGrams: Number(totalGrams.toFixed(2)),
+    quotePerGram: manualQuote,
+    totalEur: Number(totalEur.toFixed(2))
+  };
+}
 
   function enterApp(profile) {
     currentStore = profile;

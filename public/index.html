@@ -1327,26 +1327,32 @@ input:focus,select:focus{
   }
 
   function renderSessions(sessions) {
-    els.sessionsCount.textContent = `${sessions.length} fusioni`;
+  els.sessionsCount.textContent = `${sessions.length} fusioni`;
 
-    if (!sessions.length) {
-      els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>';
-      return;
-    }
-
-    els.sessionsList.innerHTML = sessions.map(s => `
-      <div class="session-card">
-        <div style="font-weight:700;margin-bottom:6px">Fusione chiusa il ${new Date(s.closed_at).toLocaleString('it-IT')}</div>
-        <div class="muted">Totale ritirato: ${fmt(s.total_grams)} g</div>
-${s.pure_grams != null ? `<div class="muted">Puro equivalente: ${fmt(s.pure_grams)} g</div>` : ''}
-${s.foundry_price_per_gram != null ? `<div class="muted">Prezzo fonderia: ${fmt(s.foundry_price_per_gram)} €/g</div>` : ''}
-${s.total_paid_clients != null ? `<div class="muted">Pagato clienti: ${fmt(s.total_paid_clients)} €</div>` : ''}
-${s.total_fusion_revenue != null ? `<div class="muted">Incassato fusione: ${fmt(s.total_fusion_revenue)} €</div>` : ''}
-${s.gross_margin != null ? `<div class="muted"><strong>Margine lordo: ${fmt(s.gross_margin)} €</strong></div>` : ''}
-        <div class="muted" style="margin-top:8px;white-space:pre-line">${escapeHtml(s.summary_text || '')}</div>
-      </div>
-    `).join('');
+  if (!sessions.length) {
+    els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>';
+    return;
   }
+
+  els.sessionsList.innerHTML = sessions.map(s => `
+    <div class="session-card">
+      <div style="font-weight:800;margin-bottom:12px;font-size:16px;">
+        Fusione chiusa il ${new Date(s.closed_at).toLocaleString('it-IT')}
+      </div>
+
+      <div class="print-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;">
+        <div class="muted"><strong>Totale grammi ritirati:</strong> ${fmt(s.total_grams)} g</div>
+        <div class="muted"><strong>Totale puro ritirato:</strong> ${s.pure_grams != null ? `${fmt(s.pure_grams)} g` : '—'}</div>
+
+        <div class="muted"><strong>Prezzo fonderia:</strong> ${s.foundry_price_per_gram != null ? `${fmt(s.foundry_price_per_gram)} €/g` : '—'}</div>
+        <div class="muted"><strong>Totale pagato:</strong> ${s.total_paid_clients != null ? `${fmt(s.total_paid_clients)} €` : '—'}</div>
+
+        <div class="muted"><strong>Totale incassato:</strong> ${s.total_fusion_revenue != null ? `${fmt(s.total_fusion_revenue)} €` : '—'}</div>
+        <div class="muted"><strong>Margine:</strong> ${s.gross_margin != null ? `${fmt(s.gross_margin)} €` : '—'}</div>
+      </div>
+    </div>
+  `).join('');
+}
 
   function renderForms(forms, lastResetAt) {
     const visibleForms = lastResetAt

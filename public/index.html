@@ -1154,7 +1154,7 @@ input:focus,select:focus{
   const cfg = window.BURATO_CONFIG || {};
   const supabaseUrl = cfg.supabaseUrl;
   const supabaseAnonKey = cfg.supabaseAnonKey;
-  const STEP = 100;
+  const PURE_ALERT_STEP = 300;
 
   const els = {
     authCard: document.getElementById('authCard'),
@@ -1439,6 +1439,27 @@ input:focus,select:focus{
       return sum + (grams * factor);
     }, 0);
   }
+
+  // ===== ALERT TELEGRAM OGNI 300g DI PURO =====
+  const currentPureThreshold = Math.floor(pureGramsActive / PURE_ALERT_STEP) * PURE_ALERT_STEP;
+  const lastPureAlertSent = Number(state?.last_pure_alert_sent || 0);
+
+  if (currentPureThreshold >= PURE_ALERT_STEP && currentPureThreshold > lastPureAlertSent) {
+    await triggerTelegram('pure_alert', {
+      pureGrams: Number(pureGramsActive.toFixed(2)),
+      threshold: Number(currentPureThreshold.toFixed(2))
+    });
+
+    const { error: alertStateError } = await client
+      .from('gold_state')
+      .update({
+        last_pure_alert_sent: currentPureThreshold
+      })
+      .eq('id', 1);
+
+    if (alertStateError) throw alertStateError;
+  }
+  // ===== FINE ALERT TELEGRAM =====
 
   renderSessions(sessionsRes.data || []);
   renderForms(forms, lastResetAt, pureGramsActive);
@@ -1948,14 +1969,14 @@ input:focus,select:focus{
     if (updateStateError) throw updateStateError;
 
     await triggerTelegram('reset', {
-      totalGrams,
-      totalPureGrams: Number(totalPureGrams.toFixed(2)),
-      foundryPrice,
-      totalPaidToClients,
-      totalFusionRevenue,
-      grossMargin,
-      summary: extendedSummary
-    });
+  closedAt: new Date().toLocaleString('it-IT'),
+  totalGrams: Number(totalGrams.toFixed(2)),
+  totalPureGrams: Number(totalPureGrams.toFixed(2)),
+  foundryPrice: Number(foundryPrice.toFixed(2)),
+  totalPaidToClients: Number(totalPaidToClients.toFixed(2)),
+  totalFusionRevenue: Number(totalFusionRevenue.toFixed(2)),
+  grossMargin: Number(grossMargin.toFixed(2))
+});
 
     await loadOperationalData();
     setStatus('Reset completato', 'success');

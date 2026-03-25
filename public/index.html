@@ -863,10 +863,10 @@ input:focus,select:focus{
         </article>
 
         <article id="adminStatsCard" class="quote-card card">
-          <div class="small-label">Totale periodo attivo</div>
-          <div id="totalGrams" class="big-sub">0 g</div>
-          <div id="nextAlert" class="muted">Prossimo alert a 100 g</div>
-        </article>
+  <div class="small-label">Oro puro attivo</div>
+  <div id="totalGrams" class="big-sub">0 g</div>
+  <div id="nextAlert" class="muted">Equivalente puro attualmente in casa</div>
+</article>
       </section>
 
       <section class="card section">
@@ -1354,46 +1354,42 @@ input:focus,select:focus{
   `).join('');
 }
 
-  function renderForms(forms, lastResetAt) {
-    const visibleForms = lastResetAt
-      ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
-      : forms.slice();
+  function renderForms(forms, lastResetAt, pureGramsActive = 0) {
+  const visibleForms = lastResetAt
+    ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
+    : forms.slice();
 
-    const totalPeriod = visibleForms.reduce((sum, form) => sum + Number(form.total_grams || 0), 0);
-    const nextAlertAt = (Math.floor(totalPeriod / STEP) + 1) * STEP;
-    const remaining = Math.max(0, nextAlertAt - totalPeriod);
+  els.totalGrams.textContent = fmt(pureGramsActive) + ' g';
+  els.nextAlert.textContent = 'Equivalente puro attualmente in casa';
+  els.resetNote.textContent = lastResetAt
+    ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
+    : 'Nessun reset eseguito';
 
-    els.totalGrams.textContent = fmt(totalPeriod) + ' g';
-    els.nextAlert.textContent = `Mancano ${fmt(remaining)} g al prossimo alert (${fmt(nextAlertAt, 0)} g)`;
-    els.resetNote.textContent = lastResetAt
-      ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
-      : 'Nessun reset eseguito';
+  els.formsCount.textContent = `${forms.length} schede`;
 
-    els.formsCount.textContent = `${forms.length} schede`;
-
-    if (!forms.length) {
-      els.formsBody.innerHTML = '<tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>';
-      return;
-    }
-
-    els.formsBody.innerHTML = forms.map(form => `
-      <tr>
-        <td>${new Date(form.created_at).toLocaleString('it-IT')}</td>
-        <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
-        <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
-        <td>${escapeHtml(form.store || '-')}</td>
-        <td class="right">${fmt(form.total_grams || 0)} g</td>
-        <td class="right">${fmt(form.total_eur || 0)} €</td>
-        <td>
-          <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
-            Ristampa
-          </button>
-        </td>
-      </tr>
-    `).join('');
-
-    bindFormsActions();
+  if (!forms.length) {
+    els.formsBody.innerHTML = '<tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>';
+    return;
   }
+
+  els.formsBody.innerHTML = forms.map(form => `
+    <tr>
+      <td>${new Date(form.created_at).toLocaleString('it-IT')}</td>
+      <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
+      <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
+      <td>${escapeHtml(form.store || '-')}</td>
+      <td class="right">${fmt(form.total_grams || 0)} g</td>
+      <td class="right">${fmt(form.total_eur || 0)} €</td>
+      <td>
+        <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
+          Ristampa
+        </button>
+      </td>
+    </tr>
+  `).join('');
+
+  bindFormsActions();
+}
 
   function bindFormsActions() {
     els.formsBody.querySelectorAll('button[data-action="reprint-form"]').forEach(btn => {
@@ -1405,22 +1401,48 @@ input:focus,select:focus{
   }
 
   async function loadOperationalData() {
-    const [
-      state,
-      sessionsRes,
-      formsRes
-    ] = await Promise.all([
-      loadState(),
-      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
-      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
-    ]);
+  const [
+    state,
+    sessionsRes,
+    formsRes
+  ] = await Promise.all([
+    loadState(),
+    client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
+    client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
+  ]);
 
-    if (sessionsRes.error) throw sessionsRes.error;
-    if (formsRes.error) throw formsRes.error;
+  if (sessionsRes.error) throw sessionsRes.error;
+  if (formsRes.error) throw formsRes.error;
 
-    renderSessions(sessionsRes.data || []);
-    renderForms(formsRes.data || [], state?.last_reset_at || null);
+  const forms = formsRes.data || [];
+  const lastResetAt = state?.last_reset_at || null;
+
+  const visibleForms = lastResetAt
+    ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
+    : forms.slice();
+
+  let pureGramsActive = 0;
+
+  if (visibleForms.length) {
+    const formIds = visibleForms.map(f => f.id);
+
+    const { data: itemsRes, error: itemsError } = await client
+      .from('gold_form_items')
+      .select('*')
+      .in('form_id', formIds);
+
+    if (itemsError) throw itemsError;
+
+    pureGramsActive = (itemsRes || []).reduce((sum, item) => {
+      const grams = Number(item.grams || 0);
+      const factor = getPureFactor(item.karat || '18');
+      return sum + (grams * factor);
+    }, 0);
   }
+
+  renderSessions(sessionsRes.data || []);
+  renderForms(forms, lastResetAt, pureGramsActive);
+}
 
   async function triggerTelegram(action, payload = {}) {
     try {

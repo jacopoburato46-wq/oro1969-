@@ -1017,9 +1017,11 @@
         <table class="print-table">
           <thead>
             <tr>
-              <th style="width:58%;">Descrizione</th>
-              <th style="width:14%; text-align:center;">Pezzi</th>
-              <th style="width:28%; text-align:right;">Grammi</th>
+              <th style="width:40%;">Descrizione</th>
+<th style="width:14%; text-align:center;">Caratura</th>
+<th style="width:12%; text-align:center;">Pezzi</th>
+<th style="width:20%; text-align:right;">Grammi</th>
+<th style="width:14%; text-align:right;">€</th>
             </tr>
           </thead>
           <tbody id="printItemsBody">
@@ -1513,12 +1515,14 @@
       els.printItemsBody.innerHTML = '<tr><td colspan="3">Nessun oggetto</td></tr>';
     } else {
       els.printItemsBody.innerHTML = validItems.map(item => `
-        <tr>
-          <td>${escapeHtml(item.description || '-')}</td>
-          <td>${escapeHtml(item.quantity || 1)}</td>
-          <td>${fmt(item.grams || 0)} g</td>
-        </tr>
-      `).join('');
+  <tr>
+    <td>${escapeHtml(item.description || '-')}</td>
+    <td style="text-align:center;">${item.karat || '18'} kt</td>
+    <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
+    <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
+    <td style="text-align:right;">${fmt(calcItemValue(item))} €</td>
+  </tr>
+`).join('');
     }
 
     els.printTotalGrams.textContent = fmt(totalGrams) + ' g';
@@ -1900,11 +1904,12 @@
       if (formError) throw formError;
 
       const itemsPayload = validItems.map(item => ({
-        form_id: insertedForm.id,
-        description: String(item.description || '').trim(),
-        quantity: Number(item.quantity || 1),
-        grams: Number(item.grams || 0)
-      }));
+  form_id: insertedForm.id,
+  description: String(item.description || '').trim(),
+  quantity: Number(item.quantity || 1),
+  grams: Number(item.grams || 0),
+  karat: item.karat || '18'
+}));
 
       const { error: itemsError } = await client
         .from('gold_form_items')

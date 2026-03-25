@@ -1472,7 +1472,7 @@
   function resetGoldForm(statusText = 'Non salvata') {
     els.goldForm.reset();
     els.formStore.value = currentStore ? currentStore.store_name : '';
-    formItems = [{ description: '', quantity: 1, grams: '' }];
+    formItems = [{ description: '', quantity: 1, grams: '', karat: '18' }];
     els.formSaveStatus.textContent = statusText;
 
     if (els.buratoPrice.textContent && els.buratoPrice.textContent !== '—') {
@@ -1610,13 +1610,6 @@
   return {
     totalGrams: Number(totalGrams.toFixed(2)),
     quotePerGram: Number(els.formQuotePerGram.value || 0),
-    totalEur: Number(totalEur.toFixed(2))
-  };
-}
-
-  return {
-    totalGrams: Number(totalGrams.toFixed(2)),
-    quotePerGram: manualQuote,
     totalEur: Number(totalEur.toFixed(2))
   };
 }
@@ -1816,7 +1809,7 @@
   els.toggleFormBtn.addEventListener('click', openGoldForm);
 
   els.addItemRowBtn.addEventListener('click', () => {
-    formItems.push({ description: '', quantity: 1, grams: '' });
+    formItems.push({ description: '', quantity: 1, grams: '', karat: '18' });
     renderFormItems();
   });
 

@@ -22,7 +22,7 @@ function buildItemsRows(items = []) {
   if (!items.length) {
     return `
       <tr>
-        <td colspan="3" style="padding:6px 8px;border:1px solid #e8e1d5;text-align:center;">
+        <td colspan="4" style="padding:6px 8px;border:1px solid #e8e1d5;text-align:center;">
           Nessun oggetto
         </td>
       </tr>
@@ -33,6 +33,9 @@ function buildItemsRows(items = []) {
     <tr>
       <td style="padding:6px 8px;border:1px solid #e8e1d5;">
         ${escapeHtml(item.description || '-')}
+      </td>
+      <td style="padding:6px 8px;border:1px solid #e8e1d5;text-align:center;">
+        ${escapeHtml(item.karat || '18')} kt
       </td>
       <td style="padding:6px 8px;border:1px solid #e8e1d5;text-align:center;">
         ${escapeHtml(item.quantity || 1)}

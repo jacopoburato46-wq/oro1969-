@@ -1355,7 +1355,7 @@
       <td>
         <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
       </td>
-
+      
       <td>
         <select data-field="karat" data-index="${index}">
           <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
@@ -1420,10 +1420,7 @@
 
       formItems[index][field] = e.target.value;
 
-      // SOLO aggiorna totali, NON rifare il render
       recalcFormTotals();
-
-      // aggiorna solo il valore € della riga
       updateRowValue(index);
     });
   });
@@ -1437,18 +1434,6 @@
         formItems.push({ description: '', quantity: 1, grams: '', karat: '18' });
       }
 
-      renderFormItems(); // qui va bene
-    });
-  });
-}
-
-  els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const index = Number(btn.dataset.index);
-      formItems.splice(index, 1);
-      if (!formItems.length) {
-        formItems.push({ description: '', quantity: 1, grams: '', karat: '18' });
-      }
       renderFormItems();
     });
   });

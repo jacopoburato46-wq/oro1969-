@@ -1253,6 +1253,14 @@ input:focus,select:focus{
     els.status.className = 'pill' + (type ? ' ' + type : '');
   }
 
+  function getPureFactor(karat) {
+  if (karat === '18') return 730 / 1000;
+  if (karat === '14') return 565 / 1000;
+  if (karat === '9') return 355 / 1000;
+  if (karat === '800') return 800 / 1000;
+  return 730 / 1000;
+}
+  
   const fmt = (n, d = 2) =>
     new Intl.NumberFormat('it-IT', {
       minimumFractionDigits: d,
@@ -1329,7 +1337,12 @@ input:focus,select:focus{
     els.sessionsList.innerHTML = sessions.map(s => `
       <div class="session-card">
         <div style="font-weight:700;margin-bottom:6px">Fusione chiusa il ${new Date(s.closed_at).toLocaleString('it-IT')}</div>
-        <div class="muted">Totale: ${fmt(s.total_grams)} g</div>
+        <div class="muted">Totale ritirato: ${fmt(s.total_grams)} g</div>
+${s.pure_grams != null ? `<div class="muted">Puro equivalente: ${fmt(s.pure_grams)} g</div>` : ''}
+${s.foundry_price_per_gram != null ? `<div class="muted">Prezzo fonderia: ${fmt(s.foundry_price_per_gram)} €/g</div>` : ''}
+${s.total_paid_clients != null ? `<div class="muted">Pagato clienti: ${fmt(s.total_paid_clients)} €</div>` : ''}
+${s.total_fusion_revenue != null ? `<div class="muted">Incassato fusione: ${fmt(s.total_fusion_revenue)} €</div>` : ''}
+${s.gross_margin != null ? `<div class="muted"><strong>Margine lordo: ${fmt(s.gross_margin)} €</strong></div>` : ''}
         <div class="muted" style="margin-top:8px;white-space:pre-line">${escapeHtml(s.summary_text || '')}</div>
       </div>
     `).join('');
@@ -1793,89 +1806,138 @@ input:focus,select:focus{
   });
 
   els.resetBtn.addEventListener('click', async () => {
-    if (!currentStore || currentStore.role !== 'admin') return;
+  if (!currentStore || currentStore.role !== 'admin') return;
 
-    const ok = window.confirm('Confermi chiusura fusione e reset globale?');
-    if (!ok) return;
+  const foundryPriceInput = window.prompt('Inserisci prezzo concordato fonderia €/g PURO', '');
+  if (foundryPriceInput === null) return;
 
-    els.resetBtn.disabled = true;
-    setStatus('Chiusura fusione...');
+  const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
+  if (!foundryPrice || foundryPrice <= 0) {
+    alert('Prezzo fonderia non valido');
+    return;
+  }
 
-    try {
-      const { data: state, error: stateError } = await client
-        .from('gold_state')
+  const ok = window.confirm(`Confermi chiusura fusione e reset globale con prezzo fonderia ${foundryPrice.toFixed(2)} €/g puro?`);
+  if (!ok) return;
+
+  els.resetBtn.disabled = true;
+  setStatus('Chiusura fusione...');
+
+  try {
+    const { data: state, error: stateError } = await client
+      .from('gold_state')
+      .select('*')
+      .eq('id', 1)
+      .single();
+
+    if (stateError) throw stateError;
+
+    const { data: allEntries, error: entriesError } = await client
+      .from('gold_entries')
+      .select('*');
+
+    const { data: allForms, error: formsError } = await client
+      .from('gold_forms')
+      .select('*');
+
+    if (formsError) throw formsError;
+    if (entriesError) throw entriesError;
+
+    const entries = state?.last_reset_at
+      ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
+      : allEntries;
+
+    const formsInPeriod = state?.last_reset_at
+      ? allForms.filter(f => new Date(f.created_at).getTime() > new Date(state.last_reset_at).getTime())
+      : allForms;
+
+    const formIdsInPeriod = formsInPeriod.map(f => f.id);
+
+    let itemsInPeriod = [];
+    if (formIdsInPeriod.length) {
+      const { data: allItems, error: itemsError } = await client
+        .from('gold_form_items')
         .select('*')
-        .eq('id', 1)
-        .single();
+        .in('form_id', formIdsInPeriod);
 
-      if (stateError) throw stateError;
-
-      const { data: allEntries, error: entriesError } = await client
-        .from('gold_entries')
-        .select('*');
-
-      const { data: allForms, error: formsError } = await client
-        .from('gold_forms')
-        .select('*');
-
-      if (formsError) throw formsError;
-      if (entriesError) throw entriesError;
-
-      const entries = state?.last_reset_at
-        ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
-        : allEntries;
-
-      const formsInPeriod = state?.last_reset_at
-        ? allForms.filter(f => new Date(f.created_at).getTime() > new Date(state.last_reset_at).getTime())
-        : allForms;
-
-      const total = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
-      const totalEur = formsInPeriod.reduce((sum, f) => sum + Number(f.total_eur || 0), 0);
-
-      const summary = entries.map(e =>
-        `${e.store} - ${e.client_name} (#${e.scheda_number}) - ${e.grams}g`
-      ).join('\n');
-
-      if (entries.length > 0) {
-        const { error: sessionError } = await client.from('gold_sessions').insert([{
-          total_grams: total,
-          summary_text: summary
-        }]);
-
-        if (sessionError) throw sessionError;
-      }
-
-      const { error: deleteError } = await client
-        .from('gold_entries')
-        .delete()
-        .neq('id', 0);
-
-      if (deleteError) throw deleteError;
-
-      const { error: updateStateError } = await client
-        .from('gold_state')
-        .update({
-          last_reset_at: new Date().toISOString()
-        })
-        .eq('id', 1);
-
-      if (updateStateError) throw updateStateError;
-
-      await triggerTelegram('reset', {
-        total,
-        totalEur,
-        summary
-      });
-
-      await loadOperationalData();
-      setStatus('Reset completato', 'success');
-    } catch (err) {
-      console.error(err);
-      setStatus('Errore reset', 'error');
-    } finally {
-      els.resetBtn.disabled = false;
+      if (itemsError) throw itemsError;
+      itemsInPeriod = allItems || [];
     }
-  });
+
+    const totalGrams = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
+    const totalPaidToClients = formsInPeriod.reduce((sum, f) => sum + Number(f.total_eur || 0), 0);
+
+    const totalPureGrams = itemsInPeriod.reduce((sum, item) => {
+      const grams = Number(item.grams || 0);
+      const factor = getPureFactor(item.karat || '18');
+      return sum + (grams * factor);
+    }, 0);
+
+    const totalFusionRevenue = totalPureGrams * foundryPrice;
+    const grossMargin = totalFusionRevenue - totalPaidToClients;
+
+    const summary = formsInPeriod.map(form => {
+      return `${form.store} - ${form.client_name} (#${form.scheda_number}) - ${Number(form.total_grams || 0)}g - pagato ${fmt(form.total_eur || 0)}€`;
+    }).join('\n');
+
+    const extendedSummary =
+      `Prezzo fonderia puro: ${fmt(foundryPrice)} €/g\n` +
+      `Totale ritirato: ${fmt(totalGrams)} g\n` +
+      `Totale puro equivalente: ${fmt(totalPureGrams)} g\n` +
+      `Totale pagato clienti: ${fmt(totalPaidToClients)} €\n` +
+      `Totale incassato fusione: ${fmt(totalFusionRevenue)} €\n` +
+      `Margine lordo: ${fmt(grossMargin)} €\n\n` +
+      summary;
+
+    if (entries.length > 0 || formsInPeriod.length > 0) {
+      const { error: sessionError } = await client.from('gold_sessions').insert([{
+        total_grams: totalGrams,
+        summary_text: extendedSummary,
+        foundry_price_per_gram: foundryPrice,
+        pure_grams: Number(totalPureGrams.toFixed(2)),
+        total_paid_clients: Number(totalPaidToClients.toFixed(2)),
+        total_fusion_revenue: Number(totalFusionRevenue.toFixed(2)),
+        gross_margin: Number(grossMargin.toFixed(2))
+      }]);
+
+      if (sessionError) throw sessionError;
+    }
+
+    const { error: deleteError } = await client
+      .from('gold_entries')
+      .delete()
+      .neq('id', 0);
+
+    if (deleteError) throw deleteError;
+
+    const { error: updateStateError } = await client
+      .from('gold_state')
+      .update({
+        last_reset_at: new Date().toISOString()
+      })
+      .eq('id', 1);
+
+    if (updateStateError) throw updateStateError;
+
+    await triggerTelegram('reset', {
+      totalGrams,
+      totalPureGrams: Number(totalPureGrams.toFixed(2)),
+      foundryPrice,
+      totalPaidToClients,
+      totalFusionRevenue,
+      grossMargin,
+      summary: extendedSummary
+    });
+
+    await loadOperationalData();
+    setStatus('Reset completato', 'success');
+  } catch (err) {
+    console.error(err);
+    setStatus('Errore reset', 'error');
+  } finally {
+    els.resetBtn.disabled = false;
+  }
+});
 
   els.clearSessionsBtn.addEventListener('click', async () => {
     if (!currentStore || currentStore.role !== 'admin') return;

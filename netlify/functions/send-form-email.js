@@ -250,9 +250,10 @@ function buildPrintableHtml(form = {}, items = []) {
       <table class="print-table">
         <thead>
           <tr>
-            <th style="width:58%;">Descrizione</th>
-            <th style="width:14%; text-align:center;">Pezzi</th>
-            <th style="width:28%; text-align:right;">Grammi</th>
+            <th style="width:50%;">Descrizione</th>
+<th style="width:15%; text-align:center;">Caratura</th>
+<th style="width:15%; text-align:center;">Pezzi</th>
+<th style="width:20%; text-align:right;">Grammi</th>
           </tr>
         </thead>
         <tbody>

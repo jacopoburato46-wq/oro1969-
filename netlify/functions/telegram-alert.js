@@ -28,13 +28,25 @@ exports.handler = async function (event) {
       'Content-Type': 'application/json',
     };
 
+    function formatNumber(value) {
+      return new Intl.NumberFormat('it-IT', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(Number(value || 0));
+    }
+
     async function getState() {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/gold_state?id=eq.1&select=id,last_reset_at,last_notified_step`,
+        `${SUPABASE_URL}/rest/v1/gold_state?id=eq.1&select=id,last_reset_at,last_notified_step,last_pure_alert_sent`,
         { headers }
       );
       const data = await res.json();
-      return data[0] || { id: 1, last_reset_at: null, last_notified_step: 0 };
+      return data[0] || {
+        id: 1,
+        last_reset_at: null,
+        last_notified_step: 0,
+        last_pure_alert_sent: 0,
+      };
     }
 
     async function upsertState(payload) {
@@ -47,16 +59,6 @@ exports.handler = async function (event) {
         body: JSON.stringify([payload]),
       });
       if (!res.ok) throw new Error(await res.text());
-    }
-
-    async function getEntriesSince(lastResetAt) {
-      let url = `${SUPABASE_URL}/rest/v1/gold_entries?select=store,client_name,scheda_number,grams,created_at`;
-      if (lastResetAt) {
-        url += `&created_at=gt.${encodeURIComponent(lastResetAt)}`;
-      }
-      const res = await fetch(url, { headers });
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
     }
 
     async function sendTelegramMessage(text) {
@@ -77,29 +79,34 @@ exports.handler = async function (event) {
 
     const state = await getState();
 
+    // ===== RESET / CHIUSURA FUSIONE =====
     if (action === 'reset') {
-      const total = Number(body.total || 0);
-      const totalEur = Number(body.totalEur || 0);
-      const summary = body.summary || '';
+      const closedAt = body.closedAt || new Date().toLocaleString('it-IT');
+      const totalGrams = Number(body.totalGrams || 0);
+      const totalPureGrams = Number(body.totalPureGrams || 0);
+      const foundryPrice = Number(body.foundryPrice || 0);
+      const totalPaidToClients = Number(body.totalPaidToClients || 0);
+      const totalFusionRevenue = Number(body.totalFusionRevenue || 0);
+      const grossMargin = Number(body.grossMargin || 0);
 
-      if (total > 0 || totalEur > 0) {
-        const message =
-`🔴 Burato Gioielli
-Fusione chiusa
+      const message =
+`🔒 Fusione chiusa
 
-Totale grammi: ${total.toFixed(2)} g
-Totale euro pagati: € ${totalEur.toFixed(2)}
+Data chiusura: ${closedAt}
+Totale grammi ritirati: ${formatNumber(totalGrams)} g
+Totale puro ritirato: ${formatNumber(totalPureGrams)} g
+Prezzo fonderia: ${formatNumber(foundryPrice)} €/g
+Totale pagato: ${formatNumber(totalPaidToClients)} €
+Totale incassato: ${formatNumber(totalFusionRevenue)} €
+Margine: ${formatNumber(grossMargin)} €`;
 
-Schede:
-${summary || 'Nessuna scheda'}`;
-
-        await sendTelegramMessage(message);
-      }
+      await sendTelegramMessage(message);
 
       await upsertState({
         id: 1,
         last_reset_at: new Date().toISOString(),
         last_notified_step: 0,
+        last_pure_alert_sent: 0,
       });
 
       return {
@@ -108,30 +115,42 @@ ${summary || 'Nessuna scheda'}`;
       };
     }
 
-    const entries = await getEntriesSince(state.last_reset_at);
-    const total = entries.reduce((sum, row) => sum + Number(row.grams || 0), 0);
-    const currentStep = Math.floor(total / 100);
-    const lastNotifiedStep = Number(state.last_notified_step || 0);
+    // ===== ALERT PURO OGNI 300g =====
+    if (action === 'pure_alert') {
+      const pureGrams = Number(body.pureGrams || 0);
+      const threshold = Number(body.threshold || 0);
 
-    if (currentStep > lastNotifiedStep) {
-      for (let step = lastNotifiedStep + 1; step <= currentStep; step++) {
-        const threshold = step * 100;
-        await sendTelegramMessage(`Burato Gioielli\nTotale ritiri raggiunto: ${threshold} g`);
-      }
+      const message =
+`⚠️ Alert oro puro
+
+Raggiunta soglia: ${formatNumber(threshold)} g puro
+Puro attuale in casa: ${formatNumber(pureGrams)} g`;
+
+      await sendTelegramMessage(message);
 
       await upsertState({
         id: 1,
         last_reset_at: state.last_reset_at,
-        last_notified_step: currentStep,
+        last_notified_step: Number(state.last_notified_step || 0),
+        last_pure_alert_sent: threshold,
       });
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          ok: true,
+          pureGrams,
+          threshold,
+        }),
+      };
     }
 
+    // ===== CHECK GENERICO DISATTIVATO (vecchio alert 100g rimosso) =====
     return {
       statusCode: 200,
       body: JSON.stringify({
         ok: true,
-        total,
-        currentStep,
+        message: 'No generic check action active',
       }),
     };
   } catch (error) {

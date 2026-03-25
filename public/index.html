@@ -861,9 +861,11 @@
               <thead>
                 <tr>
                   <th>Descrizione oggetto</th>
-                  <th>Numero pezzi</th>
-                  <th>Grammi</th>
-                  <th>Azioni</th>
+<th>Caratura</th>
+<th>Numero pezzi</th>
+<th>Grammi</th>
+<th>€</th>
+<th>Azioni</th>
                 </tr>
               </thead>
               <tbody id="formItemsBody"></tbody>
@@ -1182,8 +1184,8 @@
   let currentUser = null;
   let currentStore = null;
   let formItems = [
-    { description: '', quantity: 1, grams: '' }
-  ];
+  { description: '', quantity: 1, grams: '', karat: '18' }
+];
 
   async function getProfile(userId) {
     const { data, error } = await client
@@ -1348,57 +1350,100 @@
   }
 
   function renderFormItems() {
-    els.formItemsBody.innerHTML = formItems.map((item, index) => `
-      <tr>
-        <td>
-          <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
-        </td>
-        <td>
-          <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
-        </td>
-        <td>
-          <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
-        </td>
-        <td>
-          <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
-        </td>
-      </tr>
-    `).join('');
+  els.formItemsBody.innerHTML = formItems.map((item, index) => `
+    <tr>
+      <td>
+        <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
+      </td>
 
-    bindFormItemEvents();
-    recalcFormTotals();
-  }
+      <td>
+        <select data-field="karat" data-index="${index}">
+          <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
+          <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
+          <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
+          <option value="800" ${item.karat === '800' ? 'selected' : ''}>Argento 800</option>
+        </select>
+      </td>
+
+      <td>
+        <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
+      </td>
+
+      <td>
+        <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
+      </td>
+
+      <td>
+        <div>${calcItemValue(item).toFixed(2)} €</div>
+      </td>
+
+      <td>
+        <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
+      </td>
+    </tr>
+  `).join('');
+
+  bindFormItemEvents();
+  recalcFormTotals();
+}
+  
+  function calcItemValue(item) {
+  const grams = Number(item.grams || 0);
+  const karat = item.karat || '18';
+
+  const marketRaw = els.marketPrice.textContent
+    .replace(' €/g', '')
+    .replace(/\./g, '')
+    .replace(',', '.');
+
+  const market = parseFloat(marketRaw);
+  if (isNaN(market)) return 0;
+
+  const net24 = market - 15;
+  const base = net24 / 1000;
+
+  let multiplier = 730;
+  if (karat === '14') multiplier = 565;
+  if (karat === '9') multiplier = 355;
+  if (karat === '800') multiplier = 800;
+
+  const pricePerGram = base * multiplier;
+
+  return grams * pricePerGram;
+}
 
   function bindFormItemEvents() {
-    els.formItemsBody.querySelectorAll('input').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const index = Number(e.target.dataset.index);
-        const field = e.target.dataset.field;
-        formItems[index][field] = e.target.value;
-        recalcFormTotals();
-      });
+  els.formItemsBody.querySelectorAll('input, select').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const index = Number(e.target.dataset.index);
+      const field = e.target.dataset.field;
+      formItems[index][field] = e.target.value;
+      renderFormItems();
     });
+  });
 
-    els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const index = Number(btn.dataset.index);
-        formItems.splice(index, 1);
-        if (!formItems.length) {
-          formItems.push({ description: '', quantity: 1, grams: '' });
-        }
-        renderFormItems();
-      });
+  els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = Number(btn.dataset.index);
+      formItems.splice(index, 1);
+      if (!formItems.length) {
+        formItems.push({ description: '', quantity: 1, grams: '', karat: '18' });
+      }
+      renderFormItems();
     });
-  }
+  });
+}
 
   function recalcFormTotals() {
-    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
-    const quote = Number(els.formQuotePerGram.value || 0);
-    const totalEur = totalGrams * quote;
+  const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
 
-    els.formTotalGrams.textContent = fmt(totalGrams) + ' g';
-    els.formTotalEur.textContent = fmt(totalEur) + ' €';
-  }
+  const totalEur = formItems.reduce((sum, item) => {
+    return sum + calcItemValue(item);
+  }, 0);
+
+  els.formTotalGrams.textContent = fmt(totalGrams) + ' g';
+  els.formTotalEur.textContent = fmt(totalEur) + ' €';
+}
 
   function openGoldForm() {
     els.goldFormArea.classList.toggle('hidden');

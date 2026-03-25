@@ -1201,6 +1201,18 @@
       maximumFractionDigits: d
     }).format(Number(n || 0));
 
+  function formatDateTimeIT(value = new Date()) {
+    return new Date(value).toLocaleString('it-IT', {
+      timeZone: 'Europe/Rome'
+    });
+  }
+
+  function formatDateIT(value = new Date()) {
+    return new Date(value).toLocaleDateString('it-IT', {
+      timeZone: 'Europe/Rome'
+    });
+  }
+
   const escapeHtml = (s) => String(s ?? '')
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
@@ -1260,7 +1272,7 @@
 
     els.marketPrice.textContent = fmt(data.marketPrice) + ' €/g';
     els.buratoPrice.textContent = fmt(data.buratoPrice) + ' €/g';
-    els.lastUpdate.textContent = data.fetchedAtDisplay || new Date().toLocaleString('it-IT');
+    els.lastUpdate.textContent = formatDateTimeIT();
   }
 
   async function loadState() {
@@ -1285,7 +1297,7 @@
     els.sessionsList.innerHTML = sessions.map(s => `
       <div class="session-card">
         <div style="font-weight:800;margin-bottom:12px;font-size:16px;">
-          Fusione chiusa il ${new Date(s.closed_at).toLocaleString('it-IT')}
+          Fusione chiusa il ${formatDateTimeIT(s.closed_at)}
         </div>
 
         <div class="print-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;">
@@ -1310,7 +1322,7 @@
     els.nextAlert.textContent = `Mancano ${fmt(remainingPure)} g al prossimo alert puro (${fmt(nextPureAlertAt, 0)} g)`;
 
     els.resetNote.textContent = lastResetAt
-      ? `Ultimo reset globale: ${new Date(lastResetAt).toLocaleString('it-IT')}`
+      ? `Ultimo reset globale: ${formatDateTimeIT(lastResetAt)}`
       : 'Nessun reset eseguito';
 
     els.formsCount.textContent = `${forms.length} schede`;
@@ -1322,7 +1334,7 @@
 
     els.formsBody.innerHTML = forms.map(form => `
       <tr>
-        <td>${new Date(form.created_at).toLocaleString('it-IT')}</td>
+        <td>${formatDateTimeIT(form.created_at)}</td>
         <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
         <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
         <td>${escapeHtml(form.store || '-')}</td>
@@ -1428,7 +1440,7 @@
       const payload = {
         form: {
           ...form,
-          created_at_display: new Date().toLocaleString('it-IT')
+          created_at_display: formatDateTimeIT()
         },
         items
       };
@@ -1595,7 +1607,7 @@
 
     els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
     els.printStore.textContent = currentStore ? currentStore.store_name : '—';
-    els.printDate.textContent = new Date().toLocaleDateString('it-IT');
+    els.printDate.textContent = formatDateIT();
 
     els.printClientName.textContent = els.formClientName.value.trim() || '—';
     els.printClientSurname.textContent = els.formClientSurname.value.trim() || '—';
@@ -1630,7 +1642,7 @@
   function fillPrintSheetFromSaved(form, items) {
     els.printSchedaNumber.textContent = form.scheda_number || '—';
     els.printStore.textContent = form.store || '—';
-    els.printDate.textContent = form.created_at ? new Date(form.created_at).toLocaleDateString('it-IT') : '—';
+    els.printDate.textContent = form.created_at ? formatDateIT(form.created_at) : '—';
 
     els.printClientName.textContent = form.client_name || '—';
     els.printClientSurname.textContent = form.client_surname || '—';
@@ -1913,7 +1925,7 @@
       if (updateStateError) throw updateStateError;
 
       await triggerTelegram('reset', {
-        closedAt: new Date().toLocaleString('it-IT'),
+        closedAt: formatDateTimeIT(),
         totalGrams: Number(totalGrams.toFixed(2)),
         totalPureGrams: Number(totalPureGrams.toFixed(2)),
         foundryPrice: Number(foundryPrice.toFixed(2)),

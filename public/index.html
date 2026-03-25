@@ -1112,11 +1112,10 @@ input:focus,select:focus{
         <table class="print-table">
           <thead>
             <tr>
-              <th style="width:40%;">Descrizione</th>
-<th style="width:14%; text-align:center;">Caratura</th>
+              <th style="width:52%;">Descrizione</th>
+<th style="width:16%; text-align:center;">Caratura</th>
 <th style="width:12%; text-align:center;">Pezzi</th>
 <th style="width:20%; text-align:right;">Grammi</th>
-<th style="width:14%; text-align:right;">€</th>
             </tr>
           </thead>
           <tbody id="printItemsBody">
@@ -1615,7 +1614,6 @@ input:focus,select:focus{
     <td style="text-align:center;">${item.karat || '18'} kt</td>
     <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
     <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
-    <td style="text-align:right;">${fmt(calcItemValue(item))} €</td>
   </tr>
 `).join('');
     }
@@ -1643,16 +1641,17 @@ input:focus,select:focus{
     els.printDocumentExpiry.textContent = form.document_expiry || '—';
 
     if (!items.length) {
-      els.printItemsBody.innerHTML = '<tr><td colspan="3">Nessun oggetto</td></tr>';
-    } else {
-      els.printItemsBody.innerHTML = items.map(item => `
-        <tr>
-          <td>${escapeHtml(item.description || '-')}</td>
-          <td>${escapeHtml(item.quantity || 1)}</td>
-          <td>${fmt(item.grams || 0)} g</td>
-        </tr>
-      `).join('');
-    }
+  els.printItemsBody.innerHTML = '<tr><td colspan="4">Nessun oggetto</td></tr>';
+} else {
+  els.printItemsBody.innerHTML = items.map(item => `
+    <tr>
+      <td>${escapeHtml(item.description || '-')}</td>
+      <td style="text-align:center;">${item.karat || '18'} kt</td>
+      <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
+      <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
+    </tr>
+  `).join('');
+}
 
     els.printTotalGrams.textContent = fmt(form.total_grams || 0) + ' g';
     els.printTotalEur.textContent = fmt(form.total_eur || 0) + ' €';

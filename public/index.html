@@ -1417,10 +1417,30 @@
     input.addEventListener('input', (e) => {
       const index = Number(e.target.dataset.index);
       const field = e.target.dataset.field;
+
       formItems[index][field] = e.target.value;
-      renderFormItems();
+
+      // SOLO aggiorna totali, NON rifare il render
+      recalcFormTotals();
+
+      // aggiorna solo il valore € della riga
+      updateRowValue(index);
     });
   });
+
+  els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = Number(btn.dataset.index);
+      formItems.splice(index, 1);
+
+      if (!formItems.length) {
+        formItems.push({ description: '', quantity: 1, grams: '', karat: '18' });
+      }
+
+      renderFormItems(); // qui va bene
+    });
+  });
+}
 
   els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1568,6 +1588,16 @@
       alert('Errore ristampa scheda');
     }
   }
+  
+  function updateRowValue(index) {
+  const row = els.formItemsBody.querySelectorAll('tr')[index];
+  if (!row) return;
+
+  const valueCell = row.children[4]; // colonna €
+  const value = calcItemValue(formItems[index]);
+
+  valueCell.innerHTML = value.toFixed(2) + ' €';
+}
 
   function getFormTotals() {
     const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);

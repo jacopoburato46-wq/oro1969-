@@ -1389,17 +1389,24 @@
   
   function calcItemValue(item) {
   const grams = Number(item.grams || 0);
-
-  // 👉 se esiste quotazione manuale → usa quella
-  const manualQuote = Number(els.formQuotePerGram.value || 0);
-
-  if (manualQuote > 0) {
-    return grams * manualQuote;
-  }
-
-  // 👉 altrimenti usa calcolo automatico
   const karat = item.karat || '18';
 
+  const quote18 = Number(els.formQuotePerGram.value || 0);
+
+  if (quote18 > 0) {
+    // 🔥 CALCOLO DERIVATO DALLA QUOTAZIONE 18KT
+    let multiplier = 1;
+
+    if (karat === '14') multiplier = 565 / 730;
+    if (karat === '9') multiplier = 355 / 730;
+    if (karat === '800') multiplier = 800 / 1000;
+
+    const pricePerGram = quote18 * multiplier;
+
+    return grams * pricePerGram;
+  }
+
+  // fallback (solo se non c'è quotazione)
   const marketRaw = els.marketPrice.textContent
     .replace(' €/g', '')
     .replace(/\./g, '')
@@ -1416,9 +1423,7 @@
   if (karat === '9') multiplier = 355;
   if (karat === '800') multiplier = 800;
 
-  const pricePerGram = base * multiplier;
-
-  return grams * pricePerGram;
+  return grams * (base * multiplier);
 }
 
   function bindFormItemEvents() {
@@ -1596,19 +1601,18 @@
   function getFormTotals() {
   const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
 
-  const manualQuote = Number(els.formQuotePerGram.value || 0);
-
   let totalEur = 0;
 
   formItems.forEach(item => {
-    const grams = Number(item.grams || 0);
-
-    if (manualQuote > 0) {
-      totalEur += grams * manualQuote;
-    } else {
-      totalEur += calcItemValue(item);
-    }
+    totalEur += calcItemValue(item);
   });
+
+  return {
+    totalGrams: Number(totalGrams.toFixed(2)),
+    quotePerGram: Number(els.formQuotePerGram.value || 0),
+    totalEur: Number(totalEur.toFixed(2))
+  };
+}
 
   return {
     totalGrams: Number(totalGrams.toFixed(2)),

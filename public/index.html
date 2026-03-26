@@ -675,6 +675,25 @@
       text-align:center;
     }
 
+    .print-declarations{
+  margin-top:14px;
+  padding:12px 14px;
+  border:1px solid #e8e1d5;
+  border-radius:10px;
+  background:#fcfaf6;
+}
+
+.print-declaration-text{
+  font-size:10.5px;
+  line-height:1.45;
+  color:#333;
+  margin-bottom:8px;
+}
+
+.print-declaration-text:last-child{
+  margin-bottom:0;
+}
+
     ::-webkit-scrollbar{
       width:8px;
       height:8px;
@@ -1083,7 +1102,19 @@
         <div class="print-section-title">Note</div>
         <div id="printNotes" class="print-row" style="min-height:40px;">—</div>
       </div>
+      
+<div class="print-section print-declarations">
+  <div class="print-section-title">Dichiarazioni cliente</div>
 
+  <div class="print-declaration-text">
+    Il sottoscritto dichiara di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.
+  </div>
+
+  <div class="print-declaration-text">
+    Il sottoscritto dichiara inoltre, sotto la propria responsabilità, che gli oggetti consegnati / ceduti sono di sua piena ed esclusiva proprietà, nella sua libera disponibilità e di lecita provenienza, e che non derivano da furto, ricettazione o altra provenienza illecita.
+  </div>
+</div>
+      
       <div class="print-signatures">
         <div class="print-sign-box">Firma cliente</div>
         <div class="print-sign-box">Firma operatore</div>
@@ -1516,12 +1547,16 @@ function updateFormMode() {
   async function sendFormEmailArchive(form, items) {
     try {
       const payload = {
-        form: {
-          ...form,
-          created_at_display: formatDateTimeIT()
-        },
-        items
-      };
+  form: {
+    ...form,
+    created_at_display: formatDateTimeIT()
+  },
+  items,
+  declarations: {
+    privacy: 'Il sottoscritto dichiara di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.',
+    ownership: 'Il sottoscritto dichiara inoltre, sotto la propria responsabilità, che gli oggetti consegnati / ceduti sono di sua piena ed esclusiva proprietà, nella sua libera disponibilità e di lecita provenienza, e che non derivano da furto, ricettazione o altra provenienza illecita.'
+  }
+};
 
       const response = await fetch('/.netlify/functions/send-form-email', {
         method: 'POST',

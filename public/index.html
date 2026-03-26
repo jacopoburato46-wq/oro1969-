@@ -806,9 +806,9 @@
       <section class="card section">
         <div class="head">
           <div>
-            <div class="small-label" style="margin-bottom:6px;">Operatività</div>
-            <h2>Nuova scheda rientro oro</h2>
-          </div>
+  <div class="small-label" style="margin-bottom:6px;">Operatività</div>
+  <h2 id="formSectionTitle">Nuova scheda rientro oro</h2>
+</div>
           <button id="toggleFormBtn" class="secondary" type="button">Apri scheda</button>
         </div>
 
@@ -820,14 +820,22 @@
             </label>
 
             <label>
-              <span>Negozio</span>
-              <input id="formStore" type="text" disabled />
-            </label>
+  <span>Negozio</span>
+  <input id="formStore" type="text" disabled />
+</label>
 
-            <label>
-              <span>Nome cliente</span>
-              <input id="formClientName" type="text" required />
-            </label>
+<label>
+  <span>Tipo scheda</span>
+  <select id="formMaterialType">
+    <option value="gold">Oro</option>
+    <option value="silver800">Argento 800</option>
+  </select>
+</label>
+
+<label>
+  <span>Nome cliente</span>
+  <input id="formClientName" type="text" required />
+</label>
 
             <label>
               <span>Cognome cliente</span>
@@ -875,9 +883,9 @@
             </label>
 
             <label>
-              <span>Quotazione €/g</span>
-              <input id="formQuotePerGram" type="number" step="0.01" />
-            </label>
+  <span id="formQuoteLabel">Quotazione €/g (18kt)</span>
+  <input id="formQuotePerGram" type="number" step="0.01" />
+</label>
 
             <label class="full">
               <span>Note</span>
@@ -1010,7 +1018,7 @@
       <div class="print-header">
         <div>
           <div class="print-brand">Burato Gioielli</div>
-          <div class="print-sub">Scheda rientro oro</div>
+<div id="printSheetSub" class="print-sub">Scheda rientro oro</div>
         </div>
         <div class="print-meta">
           <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
@@ -1122,7 +1130,10 @@
     goldForm: document.getElementById('goldForm'),
     formSchedaNumber: document.getElementById('formSchedaNumber'),
     formStore: document.getElementById('formStore'),
-    formClientName: document.getElementById('formClientName'),
+formMaterialType: document.getElementById('formMaterialType'),
+formSectionTitle: document.getElementById('formSectionTitle'),
+formQuoteLabel: document.getElementById('formQuoteLabel'),
+formClientName: document.getElementById('formClientName'),
     formClientSurname: document.getElementById('formClientSurname'),
     formClientCf: document.getElementById('formClientCf'),
     formClientPhone: document.getElementById('formClientPhone'),
@@ -1147,8 +1158,9 @@
 
     printSheet: document.getElementById('printSheet'),
     printSchedaNumber: document.getElementById('printSchedaNumber'),
-    printStore: document.getElementById('printStore'),
-    printDate: document.getElementById('printDate'),
+printStore: document.getElementById('printStore'),
+printDate: document.getElementById('printDate'),
+printSheetSub: document.getElementById('printSheetSub'),
     printClientName: document.getElementById('printClientName'),
     printClientSurname: document.getElementById('printClientSurname'),
     printClientCf: document.getElementById('printClientCf'),
@@ -1188,12 +1200,63 @@
   }
 
   function getPureFactor(karat) {
-    if (karat === '18') return 730 / 1000;
-    if (karat === '14') return 565 / 1000;
-    if (karat === '9') return 355 / 1000;
-    if (karat === '800') return 800 / 1000;
-    return 730 / 1000;
+  if (karat === '18') return 730 / 1000;
+  if (karat === '14') return 565 / 1000;
+  if (karat === '9') return 355 / 1000;
+  if (karat === '800') return 800 / 1000;
+  return 730 / 1000;
+}
+
+function getCurrentMaterialType() {
+  return els.formMaterialType?.value || 'gold';
+}
+
+function isSilverOnlyItems(items = []) {
+  return items.length > 0 && items.every(item => String(item.karat || '') === '800');
+}
+
+function updateFormMode() {
+  const materialType = getCurrentMaterialType();
+  const isSilver = materialType === 'silver800';
+
+  if (els.formSectionTitle) {
+    els.formSectionTitle.textContent = isSilver
+      ? 'Nuova scheda rientro argento 800'
+      : 'Nuova scheda rientro oro';
   }
+
+  if (els.formQuoteLabel) {
+    els.formQuoteLabel.textContent = isSilver
+      ? 'Quotazione €/g argento 800'
+      : 'Quotazione €/g (18kt)';
+  }
+
+  if (isSilver) {
+    els.formQuotePerGram.value = '';
+  } else if (
+    els.buratoPrice.textContent &&
+    els.buratoPrice.textContent !== '—' &&
+    !els.formQuotePerGram.value
+  ) {
+    const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
+    const numeric = parseFloat(raw);
+    if (!Number.isNaN(numeric) && numeric > 0) {
+      els.formQuotePerGram.value = numeric.toFixed(2);
+    }
+  }
+
+  formItems = formItems.map(item => {
+    if (isSilver) {
+      return { ...item, karat: '800' };
+    }
+    if (item.karat === '800') {
+      return { ...item, karat: '18' };
+    }
+    return item;
+  });
+
+  renderFormItems();
+}
 
   const fmt = (n, d = 2) =>
     new Intl.NumberFormat('it-IT', {
@@ -1361,67 +1424,82 @@
   }
 
   async function loadOperationalData() {
-    const [
-      state,
-      sessionsRes,
-      formsRes
-    ] = await Promise.all([
-      loadState(),
-      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
-      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
-    ]);
+  const [
+    state,
+    sessionsRes,
+    formsRes
+  ] = await Promise.all([
+    loadState(),
+    client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
+    client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
+  ]);
 
-    if (sessionsRes.error) throw sessionsRes.error;
-    if (formsRes.error) throw formsRes.error;
+  if (sessionsRes.error) throw sessionsRes.error;
+  if (formsRes.error) throw formsRes.error;
 
-    const forms = formsRes.data || [];
-    const lastResetAt = state?.last_reset_at || null;
+  const forms = formsRes.data || [];
+  const lastResetAt = state?.last_reset_at || null;
 
-    const visibleForms = lastResetAt
-      ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
-      : forms.slice();
+  const visibleForms = lastResetAt
+    ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
+    : forms.slice();
 
-    let pureGramsActive = 0;
+  let pureGramsActive = 0;
+  let goldOnlyForms = visibleForms;
 
-    if (visibleForms.length) {
-      const formIds = visibleForms.map(f => f.id);
+  if (visibleForms.length) {
+    const formIds = visibleForms.map(f => f.id);
 
-      const { data: itemsRes, error: itemsError } = await client
-        .from('gold_form_items')
-        .select('*')
-        .in('form_id', formIds);
+    const { data: itemsRes, error: itemsError } = await client
+      .from('gold_form_items')
+      .select('*')
+      .in('form_id', formIds);
 
-      if (itemsError) throw itemsError;
+    if (itemsError) throw itemsError;
 
-      pureGramsActive = (itemsRes || []).reduce((sum, item) => {
-        const grams = Number(item.grams || 0);
-        const factor = getPureFactor(item.karat || '18');
-        return sum + (grams * factor);
-      }, 0);
-    }
+    const itemsByFormId = {};
+    (itemsRes || []).forEach(item => {
+      if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
+      itemsByFormId[item.form_id].push(item);
+    });
 
-    const currentPureThreshold = Math.floor(pureGramsActive / PURE_ALERT_STEP) * PURE_ALERT_STEP;
-    const lastPureAlertSent = Number(state?.last_pure_alert_sent || 0);
+    goldOnlyForms = visibleForms.filter(form => {
+      const items = itemsByFormId[form.id] || [];
+      return !isSilverOnlyItems(items);
+    });
 
-    if (currentPureThreshold >= PURE_ALERT_STEP && currentPureThreshold > lastPureAlertSent) {
-      await triggerTelegram('pure_alert', {
-        pureGrams: Number(pureGramsActive.toFixed(2)),
-        threshold: Number(currentPureThreshold.toFixed(2))
-      });
+    const goldFormIds = new Set(goldOnlyForms.map(f => f.id));
 
-      const { error: alertStateError } = await client
-        .from('gold_state')
-        .update({
-          last_pure_alert_sent: currentPureThreshold
-        })
-        .eq('id', 1);
-
-      if (alertStateError) throw alertStateError;
-    }
-
-    renderSessions(sessionsRes.data || []);
-    renderForms(forms, lastResetAt, pureGramsActive);
+    pureGramsActive = (itemsRes || []).reduce((sum, item) => {
+      if (!goldFormIds.has(item.form_id)) return sum;
+      const grams = Number(item.grams || 0);
+      const factor = getPureFactor(item.karat || '18');
+      return sum + (grams * factor);
+    }, 0);
   }
+
+  const currentPureThreshold = Math.floor(pureGramsActive / PURE_ALERT_STEP) * PURE_ALERT_STEP;
+  const lastPureAlertSent = Number(state?.last_pure_alert_sent || 0);
+
+  if (currentPureThreshold >= PURE_ALERT_STEP && currentPureThreshold > lastPureAlertSent) {
+    await triggerTelegram('pure_alert', {
+      pureGrams: Number(pureGramsActive.toFixed(2)),
+      threshold: Number(currentPureThreshold.toFixed(2))
+    });
+
+    const { error: alertStateError } = await client
+      .from('gold_state')
+      .update({
+        last_pure_alert_sent: currentPureThreshold
+      })
+      .eq('id', 1);
+
+    if (alertStateError) throw alertStateError;
+  }
+
+  renderSessions(sessionsRes.data || []);
+  renderForms(forms, lastResetAt, pureGramsActive);
+}
 
   async function triggerTelegram(action, payload = {}) {
     try {
@@ -1466,78 +1544,86 @@
   }
 
   function renderFormItems() {
-    els.formItemsBody.innerHTML = formItems.map((item, index) => `
-      <tr>
-        <td>
-          <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
-        </td>
+  const isSilver = getCurrentMaterialType() === 'silver800';
 
-        <td>
-          <select data-field="karat" data-index="${index}">
-            <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
-            <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
-            <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
-            <option value="800" ${item.karat === '800' ? 'selected' : ''}>Argento 800</option>
-          </select>
-        </td>
+  els.formItemsBody.innerHTML = formItems.map((item, index) => `
+    <tr>
+      <td>
+        <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
+      </td>
 
-        <td>
-          <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
-        </td>
+      <td>
+        ${
+          isSilver
+            ? `<input type="text" value="Argento 800" disabled />`
+            : `
+              <select data-field="karat" data-index="${index}">
+                <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
+                <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
+                <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
+              </select>
+            `
+        }
+      </td>
 
-        <td>
-          <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
-        </td>
+      <td>
+        <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
+      </td>
 
-        <td>
-          <div>${calcItemValue(item).toFixed(2)} €</div>
-        </td>
+      <td>
+        <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
+      </td>
 
-        <td>
-          <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
-        </td>
-      </tr>
-    `).join('');
+      <td>
+        <div>${fmt(calcItemValue(item))} €</div>
+      </td>
 
-    bindFormItemEvents();
-    recalcFormTotals();
-  }
+      <td>
+        <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
+      </td>
+    </tr>
+  `).join('');
+
+  bindFormItemEvents();
+  recalcFormTotals();
+}
 
   function calcItemValue(item) {
-    const grams = Number(item.grams || 0);
-    const karat = item.karat || '18';
+  const grams = Number(item.grams || 0);
+  const karat = item.karat || '18';
+  const materialType = getCurrentMaterialType();
+  const quote = Number(els.formQuotePerGram.value || 0);
 
-    const quote18 = Number(els.formQuotePerGram.value || 0);
-
-    if (quote18 > 0) {
-      let multiplier = 1;
-
-      if (karat === '14') multiplier = 565 / 730;
-      if (karat === '9') multiplier = 355 / 730;
-      if (karat === '800') multiplier = 800 / 1000;
-
-      const pricePerGram = quote18 * multiplier;
-      return grams * pricePerGram;
-    }
-
-    const marketRaw = els.marketPrice.textContent
-      .replace(' €/g', '')
-      .replace(/\./g, '')
-      .replace(',', '.');
-
-    const market = parseFloat(marketRaw);
-    if (isNaN(market)) return 0;
-
-    const net24 = market - 15;
-    const base = net24 / 1000;
-
-    let multiplier = 730;
-    if (karat === '14') multiplier = 565;
-    if (karat === '9') multiplier = 355;
-    if (karat === '800') multiplier = 800;
-
-    return grams * (base * multiplier);
+  if (materialType === 'silver800') {
+    return grams * quote;
   }
+
+  if (quote > 0) {
+    let multiplier = 1;
+    if (karat === '14') multiplier = 565 / 730;
+    if (karat === '9') multiplier = 355 / 730;
+
+    const pricePerGram = quote * multiplier;
+    return grams * pricePerGram;
+  }
+
+  const marketRaw = els.marketPrice.textContent
+    .replace(' €/g', '')
+    .replace(/\./g, '')
+    .replace(',', '.');
+
+  const market = parseFloat(marketRaw);
+  if (isNaN(market)) return 0;
+
+  const net24 = market - 15;
+  const base = net24 / 1000;
+
+  let multiplier = 730;
+  if (karat === '14') multiplier = 565;
+  if (karat === '9') multiplier = 355;
+
+  return grams * (base * multiplier);
+}
 
   function bindFormItemEvents() {
     els.formItemsBody.querySelectorAll('input, select').forEach(input => {
@@ -1582,21 +1668,24 @@
   }
 
   function resetGoldForm(statusText = 'Non salvata') {
-    els.goldForm.reset();
-    els.formStore.value = currentStore ? currentStore.store_name : '';
-    formItems = [{ description: '', quantity: 1, grams: '', karat: '18' }];
-    els.formSaveStatus.textContent = statusText;
-
-    if (els.buratoPrice.textContent && els.buratoPrice.textContent !== '—') {
-      const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
-      const numeric = parseFloat(raw);
-      if (!Number.isNaN(numeric) && numeric > 0) {
-        els.formQuotePerGram.value = numeric.toFixed(2);
-      }
-    }
-
-    renderFormItems();
+  els.goldForm.reset();
+  els.formStore.value = currentStore ? currentStore.store_name : '';
+  if (els.formMaterialType) {
+    els.formMaterialType.value = 'gold';
   }
+  formItems = [{ description: '', quantity: 1, grams: '', karat: '18' }];
+  els.formSaveStatus.textContent = statusText;
+
+  if (els.buratoPrice.textContent && els.buratoPrice.textContent !== '—') {
+    const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
+    const numeric = parseFloat(raw);
+    if (!Number.isNaN(numeric) && numeric > 0) {
+      els.formQuotePerGram.value = numeric.toFixed(2);
+    }
+  }
+
+  updateFormMode();
+}
 
   function fillPrintSheet() {
     const { totalGrams, totalEur } = getFormTotals();
@@ -1605,9 +1694,12 @@
       String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0
     );
 
-    els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
-    els.printStore.textContent = currentStore ? currentStore.store_name : '—';
-    els.printDate.textContent = formatDateIT();
+    const isSilver = getCurrentMaterialType() === 'silver800';
+
+els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
+els.printStore.textContent = currentStore ? currentStore.store_name : '—';
+els.printDate.textContent = formatDateIT();
+els.printSheetSub.textContent = isSilver ? 'Scheda rientro argento 800' : 'Scheda rientro oro';
 
     els.printClientName.textContent = els.formClientName.value.trim() || '—';
     els.printClientSurname.textContent = els.formClientSurname.value.trim() || '—';
@@ -1640,9 +1732,12 @@
   }
 
   function fillPrintSheetFromSaved(form, items) {
-    els.printSchedaNumber.textContent = form.scheda_number || '—';
-    els.printStore.textContent = form.store || '—';
-    els.printDate.textContent = form.created_at ? formatDateIT(form.created_at) : '—';
+    const isSilver = isSilverOnlyItems(items || []);
+
+els.printSchedaNumber.textContent = form.scheda_number || '—';
+els.printStore.textContent = form.store || '—';
+els.printDate.textContent = form.created_at ? formatDateIT(form.created_at) : '—';
+els.printSheetSub.textContent = isSilver ? 'Scheda rientro argento 800' : 'Scheda rientro oro';
 
     els.printClientName.textContent = form.client_name || '—';
     els.printClientSurname.textContent = form.client_surname || '—';
@@ -1759,8 +1854,8 @@
     }
 
     els.formStore.value = profile.store_name;
-    resetGoldForm();
-    renderFormItems();
+resetGoldForm();
+updateFormMode();
   }
 
   async function loadAll() {
@@ -1851,22 +1946,36 @@
         ? allEntries.filter(e => new Date(e.created_at).getTime() > new Date(state.last_reset_at).getTime())
         : allEntries;
 
-      const formsInPeriod = state?.last_reset_at
-        ? allForms.filter(f => new Date(f.created_at).getTime() > new Date(state.last_reset_at).getTime())
-        : allForms;
+      const formsInPeriodRaw = state?.last_reset_at
+  ? allForms.filter(f => new Date(f.created_at).getTime() > new Date(state.last_reset_at).getTime())
+  : allForms;
 
-      const formIdsInPeriod = formsInPeriod.map(f => f.id);
+const formIdsInPeriod = formsInPeriodRaw.map(f => f.id);
 
-      let itemsInPeriod = [];
-      if (formIdsInPeriod.length) {
-        const { data: allItems, error: itemsError } = await client
-          .from('gold_form_items')
-          .select('*')
-          .in('form_id', formIdsInPeriod);
+let itemsInPeriod = [];
+if (formIdsInPeriod.length) {
+  const { data: allItems, error: itemsError } = await client
+    .from('gold_form_items')
+    .select('*')
+    .in('form_id', formIdsInPeriod);
 
-        if (itemsError) throw itemsError;
-        itemsInPeriod = allItems || [];
-      }
+  if (itemsError) throw itemsError;
+  itemsInPeriod = allItems || [];
+}
+
+const itemsByFormId = {};
+itemsInPeriod.forEach(item => {
+  if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
+  itemsByFormId[item.form_id].push(item);
+});
+
+const formsInPeriod = formsInPeriodRaw.filter(form => {
+  const items = itemsByFormId[form.id] || [];
+  return !isSilverOnlyItems(items);
+});
+
+const goldFormIds = new Set(formsInPeriod.map(f => f.id));
+itemsInPeriod = itemsInPeriod.filter(item => goldFormIds.has(item.form_id));
 
       const totalGrams = entries.reduce((sum, e) => sum + Number(e.grams || 0), 0);
       const totalPaidToClients = formsInPeriod.reduce((sum, f) => sum + Number(f.total_eur || 0), 0);
@@ -1974,14 +2083,23 @@
   els.toggleFormBtn.addEventListener('click', openGoldForm);
 
   els.addItemRowBtn.addEventListener('click', () => {
-    formItems.push({ description: '', quantity: 1, grams: '', karat: '18' });
-    renderFormItems();
+  formItems.push({
+    description: '',
+    quantity: 1,
+    grams: '',
+    karat: getCurrentMaterialType() === 'silver800' ? '800' : '18'
   });
+  renderFormItems();
+});
 
-  els.formQuotePerGram.addEventListener('input', () => {
-    recalcFormTotals();
-    renderFormItems();
-  });
+if (els.formMaterialType) {
+  els.formMaterialType.addEventListener('change', updateFormMode);
+}
+
+els.formQuotePerGram.addEventListener('input', () => {
+  recalcFormTotals();
+  renderFormItems();
+});
 
   els.saveFormBtn.addEventListener('click', async () => {
     if (!currentStore || !currentUser) return;
@@ -2083,18 +2201,20 @@
 
       const archiveEmailSent = await sendFormEmailArchive(insertedForm, itemsPayload);
 
-      const { error: entryError } = await client
-        .from('gold_entries')
-        .insert([{
-          store: currentStore.store_name,
-          client_name: clientName,
-          scheda_number: schedaNumber,
-          grams: totalGrams
-        }]);
+if (getCurrentMaterialType() === 'gold') {
+  const { error: entryError } = await client
+    .from('gold_entries')
+    .insert([{
+      store: currentStore.store_name,
+      client_name: clientName,
+      scheda_number: schedaNumber,
+      grams: totalGrams
+    }]);
 
-      if (entryError) throw entryError;
+  if (entryError) throw entryError;
+}
 
-      await loadOperationalData();
+await loadOperationalData();
 
       if (archiveEmailSent) {
         resetGoldForm(`Scheda salvata correttamente (#${schedaNumber}) · Mail archivio inviata`);

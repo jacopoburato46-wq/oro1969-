@@ -18,6 +18,29 @@ function formatNumber(value) {
   }).format(Number(value || 0));
 }
 
+function isSilverOnlyItems(items = []) {
+  return items.length > 0 && items.every(item => String(item.karat || '') === '800');
+}
+
+function getSheetLabel(items = []) {
+  return isSilverOnlyItems(items) ? 'Scheda rientro argento 800' : 'Scheda rientro oro';
+}
+
+function getAttachmentFileName(form = {}, items = []) {
+  const base = isSilverOnlyItems(items) ? 'scheda-rientro-argento-800' : 'scheda-rientro-oro';
+  return `${base}-${form.scheda_number || 'senza-numero'}.html`;
+}
+
+function getEmailSubject(form = {}, items = []) {
+  const base = isSilverOnlyItems(items) ? 'Scheda rientro argento 800' : 'Scheda rientro oro';
+  return `${base} #${form.scheda_number || 'Senza numero'} - ${form.store || 'Negozio'}`;
+}
+
+function getEmailText(form = {}, items = []) {
+  const base = isSilverOnlyItems(items) ? 'scheda rientro argento 800' : 'scheda rientro oro';
+  return `In allegato trovi la ${base} scaricabile #${form.scheda_number || 'Senza numero'}.`;
+}
+
 function buildItemsRows(items = []) {
   if (!items.length) {
     return `
@@ -35,7 +58,7 @@ function buildItemsRows(items = []) {
         ${escapeHtml(item.description || '-')}
       </td>
       <td style="padding:6px 8px;border:1px solid #e8e1d5;text-align:center;">
-        ${escapeHtml(item.karat || '18')} kt
+        ${String(item.karat || '18') === '800' ? '800' : `${escapeHtml(item.karat || '18')} kt`}
       </td>
       <td style="padding:6px 8px;border:1px solid #e8e1d5;text-align:center;">
         ${escapeHtml(item.quantity || 1)}
@@ -49,12 +72,13 @@ function buildItemsRows(items = []) {
 
 function buildPrintableHtml(form = {}, items = []) {
   const itemsRows = buildItemsRows(items);
+  const sheetLabel = getSheetLabel(items);
 
   return `<!doctype html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Scheda rientro oro</title>
+  <title>${sheetLabel}</title>
   <style>
     * { box-sizing: border-box; }
     html, body {
@@ -188,6 +212,25 @@ function buildPrintableHtml(form = {}, items = []) {
       line-height: 1.05;
     }
 
+    .print-declarations {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid #e8e1d5;
+      border-radius: 10px;
+      background: #fcfaf6;
+    }
+
+    .print-declaration-text {
+      font-size: 10.5px;
+      line-height: 1.45;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .print-declaration-text:last-child {
+      margin-bottom: 0;
+    }
+
     .print-signatures {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -214,7 +257,7 @@ function buildPrintableHtml(form = {}, items = []) {
     <div class="print-header">
       <div>
         <div class="print-brand">Burato Gioielli</div>
-        <div class="print-sub">Scheda rientro oro</div>
+        <div class="print-sub">${sheetLabel}</div>
       </div>
       <div class="print-meta">
         <div><strong>N° scheda:</strong> ${escapeHtml(form.scheda_number || '—')}</div>
@@ -251,9 +294,9 @@ function buildPrintableHtml(form = {}, items = []) {
         <thead>
           <tr>
             <th style="width:50%;">Descrizione</th>
-<th style="width:15%; text-align:center;">Caratura</th>
-<th style="width:15%; text-align:center;">Pezzi</th>
-<th style="width:20%; text-align:right;">Grammi</th>
+            <th style="width:15%; text-align:center;">Caratura</th>
+            <th style="width:15%; text-align:center;">Pezzi</th>
+            <th style="width:20%; text-align:right;">Grammi</th>
           </tr>
         </thead>
         <tbody>
@@ -276,6 +319,18 @@ function buildPrintableHtml(form = {}, items = []) {
     <div class="print-section" style="margin-top:10px;">
       <div class="print-section-title">Note</div>
       <div class="print-row" style="min-height:40px;">${escapeHtml(form.notes || '—')}</div>
+    </div>
+
+    <div class="print-section print-declarations">
+      <div class="print-section-title">Dichiarazioni cliente</div>
+
+      <div class="print-declaration-text">
+        Il sottoscritto dichiara di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.
+      </div>
+
+      <div class="print-declaration-text">
+        Il sottoscritto dichiara inoltre, sotto la propria responsabilità, che gli oggetti consegnati / ceduti sono di sua piena ed esclusiva proprietà, nella sua libera disponibilità e di lecita provenienza, e che non derivano da furto, ricettazione o altra provenienza illecita.
+      </div>
     </div>
 
     <div class="print-signatures">
@@ -318,11 +373,11 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         from: ARCHIVE_EMAIL_FROM,
         to: [ARCHIVE_EMAIL_TO],
-        subject: `Scheda rientro oro #${form.scheda_number || 'Senza numero'} - ${form.store || 'Negozio'}`,
-        text: `In allegato trovi la scheda rientro oro scaricabile #${form.scheda_number || 'Senza numero'}.`,
+        subject: getEmailSubject(form, items),
+        text: getEmailText(form, items),
         attachments: [
           {
-            filename: `scheda-rientro-oro-${form.scheda_number || 'senza-numero'}.html`,
+            filename: getAttachmentFileName(form, items),
             content: attachmentBase64
           }
         ]

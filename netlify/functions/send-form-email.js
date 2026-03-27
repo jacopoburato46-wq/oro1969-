@@ -23,7 +23,9 @@ function isSilverOnlyItems(items = []) {
 }
 
 function getSheetLabel(items = []) {
-  return isSilverOnlyItems(items) ? 'Scheda rientro argento 800' : 'Scheda rientro oro';
+  return isSilverOnlyItems(items)
+    ? 'Scheda operazione rientro argento 800'
+    : 'Scheda operazione compro oro (Art. 5 D.Lgs. 92/2017)';
 }
 
 function getAttachmentFileName(form = {}, items = []) {
@@ -32,12 +34,16 @@ function getAttachmentFileName(form = {}, items = []) {
 }
 
 function getEmailSubject(form = {}, items = []) {
-  const base = isSilverOnlyItems(items) ? 'Scheda rientro argento 800' : 'Scheda rientro oro';
+  const base = isSilverOnlyItems(items)
+    ? 'Scheda rientro argento 800'
+    : 'Scheda operazione compro oro';
   return `${base} #${form.scheda_number || 'Senza numero'} - ${form.store || 'Negozio'}`;
 }
 
 function getEmailText(form = {}, items = []) {
-  const base = isSilverOnlyItems(items) ? 'scheda rientro argento 800' : 'scheda rientro oro';
+  const base = isSilverOnlyItems(items)
+    ? 'scheda rientro argento 800'
+    : 'scheda operazione compro oro';
   return `In allegato trovi la ${base} scaricabile #${form.scheda_number || 'Senza numero'}.`;
 }
 
@@ -255,16 +261,21 @@ function buildPrintableHtml(form = {}, items = []) {
 <body>
   <section class="print-sheet">
     <div class="print-header">
-      <div>
-        <div class="print-brand">Burato Gioielli</div>
-        <div class="print-sub">${sheetLabel}</div>
-      </div>
-      <div class="print-meta">
-        <div><strong>N° scheda:</strong> ${escapeHtml(form.scheda_number || '—')}</div>
-        <div><strong>Negozio:</strong> ${escapeHtml(form.store || '—')}</div>
-        <div><strong>Data:</strong> ${escapeHtml(form.created_at_display || '—')}</div>
-      </div>
+  <div>
+    <div class="print-brand">BURATO GIOIELLI S.P.A.</div>
+    <div class="print-sub">
+      Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278
     </div>
+    <div class="print-sub" style="margin-top:6px;">
+      ${sheetLabel}
+    </div>
+  </div>
+  <div class="print-meta">
+    <div><strong>N° scheda:</strong> ${escapeHtml(form.scheda_number || '—')}</div>
+    <div><strong>Negozio:</strong> ${escapeHtml(form.store || '—')}</div>
+    <div><strong>Data:</strong> ${escapeHtml(form.created_at_display || '—')}</div>
+  </div>
+</div>
 
     <div class="print-section">
       <div class="print-section-title">Dati cliente</div>
@@ -322,21 +333,25 @@ function buildPrintableHtml(form = {}, items = []) {
     </div>
 
     <div class="print-section print-declarations">
-      <div class="print-section-title">Dichiarazioni cliente</div>
+  <div class="print-section-title">Dichiarazioni cliente</div>
 
-      <div class="print-declaration-text">
-        Il sottoscritto dichiara di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.
-      </div>
+  <div class="print-declaration-text">
+    Il sottoscritto dichiara di operare in qualità di soggetto privato e che gli oggetti ceduti sono usati, di sua piena ed esclusiva proprietà, nella sua libera disponibilità giuridica e di lecita provenienza, non derivanti da furto, appropriazione indebita, ricettazione o altra provenienza illecita.
+  </div>
 
-      <div class="print-declaration-text">
-        Il sottoscritto dichiara inoltre, sotto la propria responsabilità, che gli oggetti consegnati / ceduti sono di sua piena ed esclusiva proprietà, nella sua libera disponibilità e di lecita provenienza, e che non derivano da furto, ricettazione o altra provenienza illecita.
-      </div>
-    </div>
+  <div class="print-declaration-text">
+    Il sottoscritto dichiara inoltre di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli S.P.A. per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.
+  </div>
 
-    <div class="print-signatures">
-      <div class="print-sign-box">Firma cliente</div>
-      <div class="print-sign-box">Firma operatore</div>
-    </div>
+  <div class="print-declaration-text">
+    Il cliente si impegna, qualora a seguito di verifica il titolo degli oggetti risulti diverso da quello dichiarato o presunto, a restituire eventuali differenze di importo entro 7 giorni dalla richiesta.
+  </div>
+</div>
+
+<div class="print-signatures">
+  <div class="print-sign-box">Firma del cliente / dichiarante</div>
+  <div class="print-sign-box">Firma operatore addetto all’identificazione</div>
+</div>
   </section>
 </body>
 </html>`;

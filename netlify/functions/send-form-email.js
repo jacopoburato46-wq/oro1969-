@@ -33,17 +33,17 @@ function getAttachmentFileName(form = {}, items = []) {
   return `${base}-${form.scheda_number || 'senza-numero'}.html`;
 }
 
-function getEmailText(form = {}, items = []) {
+function getEmailSubject(form = {}, items = []) {
   const base = isSilverOnlyItems(items)
-    ? 'scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
-    : 'scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
-  return `In allegato trovi la ${base} scaricabile #${form.scheda_number || 'Senza numero'}.`;
+    ? 'Scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
+    : 'Scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
+  return `${base} #${form.scheda_number || 'Senza numero'} - ${form.store || 'Negozio'}`;
 }
 
 function getEmailText(form = {}, items = []) {
   const base = isSilverOnlyItems(items)
-    ? 'scheda rientro argento 800'
-    : 'scheda operazione compro oro';
+    ? 'scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
+    : 'scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
   return `In allegato trovi la ${base} scaricabile #${form.scheda_number || 'Senza numero'}.`;
 }
 

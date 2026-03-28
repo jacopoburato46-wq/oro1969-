@@ -1041,8 +1041,8 @@
         Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278
       </div>
       <div id="printSheetSub" class="print-sub" style="margin-top:6px;">
-        Scheda operazione compro oro (Art. 5 D.Lgs. 92/2017)
-      </div>
+  Scheda rientro oro (Art. 5 D.Lgs. 92/2017)
+</div>
     </div>
     <div class="print-meta">
       <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
@@ -1744,8 +1744,8 @@ els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
 els.printStore.textContent = currentStore ? currentStore.store_name : '—';
 els.printDate.textContent = formatDateIT();
 els.printSheetSub.textContent = isSilver
-  ? 'Scheda operazione rientro argento 800'
-  : 'Scheda operazione compro oro (Art. 5 D.Lgs. 92/2017)';
+  ? 'Scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
+  : 'Scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
 
     els.printClientName.textContent = els.formClientName.value.trim() || '—';
     els.printClientSurname.textContent = els.formClientSurname.value.trim() || '—';
@@ -1783,7 +1783,9 @@ els.printSheetSub.textContent = isSilver
 els.printSchedaNumber.textContent = form.scheda_number || '—';
 els.printStore.textContent = form.store || '—';
 els.printDate.textContent = form.created_at ? formatDateIT(form.created_at) : '—';
-els.printSheetSub.textContent = isSilver ? 'Scheda rientro argento 800' : 'Scheda rientro oro';
+els.printSheetSub.textContent = isSilver
+  ? 'Scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
+  : 'Scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
 
     els.printClientName.textContent = form.client_name || '—';
     els.printClientSurname.textContent = form.client_surname || '—';

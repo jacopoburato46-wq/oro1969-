@@ -261,21 +261,21 @@ function buildPrintableHtml(form = {}, items = []) {
 <body>
   <section class="print-sheet">
     <div class="print-header">
-  <div>
-    <div class="print-brand">BURATO GIOIELLI S.P.A.</div>
-    <div class="print-sub">
-      Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278
+      <div>
+        <div class="print-brand">BURATO GIOIELLI S.P.A.</div>
+        <div class="print-sub">
+          Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278
+        </div>
+        <div class="print-sub" style="margin-top:6px;">
+          ${sheetLabel}
+        </div>
+      </div>
+      <div class="print-meta">
+        <div><strong>N° scheda:</strong> ${escapeHtml(form.scheda_number || '—')}</div>
+        <div><strong>Negozio:</strong> ${escapeHtml(form.store || '—')}</div>
+        <div><strong>Data:</strong> ${escapeHtml(form.created_at_display || '—')}</div>
+      </div>
     </div>
-    <div class="print-sub" style="margin-top:6px;">
-      ${sheetLabel}
-    </div>
-  </div>
-  <div class="print-meta">
-    <div><strong>N° scheda:</strong> ${escapeHtml(form.scheda_number || '—')}</div>
-    <div><strong>Negozio:</strong> ${escapeHtml(form.store || '—')}</div>
-    <div><strong>Data:</strong> ${escapeHtml(form.created_at_display || '—')}</div>
-  </div>
-</div>
 
     <div class="print-section">
       <div class="print-section-title">Dati cliente</div>
@@ -333,25 +333,25 @@ function buildPrintableHtml(form = {}, items = []) {
     </div>
 
     <div class="print-section print-declarations">
-  <div class="print-section-title">Dichiarazioni cliente</div>
+      <div class="print-section-title">Dichiarazioni cliente</div>
 
-  <div class="print-declaration-text">
-    Il sottoscritto dichiara di operare in qualità di soggetto privato e che gli oggetti ceduti sono usati, di sua piena ed esclusiva proprietà, nella sua libera disponibilità giuridica e di lecita provenienza, non derivanti da furto, appropriazione indebita, ricettazione o altra provenienza illecita.
-  </div>
+      <div class="print-declaration-text">
+        Il sottoscritto dichiara di operare in qualità di soggetto privato e che gli oggetti ceduti sono usati, di sua piena ed esclusiva proprietà, nella sua libera disponibilità giuridica e di lecita provenienza, non derivanti da furto, appropriazione indebita, ricettazione o altra provenienza illecita.
+      </div>
 
-  <div class="print-declaration-text">
-    Il sottoscritto dichiara inoltre di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli S.P.A. per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.
-  </div>
+      <div class="print-declaration-text">
+        Il sottoscritto dichiara inoltre di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli S.P.A. per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.
+      </div>
 
-  <div class="print-declaration-text">
-    Il cliente si impegna, qualora a seguito di verifica il titolo degli oggetti risulti diverso da quello dichiarato o presunto, a restituire eventuali differenze di importo entro 7 giorni dalla richiesta.
-  </div>
-</div>
+      <div class="print-declaration-text">
+        Il cliente si impegna, qualora a seguito di verifica il titolo degli oggetti risulti diverso da quello dichiarato o presunto, a restituire eventuali differenze di importo entro 7 giorni dalla richiesta.
+      </div>
+    </div>
 
-<div class="print-signatures">
-  <div class="print-sign-box">Firma del cliente / dichiarante</div>
-  <div class="print-sign-box">Firma operatore addetto all’identificazione</div>
-</div>
+    <div class="print-signatures">
+      <div class="print-sign-box">Firma del cliente / dichiarante</div>
+      <div class="print-sign-box">Firma operatore addetto all’identificazione</div>
+    </div>
   </section>
 </body>
 </html>`;

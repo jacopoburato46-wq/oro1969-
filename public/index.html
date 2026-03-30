@@ -676,23 +676,23 @@
     }
 
     .print-declarations{
-  margin-top:14px;
-  padding:12px 14px;
-  border:1px solid #e8e1d5;
-  border-radius:10px;
-  background:#fcfaf6;
-}
+      margin-top:14px;
+      padding:12px 14px;
+      border:1px solid #e8e1d5;
+      border-radius:10px;
+      background:#fcfaf6;
+    }
 
-.print-declaration-text{
-  font-size:10.5px;
-  line-height:1.45;
-  color:#333;
-  margin-bottom:8px;
-}
+    .print-declaration-text{
+      font-size:10.5px;
+      line-height:1.45;
+      color:#333;
+      margin-bottom:8px;
+    }
 
-.print-declaration-text:last-child{
-  margin-bottom:0;
-}
+    .print-declaration-text:last-child{
+      margin-bottom:0;
+    }
 
     ::-webkit-scrollbar{
       width:8px;
@@ -818,16 +818,16 @@
         <article id="adminStatsCard" class="quote-card card">
           <div class="small-label">Oro puro attivo</div>
           <div id="totalGrams" class="big-sub">0 g</div>
-          <div id="nextAlert" class="muted">Equivalente puro attualmente in casa</div>
+          <div id="nextAlert" class="muted">Valore live teorico del puro attivo</div>
         </article>
       </section>
 
       <section class="card section">
         <div class="head">
           <div>
-  <div class="small-label" style="margin-bottom:6px;">Operatività</div>
-  <h2 id="formSectionTitle">Nuova scheda rientro oro</h2>
-</div>
+            <div class="small-label" style="margin-bottom:6px;">Operatività</div>
+            <h2 id="formSectionTitle">Nuova scheda rientro oro</h2>
+          </div>
           <button id="toggleFormBtn" class="secondary" type="button">Apri scheda</button>
         </div>
 
@@ -839,22 +839,22 @@
             </label>
 
             <label>
-  <span>Negozio</span>
-  <input id="formStore" type="text" disabled />
-</label>
+              <span>Negozio</span>
+              <input id="formStore" type="text" disabled />
+            </label>
 
-<label>
-  <span>Tipo scheda</span>
-  <select id="formMaterialType">
-    <option value="gold">Oro</option>
-    <option value="silver800">Argento 800</option>
-  </select>
-</label>
+            <label>
+              <span>Tipo scheda</span>
+              <select id="formMaterialType">
+                <option value="gold">Oro</option>
+                <option value="silver800">Argento 800</option>
+              </select>
+            </label>
 
-<label>
-  <span>Nome cliente</span>
-  <input id="formClientName" type="text" required />
-</label>
+            <label>
+              <span>Nome cliente</span>
+              <input id="formClientName" type="text" required />
+            </label>
 
             <label>
               <span>Cognome cliente</span>
@@ -902,9 +902,9 @@
             </label>
 
             <label>
-  <span id="formQuoteLabel">Quotazione €/g (18kt)</span>
-  <input id="formQuotePerGram" type="number" step="0.01" />
-</label>
+              <span id="formQuoteLabel">Quotazione €/g (18kt)</span>
+              <input id="formQuotePerGram" type="number" step="0.01" />
+            </label>
 
             <label class="full">
               <span>Note</span>
@@ -962,13 +962,11 @@
           </div>
 
           <div id="sessionAdminArea">
-            <div class="muted">Le schede salvate alimentano automaticamente totale grammi, alert Telegram e storico fusioni.</div>
+            <div class="muted">Le schede salvate aggiornano automaticamente il totale di oro puro attivo e lo storico fusioni.</div>
 
             <div class="control-row">
-              <button id="resetBtn" class="reset hidden" type="button">
-  Fusione
-</button>
-              <div id="resetNote" class="muted">Solo admin può chiudere una fusione.</div>
+              <button id="resetBtn" class="reset hidden" type="button">Fusione</button>
+              <div id="resetNote" class="muted">Solo admin può registrare una fusione.</div>
               <div></div>
             </div>
           </div>
@@ -1036,101 +1034,101 @@
     </div>
 
     <section id="printSheet" class="print-sheet">
-  <div class="print-header">
-    <div>
-      <div class="print-brand">BURATO GIOIELLI S.P.A.</div>
-      <div class="print-sub">
-        Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278
+      <div class="print-header">
+        <div>
+          <div class="print-brand">BURATO GIOIELLI S.P.A.</div>
+          <div class="print-sub">
+            Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278
+          </div>
+          <div id="printSheetSub" class="print-sub" style="margin-top:6px;">
+            Scheda rientro oro (Art. 5 D.Lgs. 92/2017)
+          </div>
+        </div>
+        <div class="print-meta">
+          <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
+          <div><strong>Negozio:</strong> <span id="printStore">—</span></div>
+          <div><strong>Data:</strong> <span id="printDate">—</span></div>
+        </div>
       </div>
-      <div id="printSheetSub" class="print-sub" style="margin-top:6px;">
-  Scheda rientro oro (Art. 5 D.Lgs. 92/2017)
-</div>
-    </div>
-    <div class="print-meta">
-      <div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div>
-      <div><strong>Negozio:</strong> <span id="printStore">—</span></div>
-      <div><strong>Data:</strong> <span id="printDate">—</span></div>
-    </div>
-  </div>
 
-  <div class="print-section">
-    <div class="print-section-title">Dati cliente</div>
-    <div class="print-grid">
-      <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
-      <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
-      <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
-      <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
-      <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
-      <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> <span id="printIban">—</span></div>
-    </div>
-  </div>
+      <div class="print-section">
+        <div class="print-section-title">Dati cliente</div>
+        <div class="print-grid">
+          <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
+          <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
+          <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
+          <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
+          <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
+          <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> <span id="printIban">—</span></div>
+        </div>
+      </div>
 
-  <div class="print-section">
-    <div class="print-section-title">Documento</div>
-    <div class="print-grid">
-      <div class="print-row"><strong>Tipo:</strong> <span id="printDocumentType">—</span></div>
-      <div class="print-row"><strong>Numero:</strong> <span id="printDocumentNumber">—</span></div>
-      <div class="print-row"><strong>Rilasciato da:</strong> <span id="printDocumentIssuedBy">—</span></div>
-      <div class="print-row"><strong>Scadenza:</strong> <span id="printDocumentExpiry">—</span></div>
-    </div>
-  </div>
+      <div class="print-section">
+        <div class="print-section-title">Documento</div>
+        <div class="print-grid">
+          <div class="print-row"><strong>Tipo:</strong> <span id="printDocumentType">—</span></div>
+          <div class="print-row"><strong>Numero:</strong> <span id="printDocumentNumber">—</span></div>
+          <div class="print-row"><strong>Rilasciato da:</strong> <span id="printDocumentIssuedBy">—</span></div>
+          <div class="print-row"><strong>Scadenza:</strong> <span id="printDocumentExpiry">—</span></div>
+        </div>
+      </div>
 
-  <div class="print-section">
-    <div class="print-section-title">Oggetti conferiti</div>
-    <table class="print-table">
-      <thead>
-        <tr>
-          <th style="width:52%;">Descrizione</th>
-          <th style="width:16%; text-align:center;">Caratura</th>
-          <th style="width:12%; text-align:center;">Pezzi</th>
-          <th style="width:20%; text-align:right;">Grammi</th>
-        </tr>
-      </thead>
-      <tbody id="printItemsBody">
-        <tr>
-          <td colspan="4">Nessun oggetto</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+      <div class="print-section">
+        <div class="print-section-title">Oggetti conferiti</div>
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th style="width:52%;">Descrizione</th>
+              <th style="width:16%; text-align:center;">Caratura</th>
+              <th style="width:12%; text-align:center;">Pezzi</th>
+              <th style="width:20%; text-align:right;">Grammi</th>
+            </tr>
+          </thead>
+          <tbody id="printItemsBody">
+            <tr>
+              <td colspan="4">Nessun oggetto</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-  <div class="print-summary">
-    <div class="print-summary-box">
-      <div class="print-summary-label">Totale grammi</div>
-      <div id="printTotalGrams" class="print-summary-value">0 g</div>
-    </div>
-    <div class="print-summary-box">
-      <div class="print-summary-label">Importo totale</div>
-      <div id="printTotalEur" class="print-summary-value">0 €</div>
-    </div>
-  </div>
+      <div class="print-summary">
+        <div class="print-summary-box">
+          <div class="print-summary-label">Totale grammi</div>
+          <div id="printTotalGrams" class="print-summary-value">0 g</div>
+        </div>
+        <div class="print-summary-box">
+          <div class="print-summary-label">Importo totale</div>
+          <div id="printTotalEur" class="print-summary-value">0 €</div>
+        </div>
+      </div>
 
-  <div class="print-section" style="margin-top:10px;">
-    <div class="print-section-title">Note</div>
-    <div id="printNotes" class="print-row" style="min-height:40px;">—</div>
-  </div>
+      <div class="print-section" style="margin-top:10px;">
+        <div class="print-section-title">Note</div>
+        <div id="printNotes" class="print-row" style="min-height:40px;">—</div>
+      </div>
 
-  <div class="print-section print-declarations">
-    <div class="print-section-title">Dichiarazioni cliente</div>
+      <div class="print-section print-declarations">
+        <div class="print-section-title">Dichiarazioni cliente</div>
 
-    <div class="print-declaration-text">
-      Il sottoscritto dichiara di operare in qualità di soggetto privato e che gli oggetti ceduti sono usati, di sua piena ed esclusiva proprietà, nella sua libera disponibilità giuridica e di lecita provenienza, non derivanti da furto, appropriazione indebita, ricettazione o altra provenienza illecita.
-    </div>
+        <div class="print-declaration-text">
+          Il sottoscritto dichiara di operare in qualità di soggetto privato e che gli oggetti ceduti sono usati, di sua piena ed esclusiva proprietà, nella sua libera disponibilità giuridica e di lecita provenienza, non derivanti da furto, appropriazione indebita, ricettazione o altra provenienza illecita.
+        </div>
 
-    <div class="print-declaration-text">
-      Il sottoscritto dichiara inoltre di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli S.P.A. per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.
-    </div>
+        <div class="print-declaration-text">
+          Il sottoscritto dichiara inoltre di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli S.P.A. per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.
+        </div>
 
-    <div class="print-declaration-text">
-      Il cliente si impegna, qualora a seguito di verifica il titolo degli oggetti risulti diverso da quello dichiarato o presunto, a restituire eventuali differenze di importo entro 7 giorni dalla richiesta.
-    </div>
-  </div>
+        <div class="print-declaration-text">
+          Il cliente si impegna, qualora a seguito di verifica il titolo degli oggetti risulti diverso da quello dichiarato o presunto, a restituire eventuali differenze di importo entro 7 giorni dalla richiesta.
+        </div>
+      </div>
 
-  <div class="print-signatures">
-    <div class="print-sign-box">Firma del cliente / dichiarante</div>
-    <div class="print-sign-box">Firma operatore addetto all’identificazione</div>
-  </div>
-</section>
+      <div class="print-signatures">
+        <div class="print-sign-box">Firma del cliente / dichiarante</div>
+        <div class="print-sign-box">Firma operatore addetto all’identificazione</div>
+      </div>
+    </section>
   </div>
 
 <script>
@@ -1138,7 +1136,6 @@
   const cfg = window.BURATO_CONFIG || {};
   const supabaseUrl = cfg.supabaseUrl;
   const supabaseAnonKey = cfg.supabaseAnonKey;
-  const PURE_ALERT_STEP = 300;
 
   const els = {
     authCard: document.getElementById('authCard'),
@@ -1172,10 +1169,10 @@
     goldForm: document.getElementById('goldForm'),
     formSchedaNumber: document.getElementById('formSchedaNumber'),
     formStore: document.getElementById('formStore'),
-formMaterialType: document.getElementById('formMaterialType'),
-formSectionTitle: document.getElementById('formSectionTitle'),
-formQuoteLabel: document.getElementById('formQuoteLabel'),
-formClientName: document.getElementById('formClientName'),
+    formMaterialType: document.getElementById('formMaterialType'),
+    formSectionTitle: document.getElementById('formSectionTitle'),
+    formQuoteLabel: document.getElementById('formQuoteLabel'),
+    formClientName: document.getElementById('formClientName'),
     formClientSurname: document.getElementById('formClientSurname'),
     formClientCf: document.getElementById('formClientCf'),
     formClientPhone: document.getElementById('formClientPhone'),
@@ -1200,9 +1197,9 @@ formClientName: document.getElementById('formClientName'),
 
     printSheet: document.getElementById('printSheet'),
     printSchedaNumber: document.getElementById('printSchedaNumber'),
-printStore: document.getElementById('printStore'),
-printDate: document.getElementById('printDate'),
-printSheetSub: document.getElementById('printSheetSub'),
+    printStore: document.getElementById('printStore'),
+    printDate: document.getElementById('printDate'),
+    printSheetSub: document.getElementById('printSheetSub'),
     printClientName: document.getElementById('printClientName'),
     printClientSurname: document.getElementById('printClientSurname'),
     printClientCf: document.getElementById('printClientCf'),
@@ -1226,6 +1223,14 @@ printSheetSub: document.getElementById('printSheetSub'),
     storeLogoutArea: document.getElementById('storeLogoutArea')
   };
 
+  let priceRefreshInterval = null;
+  let currentUser = null;
+  let currentStore = null;
+  let currentPureActiveGrams = 0;
+  let formItems = [
+    { description: '', quantity: 1, grams: '', karat: '18' }
+  ];
+
   function setAuthStatus(text, type = '') {
     els.authStatus.textContent = text;
     els.authStatus.className = 'pill' + (type ? ' ' + type : '');
@@ -1242,63 +1247,63 @@ printSheetSub: document.getElementById('printSheetSub'),
   }
 
   function getPureFactor(karat) {
-  if (karat === '18') return 730 / 1000;
-  if (karat === '14') return 565 / 1000;
-  if (karat === '9') return 355 / 1000;
-  if (karat === '800') return 800 / 1000;
-  return 730 / 1000;
-}
-
-function getCurrentMaterialType() {
-  return els.formMaterialType?.value || 'gold';
-}
-
-function isSilverOnlyItems(items = []) {
-  return items.length > 0 && items.every(item => String(item.karat || '') === '800');
-}
-
-function updateFormMode() {
-  const materialType = getCurrentMaterialType();
-  const isSilver = materialType === 'silver800';
-
-  if (els.formSectionTitle) {
-    els.formSectionTitle.textContent = isSilver
-      ? 'Nuova scheda rientro argento 800'
-      : 'Nuova scheda rientro oro';
+    if (karat === '18') return 730 / 1000;
+    if (karat === '14') return 565 / 1000;
+    if (karat === '9') return 355 / 1000;
+    if (karat === '800') return 800 / 1000;
+    return 730 / 1000;
   }
 
-  if (els.formQuoteLabel) {
-    els.formQuoteLabel.textContent = isSilver
-      ? 'Quotazione €/g argento 800'
-      : 'Quotazione €/g (18kt)';
+  function getCurrentMaterialType() {
+    return els.formMaterialType?.value || 'gold';
   }
 
-  if (isSilver) {
-    els.formQuotePerGram.value = '';
-  } else if (
-    els.buratoPrice.textContent &&
-    els.buratoPrice.textContent !== '—' &&
-    !els.formQuotePerGram.value
-  ) {
-    const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
-    const numeric = parseFloat(raw);
-    if (!Number.isNaN(numeric) && numeric > 0) {
-      els.formQuotePerGram.value = numeric.toFixed(2);
+  function isSilverOnlyItems(items = []) {
+    return items.length > 0 && items.every(item => String(item.karat || '') === '800');
+  }
+
+  function updateFormMode() {
+    const materialType = getCurrentMaterialType();
+    const isSilver = materialType === 'silver800';
+
+    if (els.formSectionTitle) {
+      els.formSectionTitle.textContent = isSilver
+        ? 'Nuova scheda rientro argento 800'
+        : 'Nuova scheda rientro oro';
     }
-  }
 
-  formItems = formItems.map(item => {
+    if (els.formQuoteLabel) {
+      els.formQuoteLabel.textContent = isSilver
+        ? 'Quotazione €/g argento 800'
+        : 'Quotazione €/g (18kt)';
+    }
+
     if (isSilver) {
-      return { ...item, karat: '800' };
+      els.formQuotePerGram.value = '';
+    } else if (
+      els.buratoPrice.textContent &&
+      els.buratoPrice.textContent !== '—' &&
+      !els.formQuotePerGram.value
+    ) {
+      const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
+      const numeric = parseFloat(raw);
+      if (!Number.isNaN(numeric) && numeric > 0) {
+        els.formQuotePerGram.value = numeric.toFixed(2);
+      }
     }
-    if (item.karat === '800') {
-      return { ...item, karat: '18' };
-    }
-    return item;
-  });
 
-  renderFormItems();
-}
+    formItems = formItems.map(item => {
+      if (isSilver) {
+        return { ...item, karat: '800' };
+      }
+      if (item.karat === '800') {
+        return { ...item, karat: '18' };
+      }
+      return item;
+    });
+
+    renderFormItems();
+  }
 
   const fmt = (n, d = 2) =>
     new Intl.NumberFormat('it-IT', {
@@ -1325,6 +1330,29 @@ function updateFormMode() {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
 
+  function getCurrentMarketPurePrice() {
+    const raw = (els.marketPrice.textContent || '')
+      .replace(' €/g', '')
+      .replace(/\./g, '')
+      .replace(',', '.')
+      .trim();
+
+    const value = parseFloat(raw);
+    return Number.isFinite(value) ? value : null;
+  }
+
+  function updatePureValueDisplay() {
+    const purePrice = getCurrentMarketPurePrice();
+
+    if (purePrice == null) {
+      els.nextAlert.textContent = 'Valore live teorico non disponibile';
+      return;
+    }
+
+    const liveValue = currentPureActiveGrams * purePrice;
+    els.nextAlert.textContent = `Valore live teorico: ${fmt(liveValue)} € (${fmt(currentPureActiveGrams)} g × ${fmt(purePrice)} €/g)`;
+  }
+
   if (!window.supabase || !window.supabase.createClient) {
     setAuthMessage('Errore: libreria Supabase non caricata');
     return;
@@ -1334,8 +1362,6 @@ function updateFormMode() {
     setAuthMessage('Errore: config.js non configurato correttamente');
     return;
   }
-
-  let priceRefreshInterval = null;
 
   function startAutoRefresh() {
     if (priceRefreshInterval) return;
@@ -1350,11 +1376,6 @@ function updateFormMode() {
   }
 
   const client = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-  let currentUser = null;
-  let currentStore = null;
-  let formItems = [
-    { description: '', quantity: 1, grams: '', karat: '18' }
-  ];
 
   async function getProfile(userId) {
     const { data, error } = await client
@@ -1378,6 +1399,7 @@ function updateFormMode() {
     els.marketPrice.textContent = fmt(data.marketPrice) + ' €/g';
     els.buratoPrice.textContent = fmt(data.buratoPrice) + ' €/g';
     els.lastUpdate.textContent = formatDateTimeIT();
+    updatePureValueDisplay();
   }
 
   async function loadState() {
@@ -1406,8 +1428,8 @@ function updateFormMode() {
         </div>
 
         <div class="print-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;">
-          <div class="muted"><strong>Totale grammi ritirati:</strong> ${fmt(s.total_grams)} g</div>
-          <div class="muted"><strong>Totale puro ritirato:</strong> ${s.pure_grams != null ? `${fmt(s.pure_grams)} g` : '—'}</div>
+          <div class="muted"><strong>Totale grammi fusi:</strong> ${fmt(s.total_grams)} g</div>
+          <div class="muted"><strong>Totale puro fuso:</strong> ${s.pure_grams != null ? `${fmt(s.pure_grams)} g` : '—'}</div>
 
           <div class="muted"><strong>Prezzo fonderia:</strong> ${s.foundry_price_per_gram != null ? `${fmt(s.foundry_price_per_gram)} €/g` : '—'}</div>
           <div class="muted"><strong>Totale pagato:</strong> ${s.total_paid_clients != null ? `${fmt(s.total_paid_clients)} €` : '—'}</div>
@@ -1419,16 +1441,14 @@ function updateFormMode() {
     `).join('');
   }
 
-  function renderForms(forms, lastResetAt, pureGramsActive = 0) {
-    els.totalGrams.textContent = fmt(pureGramsActive) + ' g';
+  function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
+    currentPureActiveGrams = Number(pureGramsActive || 0);
+    els.totalGrams.textContent = fmt(currentPureActiveGrams) + ' g';
+    updatePureValueDisplay();
 
-    const nextPureAlertAt = Math.ceil(pureGramsActive / PURE_ALERT_STEP) * PURE_ALERT_STEP || PURE_ALERT_STEP;
-    const remainingPure = Math.max(0, nextPureAlertAt - pureGramsActive);
-    els.nextAlert.textContent = `Mancano ${fmt(remainingPure)} g al prossimo alert puro (${fmt(nextPureAlertAt, 0)} g)`;
-
-    els.resetNote.textContent = lastResetAt
-      ? `Ultimo reset globale: ${formatDateTimeIT(lastResetAt)}`
-      : 'Nessun reset eseguito';
+    els.resetNote.textContent = lastFusionAt
+      ? `Ultima fusione registrata: ${formatDateTimeIT(lastFusionAt)}`
+      : 'Nessuna fusione registrata';
 
     els.formsCount.textContent = `${forms.length} schede`;
 
@@ -1465,78 +1485,98 @@ function updateFormMode() {
     });
   }
 
-  async function loadOperationalData() {
-  const [
-    state,
-    sessionsRes,
-    formsRes
-  ] = await Promise.all([
-    loadState(),
-    client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
-    client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
-  ]);
+  async function getGoldMetrics(state, forms) {
+    const lastFusionAt = state?.last_reset_at || null;
+    const formIds = forms.map(f => f.id);
 
-  if (sessionsRes.error) throw sessionsRes.error;
-  if (formsRes.error) throw formsRes.error;
+    let allItems = [];
+    if (formIds.length) {
+      const { data: itemsData, error: itemsError } = await client
+        .from('gold_form_items')
+        .select('*')
+        .in('form_id', formIds);
 
-  const forms = formsRes.data || [];
-  const lastResetAt = state?.last_reset_at || null;
-
-  const visibleForms = lastResetAt
-    ? forms.filter(form => new Date(form.created_at).getTime() > new Date(lastResetAt).getTime())
-    : forms.slice();
-
-  let pureGramsActive = 0;
-  let goldOnlyForms = visibleForms;
-
-  if (visibleForms.length) {
-    const formIds = visibleForms.map(f => f.id);
-
-    const { data: itemsRes, error: itemsError } = await client
-      .from('gold_form_items')
-      .select('*')
-      .in('form_id', formIds);
-
-    if (itemsError) throw itemsError;
+      if (itemsError) throw itemsError;
+      allItems = itemsData || [];
+    }
 
     const itemsByFormId = {};
-    (itemsRes || []).forEach(item => {
+    allItems.forEach(item => {
       if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
       itemsByFormId[item.form_id].push(item);
     });
 
-    goldOnlyForms = visibleForms.filter(form => {
+    const allGoldForms = forms.filter(form => {
       const items = itemsByFormId[form.id] || [];
       return !isSilverOnlyItems(items);
     });
 
-    const goldFormIds = new Set(goldOnlyForms.map(f => f.id));
+    const allGoldFormIds = new Set(allGoldForms.map(f => f.id));
 
-    pureGramsActive = (itemsRes || []).reduce((sum, item) => {
-      if (!goldFormIds.has(item.form_id)) return sum;
+    const pureAll = allItems.reduce((sum, item) => {
+      if (!allGoldFormIds.has(item.form_id)) return sum;
       const grams = Number(item.grams || 0);
       const factor = getPureFactor(item.karat || '18');
       return sum + (grams * factor);
     }, 0);
+
+    const recentGoldForms = lastFusionAt
+      ? allGoldForms.filter(form => new Date(form.created_at).getTime() > new Date(lastFusionAt).getTime())
+      : allGoldForms.slice();
+
+    const recentGoldFormIds = new Set(recentGoldForms.map(f => f.id));
+
+    const pureRecent = allItems.reduce((sum, item) => {
+      if (!recentGoldFormIds.has(item.form_id)) return sum;
+      const grams = Number(item.grams || 0);
+      const factor = getPureFactor(item.karat || '18');
+      return sum + (grams * factor);
+    }, 0);
+
+    const currentPure = (lastFusionAt && state?.remaining_pure_grams != null)
+      ? Number(state.remaining_pure_grams || 0) + pureRecent
+      : pureAll;
+
+    return {
+      lastFusionAt,
+      currentPure
+    };
   }
 
-  renderSessions(sessionsRes.data || []);
-  renderForms(forms, lastResetAt, pureGramsActive);
-}
+  async function loadOperationalData() {
+    const [
+      state,
+      sessionsRes,
+      formsRes
+    ] = await Promise.all([
+      loadState(),
+      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
+      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
+    ]);
+
+    if (sessionsRes.error) throw sessionsRes.error;
+    if (formsRes.error) throw formsRes.error;
+
+    const forms = formsRes.data || [];
+    const metrics = await getGoldMetrics(state, forms);
+
+    renderSessions(sessionsRes.data || []);
+    renderForms(forms, metrics.lastFusionAt, metrics.currentPure);
+  }
 
   async function sendFormEmailArchive(form, items) {
     try {
       const payload = {
-  form: {
-    ...form,
-    created_at_display: formatDateTimeIT()
-  },
-  items,
-  declarations: {
-    privacy: 'Il sottoscritto dichiara di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.',
-    ownership: 'Il sottoscritto dichiara inoltre, sotto la propria responsabilità, che gli oggetti consegnati / ceduti sono di sua piena ed esclusiva proprietà, nella sua libera disponibilità e di lecita provenienza, e che non derivano da furto, ricettazione o altra provenienza illecita.'
-  }
-};
+        form: {
+          ...form,
+          created_at_display: formatDateTimeIT()
+        },
+        items,
+        declarations: {
+          privacy: 'Il sottoscritto dichiara di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.',
+          ownership: 'Il sottoscritto dichiara inoltre, sotto la propria responsabilità, che gli oggetti consegnati / ceduti sono di sua piena ed esclusiva proprietà, nella sua libera disponibilità e di lecita provenienza, e che non derivano da furto, ricettazione o altra provenienza illecita.'
+        }
+      };
 
       const response = await fetch('/.netlify/functions/send-form-email', {
         method: 'POST',
@@ -1559,86 +1599,86 @@ function updateFormMode() {
   }
 
   function renderFormItems() {
-  const isSilver = getCurrentMaterialType() === 'silver800';
+    const isSilver = getCurrentMaterialType() === 'silver800';
 
-  els.formItemsBody.innerHTML = formItems.map((item, index) => `
-    <tr>
-      <td>
-        <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
-      </td>
+    els.formItemsBody.innerHTML = formItems.map((item, index) => `
+      <tr>
+        <td>
+          <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
+        </td>
 
-      <td>
-        ${
-          isSilver
-            ? `<input type="text" value="Argento 800" disabled />`
-            : `
-              <select data-field="karat" data-index="${index}">
-                <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
-                <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
-                <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
-              </select>
-            `
-        }
-      </td>
+        <td>
+          ${
+            isSilver
+              ? `<input type="text" value="Argento 800" disabled />`
+              : `
+                <select data-field="karat" data-index="${index}">
+                  <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
+                  <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
+                  <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
+                </select>
+              `
+          }
+        </td>
 
-      <td>
-        <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
-      </td>
+        <td>
+          <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
+        </td>
 
-      <td>
-        <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
-      </td>
+        <td>
+          <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
+        </td>
 
-      <td>
-        <div>${fmt(calcItemValue(item))} €</div>
-      </td>
+        <td>
+          <div>${fmt(calcItemValue(item))} €</div>
+        </td>
 
-      <td>
-        <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
-      </td>
-    </tr>
-  `).join('');
+        <td>
+          <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
+        </td>
+      </tr>
+    `).join('');
 
-  bindFormItemEvents();
-  recalcFormTotals();
-}
+    bindFormItemEvents();
+    recalcFormTotals();
+  }
 
   function calcItemValue(item) {
-  const grams = Number(item.grams || 0);
-  const karat = item.karat || '18';
-  const materialType = getCurrentMaterialType();
-  const quote = Number(els.formQuotePerGram.value || 0);
+    const grams = Number(item.grams || 0);
+    const karat = item.karat || '18';
+    const materialType = getCurrentMaterialType();
+    const quote = Number(els.formQuotePerGram.value || 0);
 
-  if (materialType === 'silver800') {
-    return grams * quote;
+    if (materialType === 'silver800') {
+      return grams * quote;
+    }
+
+    if (quote > 0) {
+      let multiplier = 1;
+      if (karat === '14') multiplier = 565 / 730;
+      if (karat === '9') multiplier = 355 / 730;
+
+      const pricePerGram = quote * multiplier;
+      return grams * pricePerGram;
+    }
+
+    const marketRaw = els.marketPrice.textContent
+      .replace(' €/g', '')
+      .replace(/\./g, '')
+      .replace(',', '.');
+
+    const market = parseFloat(marketRaw);
+    if (isNaN(market)) return 0;
+
+    const net24 = market - 15;
+    const base = net24 / 1000;
+
+    let multiplier = 730;
+    if (karat === '14') multiplier = 565;
+    if (karat === '9') multiplier = 355;
+
+    return grams * (base * multiplier);
   }
-
-  if (quote > 0) {
-    let multiplier = 1;
-    if (karat === '14') multiplier = 565 / 730;
-    if (karat === '9') multiplier = 355 / 730;
-
-    const pricePerGram = quote * multiplier;
-    return grams * pricePerGram;
-  }
-
-  const marketRaw = els.marketPrice.textContent
-    .replace(' €/g', '')
-    .replace(/\./g, '')
-    .replace(',', '.');
-
-  const market = parseFloat(marketRaw);
-  if (isNaN(market)) return 0;
-
-  const net24 = market - 15;
-  const base = net24 / 1000;
-
-  let multiplier = 730;
-  if (karat === '14') multiplier = 565;
-  if (karat === '9') multiplier = 355;
-
-  return grams * (base * multiplier);
-}
 
   function bindFormItemEvents() {
     els.formItemsBody.querySelectorAll('input, select').forEach(input => {
@@ -1683,24 +1723,24 @@ function updateFormMode() {
   }
 
   function resetGoldForm(statusText = 'Non salvata') {
-  els.goldForm.reset();
-  els.formStore.value = currentStore ? currentStore.store_name : '';
-  if (els.formMaterialType) {
-    els.formMaterialType.value = 'gold';
-  }
-  formItems = [{ description: '', quantity: 1, grams: '', karat: '18' }];
-  els.formSaveStatus.textContent = statusText;
-
-  if (els.buratoPrice.textContent && els.buratoPrice.textContent !== '—') {
-    const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
-    const numeric = parseFloat(raw);
-    if (!Number.isNaN(numeric) && numeric > 0) {
-      els.formQuotePerGram.value = numeric.toFixed(2);
+    els.goldForm.reset();
+    els.formStore.value = currentStore ? currentStore.store_name : '';
+    if (els.formMaterialType) {
+      els.formMaterialType.value = 'gold';
     }
-  }
+    formItems = [{ description: '', quantity: 1, grams: '', karat: '18' }];
+    els.formSaveStatus.textContent = statusText;
 
-  updateFormMode();
-}
+    if (els.buratoPrice.textContent && els.buratoPrice.textContent !== '—') {
+      const raw = els.buratoPrice.textContent.replace(' €/g', '').replace(/\./g, '').replace(',', '.');
+      const numeric = parseFloat(raw);
+      if (!Number.isNaN(numeric) && numeric > 0) {
+        els.formQuotePerGram.value = numeric.toFixed(2);
+      }
+    }
+
+    updateFormMode();
+  }
 
   function fillPrintSheet() {
     const { totalGrams, totalEur } = getFormTotals();
@@ -1711,12 +1751,12 @@ function updateFormMode() {
 
     const isSilver = getCurrentMaterialType() === 'silver800';
 
-els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
-els.printStore.textContent = currentStore ? currentStore.store_name : '—';
-els.printDate.textContent = formatDateIT();
-els.printSheetSub.textContent = isSilver
-  ? 'Scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
-  : 'Scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
+    els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
+    els.printStore.textContent = currentStore ? currentStore.store_name : '—';
+    els.printDate.textContent = formatDateIT();
+    els.printSheetSub.textContent = isSilver
+      ? 'Scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
+      : 'Scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
 
     els.printClientName.textContent = els.formClientName.value.trim() || '—';
     els.printClientSurname.textContent = els.formClientSurname.value.trim() || '—';
@@ -1751,12 +1791,12 @@ els.printSheetSub.textContent = isSilver
   function fillPrintSheetFromSaved(form, items) {
     const isSilver = isSilverOnlyItems(items || []);
 
-els.printSchedaNumber.textContent = form.scheda_number || '—';
-els.printStore.textContent = form.store || '—';
-els.printDate.textContent = form.created_at ? formatDateIT(form.created_at) : '—';
-els.printSheetSub.textContent = isSilver
-  ? 'Scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
-  : 'Scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
+    els.printSchedaNumber.textContent = form.scheda_number || '—';
+    els.printStore.textContent = form.store || '—';
+    els.printDate.textContent = form.created_at ? formatDateIT(form.created_at) : '—';
+    els.printSheetSub.textContent = isSilver
+      ? 'Scheda rientro argento 800 (Art. 5 D.Lgs. 92/2017)'
+      : 'Scheda rientro oro (Art. 5 D.Lgs. 92/2017)';
 
     els.printClientName.textContent = form.client_name || '—';
     els.printClientSurname.textContent = form.client_surname || '—';
@@ -1873,8 +1913,8 @@ els.printSheetSub.textContent = isSilver
     }
 
     els.formStore.value = profile.store_name;
-resetGoldForm();
-updateFormMode();
+    resetGoldForm();
+    updateFormMode();
   }
 
   async function loadAll() {
@@ -1923,103 +1963,57 @@ updateFormMode();
     }
   });
 
- els.resetBtn.addEventListener('click', async () => {
-  if (!currentStore || currentStore.role !== 'admin') return;
+  els.resetBtn.addEventListener('click', async () => {
+    if (!currentStore || currentStore.role !== 'admin') return;
 
-  const pureToMeltInput = window.prompt('Quanti grammi di oro puro vuoi fondere?', '');
-  if (pureToMeltInput === null) return;
+    const pureToMeltInput = window.prompt('Quanti grammi di oro puro vuoi fondere?', '');
+    if (pureToMeltInput === null) return;
 
-  const pureToMelt = Number(String(pureToMeltInput).replace(',', '.'));
-  if (!pureToMelt || pureToMelt <= 0) {
-    alert('Valore non valido');
-    return;
-  }
-
-  const foundryPriceInput = window.prompt('Inserisci prezzo concordato fonderia €/g PURO', '');
-  if (foundryPriceInput === null) return;
-
-  const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
-  if (!foundryPrice || foundryPrice <= 0) {
-    alert('Prezzo fonderia non valido');
-    return;
-  }
-
-  const ok = window.confirm(
-    `Confermi fusione di ${pureToMelt.toFixed(2)} g di puro con prezzo fonderia ${foundryPrice.toFixed(2)} €/g puro?`
-  );
-  if (!ok) return;
-
-  els.resetBtn.disabled = true;
-  setStatus('Fusione in corso...');
-
-  try {
-    const { data: state, error: stateError } = await client
-      .from('gold_state')
-      .select('*')
-      .eq('id', 1)
-      .single();
-
-    if (stateError) throw stateError;
-
-    const { data: allForms, error: formsError } = await client
-      .from('gold_forms')
-      .select('*');
-
-    if (formsError) throw formsError;
-
-    const formIds = (allForms || []).map(f => f.id);
-
-    let allItems = [];
-    if (formIds.length) {
-      const { data: itemsData, error: itemsError } = await client
-        .from('gold_form_items')
-        .select('*')
-        .in('form_id', formIds);
-
-      if (itemsError) throw itemsError;
-      allItems = itemsData || [];
-    }
-
-    const itemsByFormId = {};
-    allItems.forEach(item => {
-      if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
-      itemsByFormId[item.form_id].push(item);
-    });
-
-    const goldFormIds = new Set(
-      (allForms || [])
-        .filter(form => {
-          const items = itemsByFormId[form.id] || [];
-          return !isSilverOnlyItems(items);
-        })
-        .map(form => form.id)
-    );
-
-    const computedPureTotal = allItems.reduce((sum, item) => {
-      if (!goldFormIds.has(item.form_id)) return sum;
-      const grams = Number(item.grams || 0);
-      const factor = getPureFactor(item.karat || '18');
-      return sum + (grams * factor);
-    }, 0);
-
-    const currentPure = Number(
-      state?.remaining_pure_grams != null
-        ? state.remaining_pure_grams
-        : computedPureTotal
-    );
-
-    if (pureToMelt > currentPure) {
-      alert('Non puoi fondere più oro di quello disponibile');
+    const pureToMelt = Number(String(pureToMeltInput).replace(',', '.'));
+    if (!pureToMelt || pureToMelt <= 0) {
+      alert('Valore non valido');
       return;
     }
 
-    const remainingPure = Number((currentPure - pureToMelt).toFixed(2));
-    const totalFusionRevenue = Number((pureToMelt * foundryPrice).toFixed(2));
+    const foundryPriceInput = window.prompt('Inserisci prezzo concordato fonderia €/g PURO', '');
+    if (foundryPriceInput === null) return;
 
-    const { error: sessionError } = await client
-      .from('gold_sessions')
-      .insert([{
-        total_grams: pureToMelt,
+    const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
+    if (!foundryPrice || foundryPrice <= 0) {
+      alert('Prezzo fonderia non valido');
+      return;
+    }
+
+    const ok = window.confirm(
+      `Confermi fusione di ${pureToMelt.toFixed(2)} g di puro con prezzo fonderia ${foundryPrice.toFixed(2)} €/g puro?`
+    );
+    if (!ok) return;
+
+    els.resetBtn.disabled = true;
+    setStatus('Fusione in corso...');
+
+    try {
+      const state = await loadState();
+
+      const { data: allForms, error: formsError } = await client
+        .from('gold_forms')
+        .select('*');
+
+      if (formsError) throw formsError;
+
+      const metrics = await getGoldMetrics(state, allForms || []);
+      const currentPure = Number(metrics.currentPure || 0);
+
+      if (pureToMelt > currentPure) {
+        alert('Non puoi fondere più oro di quello disponibile');
+        return;
+      }
+
+      const remainingPure = Number((currentPure - pureToMelt).toFixed(2));
+      const totalFusionRevenue = Number((pureToMelt * foundryPrice).toFixed(2));
+
+      const { error: sessionError } = await client.from('gold_sessions').insert([{
+        total_grams: Number(pureToMelt.toFixed(2)),
         summary_text:
           `Prezzo fonderia puro: ${fmt(foundryPrice)} €/g\n` +
           `Totale puro fuso: ${fmt(pureToMelt)} g\n` +
@@ -2032,26 +2026,27 @@ updateFormMode();
         gross_margin: totalFusionRevenue
       }]);
 
-    if (sessionError) throw sessionError;
+      if (sessionError) throw sessionError;
 
-    const { error: updateStateError } = await client
-      .from('gold_state')
-      .update({
-        remaining_pure_grams: remainingPure
-      })
-      .eq('id', 1);
+      const { error: updateStateError } = await client
+        .from('gold_state')
+        .update({
+          remaining_pure_grams: remainingPure,
+          last_reset_at: new Date().toISOString()
+        })
+        .eq('id', 1);
 
-    if (updateStateError) throw updateStateError;
+      if (updateStateError) throw updateStateError;
 
-    await loadOperationalData();
-    setStatus('Fusione registrata', 'success');
-  } catch (err) {
-    console.error(err);
-    setStatus('Errore fusione', 'error');
-  } finally {
-    els.resetBtn.disabled = false;
-  }
-});
+      await loadOperationalData();
+      setStatus('Fusione registrata', 'success');
+    } catch (err) {
+      console.error(err);
+      setStatus('Errore fusione', 'error');
+    } finally {
+      els.resetBtn.disabled = false;
+    }
+  });
 
   els.clearSessionsBtn.addEventListener('click', async () => {
     if (!currentStore || currentStore.role !== 'admin') return;
@@ -2083,23 +2078,23 @@ updateFormMode();
   els.toggleFormBtn.addEventListener('click', openGoldForm);
 
   els.addItemRowBtn.addEventListener('click', () => {
-  formItems.push({
-    description: '',
-    quantity: 1,
-    grams: '',
-    karat: getCurrentMaterialType() === 'silver800' ? '800' : '18'
+    formItems.push({
+      description: '',
+      quantity: 1,
+      grams: '',
+      karat: getCurrentMaterialType() === 'silver800' ? '800' : '18'
+    });
+    renderFormItems();
   });
-  renderFormItems();
-});
 
-if (els.formMaterialType) {
-  els.formMaterialType.addEventListener('change', updateFormMode);
-}
+  if (els.formMaterialType) {
+    els.formMaterialType.addEventListener('change', updateFormMode);
+  }
 
-els.formQuotePerGram.addEventListener('input', () => {
-  recalcFormTotals();
-  renderFormItems();
-});
+  els.formQuotePerGram.addEventListener('input', () => {
+    recalcFormTotals();
+    renderFormItems();
+  });
 
   els.saveFormBtn.addEventListener('click', async () => {
     if (!currentStore || !currentUser) return;
@@ -2201,20 +2196,20 @@ els.formQuotePerGram.addEventListener('input', () => {
 
       const archiveEmailSent = await sendFormEmailArchive(insertedForm, itemsPayload);
 
-if (getCurrentMaterialType() === 'gold') {
-  const { error: entryError } = await client
-    .from('gold_entries')
-    .insert([{
-      store: currentStore.store_name,
-      client_name: clientName,
-      scheda_number: schedaNumber,
-      grams: totalGrams
-    }]);
+      if (getCurrentMaterialType() === 'gold') {
+        const { error: entryError } = await client
+          .from('gold_entries')
+          .insert([{
+            store: currentStore.store_name,
+            client_name: clientName,
+            scheda_number: schedaNumber,
+            grams: totalGrams
+          }]);
 
-  if (entryError) throw entryError;
-}
+        if (entryError) throw entryError;
+      }
 
-await loadOperationalData();
+      await loadOperationalData();
 
       if (archiveEmailSent) {
         resetGoldForm(`Scheda salvata correttamente (#${schedaNumber}) · Mail archivio inviata`);

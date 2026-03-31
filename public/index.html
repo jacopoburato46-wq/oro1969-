@@ -2115,11 +2115,6 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
       ? Number(state.remaining_pure_grams || 0) + pureRecent
       : pureAll;
 
-    if (pureToMelt > currentPure) {
-      alert(`Non puoi fondere più oro di quello disponibile. Disponibile: ${fmt(currentPure)} g`);
-      return;
-    }
-
     const remainingPure = Number((currentPure - pureToMelt).toFixed(2));
     const totalFusionRevenue = Number((pureToMelt * foundryPrice).toFixed(2));
 

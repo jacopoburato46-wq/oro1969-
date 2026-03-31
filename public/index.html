@@ -1052,16 +1052,17 @@
       </div>
 
       <div class="print-section">
-        <div class="print-section-title">Dati cliente</div>
-        <div class="print-grid">
-          <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
-          <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
-          <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
-          <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
-          <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
-          <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> <span id="printIban">—</span></div>
-        </div>
-      </div>
+  <div class="print-section-title">Dati cliente</div>
+  <div class="print-grid">
+    <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
+    <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
+    <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
+    <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
+    <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
+    <div class="print-row"><strong>Metodo pagamento:</strong> <span id="printPaymentMethod">Bonifico</span></div>
+    <div class="print-row"><strong>IBAN:</strong> <span id="printIban">—</span></div>
+  </div>
+</div>
 
       <div class="print-section">
         <div class="print-section-title">Documento</div>
@@ -1205,7 +1206,8 @@
     printClientCf: document.getElementById('printClientCf'),
     printClientPhone: document.getElementById('printClientPhone'),
     printClientAddress: document.getElementById('printClientAddress'),
-    printIban: document.getElementById('printIban'),
+printPaymentMethod: document.getElementById('printPaymentMethod'),
+printIban: document.getElementById('printIban'),
     printDocumentType: document.getElementById('printDocumentType'),
     printDocumentNumber: document.getElementById('printDocumentNumber'),
     printDocumentIssuedBy: document.getElementById('printDocumentIssuedBy'),
@@ -1820,6 +1822,7 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
     els.printClientCf.textContent = els.formClientCf.value.trim() || '—';
     els.printClientPhone.textContent = els.formClientPhone.value.trim() || '—';
     els.printClientAddress.textContent = els.formClientAddress.value.trim() || '—';
+    els.printPaymentMethod.textContent = 'Bonifico';
     els.printIban.textContent = els.formIban.value.trim() || '—';
 
     els.printDocumentType.textContent = els.formDocumentType.value.trim() || '—';
@@ -1860,6 +1863,7 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
     els.printClientCf.textContent = form.client_cf || '—';
     els.printClientPhone.textContent = form.client_phone || '—';
     els.printClientAddress.textContent = form.client_address || '—';
+    els.printPaymentMethod.textContent = 'Bonifico';
     els.printIban.textContent = form.iban || '—';
 
     els.printDocumentType.textContent = form.document_type || '—';

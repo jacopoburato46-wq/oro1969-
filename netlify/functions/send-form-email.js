@@ -278,16 +278,17 @@ function buildPrintableHtml(form = {}, items = []) {
     </div>
 
     <div class="print-section">
-      <div class="print-section-title">Dati cliente</div>
-      <div class="print-grid">
-        <div class="print-row"><strong>Nome:</strong> ${escapeHtml(form.client_name || '—')}</div>
-        <div class="print-row"><strong>Cognome:</strong> ${escapeHtml(form.client_surname || '—')}</div>
-        <div class="print-row"><strong>Codice fiscale:</strong> ${escapeHtml(form.client_cf || '—')}</div>
-        <div class="print-row"><strong>Telefono:</strong> ${escapeHtml(form.client_phone || '—')}</div>
-        <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> ${escapeHtml(form.client_address || '—')}</div>
-        <div class="print-row" style="grid-column:1 / -1;"><strong>IBAN:</strong> ${escapeHtml(form.iban || '—')}</div>
-      </div>
-    </div>
+  <div class="print-section-title">Dati cliente</div>
+  <div class="print-grid">
+    <div class="print-row"><strong>Nome:</strong> ${escapeHtml(form.client_name || '—')}</div>
+    <div class="print-row"><strong>Cognome:</strong> ${escapeHtml(form.client_surname || '—')}</div>
+    <div class="print-row"><strong>Codice fiscale:</strong> ${escapeHtml(form.client_cf || '—')}</div>
+    <div class="print-row"><strong>Telefono:</strong> ${escapeHtml(form.client_phone || '—')}</div>
+    <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> ${escapeHtml(form.client_address || '—')}</div>
+    <div class="print-row"><strong>Metodo pagamento:</strong> Bonifico</div>
+    <div class="print-row"><strong>IBAN:</strong> ${escapeHtml(form.iban || '—')}</div>
+  </div>
+</div>
 
     <div class="print-section">
       <div class="print-section-title">Documento</div>

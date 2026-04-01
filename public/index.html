@@ -1052,17 +1052,17 @@
       </div>
 
       <div class="print-section">
-  <div class="print-section-title">Dati cliente</div>
-  <div class="print-grid">
-    <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
-    <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
-    <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
-    <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
-    <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
-    <div class="print-row"><strong>Metodo pagamento:</strong> <span id="printPaymentMethod">Bonifico</span></div>
-    <div class="print-row"><strong>IBAN:</strong> <span id="printIban">—</span></div>
-  </div>
-</div>
+        <div class="print-section-title">Dati cliente</div>
+        <div class="print-grid">
+          <div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div>
+          <div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div>
+          <div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div>
+          <div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div>
+          <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div>
+          <div class="print-row"><strong>Metodo pagamento:</strong> <span id="printPaymentMethod">Bonifico</span></div>
+          <div class="print-row"><strong>IBAN:</strong> <span id="printIban">—</span></div>
+        </div>
+      </div>
 
       <div class="print-section">
         <div class="print-section-title">Documento</div>
@@ -1206,8 +1206,8 @@
     printClientCf: document.getElementById('printClientCf'),
     printClientPhone: document.getElementById('printClientPhone'),
     printClientAddress: document.getElementById('printClientAddress'),
-printPaymentMethod: document.getElementById('printPaymentMethod'),
-printIban: document.getElementById('printIban'),
+    printPaymentMethod: document.getElementById('printPaymentMethod'),
+    printIban: document.getElementById('printIban'),
     printDocumentType: document.getElementById('printDocumentType'),
     printDocumentNumber: document.getElementById('printDocumentNumber'),
     printDocumentIssuedBy: document.getElementById('printDocumentIssuedBy'),
@@ -1229,6 +1229,8 @@ printIban: document.getElementById('printIban'),
   let currentUser = null;
   let currentStore = null;
   let currentPureActiveGrams = 0;
+  let currentPureActiveCost = 0;
+  let currentAvgPurchasePrice = 0;
   let formItems = [
     { description: '', quantity: 1, grams: '', karat: '18' }
   ];
@@ -1352,7 +1354,10 @@ printIban: document.getElementById('printIban'),
     }
 
     const liveValue = currentPureActiveGrams * purePrice;
-    els.nextAlert.textContent = `Valore live teorico: ${fmt(liveValue)} € (${fmt(currentPureActiveGrams)} g × ${fmt(purePrice)} €/g)`;
+    els.nextAlert.textContent =
+      `Valore live teorico: ${fmt(liveValue)} € • ` +
+      `Prezzo medio carico: ${fmt(currentAvgPurchasePrice)} €/g • ` +
+      `Costo residuo teorico: ${fmt(currentPureActiveCost)} €`;
   }
 
   if (!window.supabase || !window.supabase.createClient) {
@@ -1404,15 +1409,50 @@ printIban: document.getElementById('printIban'),
     updatePureValueDisplay();
   }
 
-  async function loadState() {
-    const { data, error } = await client
-      .from('gold_state')
-      .select('*')
-      .eq('id', 1)
-      .single();
+  function buildGoldInventory(forms, sessions, allItems) {
+    const itemsByFormId = {};
+    allItems.forEach(item => {
+      if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
+      itemsByFormId[item.form_id].push(item);
+    });
 
-    if (error) throw error;
-    return data;
+    const goldForms = forms.filter(form => {
+      const items = itemsByFormId[form.id] || [];
+      return !isSilverOnlyItems(items);
+    });
+
+    const goldFormIds = new Set(goldForms.map(f => f.id));
+
+    const totalPureFromForms = allItems.reduce((sum, item) => {
+      if (!goldFormIds.has(item.form_id)) return sum;
+      const grams = Number(item.grams || 0);
+      const factor = getPureFactor(item.karat || '18');
+      return sum + (grams * factor);
+    }, 0);
+
+    const totalCostFromForms = goldForms.reduce((sum, form) => {
+      return sum + Number(form.total_eur || 0);
+    }, 0);
+
+    const totalFusedPure = sessions.reduce((sum, s) => {
+      return sum + Number(s.pure_grams || 0);
+    }, 0);
+
+    const totalFusedCost = sessions.reduce((sum, s) => {
+      return sum + Number(s.total_paid_clients || 0);
+    }, 0);
+
+    const pureActive = Number((totalPureFromForms - totalFusedPure).toFixed(2));
+    const costActive = Number((totalCostFromForms - totalFusedCost).toFixed(2));
+    const avgPurchasePrice = pureActive !== 0 ? Number((costActive / pureActive).toFixed(6)) : 0;
+    const lastFusionAt = sessions.length ? sessions[0].closed_at : null;
+
+    return {
+      pureActive,
+      costActive,
+      avgPurchasePrice,
+      lastFusionAt
+    };
   }
 
   function renderSessions(sessions) {
@@ -1423,67 +1463,72 @@ printIban: document.getElementById('printIban'),
       return;
     }
 
-    els.sessionsList.innerHTML = sessions.map(s => `
-      <div class="session-card">
-        <div style="font-weight:800;margin-bottom:12px;font-size:16px;">
-          Fusione chiusa il ${formatDateTimeIT(s.closed_at)}
+    els.sessionsList.innerHTML = sessions.map(s => {
+      const pureFused = Number(s.pure_grams || 0);
+      const estimatedCost = Number(s.total_paid_clients || 0);
+      const avgPurchasePrice = pureFused !== 0 ? estimatedCost / pureFused : 0;
+
+      return `
+        <div class="session-card">
+          <div style="font-weight:800;margin-bottom:12px;font-size:16px;">
+            Fusione chiusa il ${formatDateTimeIT(s.closed_at)}
+          </div>
+
+          <div class="print-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;">
+            <div class="muted"><strong>Totale grammi fusi:</strong> ${fmt(s.total_grams)} g</div>
+            <div class="muted"><strong>Totale puro fuso:</strong> ${pureFused ? `${fmt(pureFused)} g` : '—'}</div>
+
+            <div class="muted"><strong>Prezzo medio acquisto puro:</strong> ${pureFused ? `${fmt(avgPurchasePrice)} €/g` : '—'}</div>
+            <div class="muted"><strong>Prezzo fonderia:</strong> ${s.foundry_price_per_gram != null ? `${fmt(s.foundry_price_per_gram)} €/g` : '—'}</div>
+
+            <div class="muted"><strong>Costo stimato puro fuso:</strong> ${s.total_paid_clients != null ? `${fmt(s.total_paid_clients)} €` : '—'}</div>
+            <div class="muted"><strong>Totale incassato:</strong> ${s.total_fusion_revenue != null ? `${fmt(s.total_fusion_revenue)} €` : '—'}</div>
+
+            <div class="muted"><strong>Margine reale:</strong> ${s.gross_margin != null ? `${fmt(s.gross_margin)} €` : '—'}</div>
+            <div class="muted"><strong>Riepilogo:</strong> ${escapeHtml(s.summary_text || '—').replace(/\n/g, '<br>')}</div>
+          </div>
         </div>
+      `;
+    }).join('');
+  }
 
-        <div class="print-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;">
-          <div class="muted"><strong>Totale grammi fusi:</strong> ${fmt(s.total_grams)} g</div>
-          <div class="muted"><strong>Totale puro fuso:</strong> ${s.pure_grams != null ? `${fmt(s.pure_grams)} g` : '—'}</div>
+  function renderForms(forms, lastFusionAt, pureGramsActive = 0, pureCostActive = 0, avgPurchasePrice = 0) {
+    currentPureActiveGrams = Number(pureGramsActive || 0);
+    currentPureActiveCost = Number(pureCostActive || 0);
+    currentAvgPurchasePrice = Number(avgPurchasePrice || 0);
 
-          <div class="muted"><strong>Prezzo fonderia:</strong> ${s.foundry_price_per_gram != null ? `${fmt(s.foundry_price_per_gram)} €/g` : '—'}</div>
-          <div class="muted"><strong>Totale pagato:</strong> ${s.total_paid_clients != null ? `${fmt(s.total_paid_clients)} €` : '—'}</div>
+    els.totalGrams.textContent = fmt(currentPureActiveGrams) + ' g';
+    updatePureValueDisplay();
 
-          <div class="muted"><strong>Totale incassato:</strong> ${s.total_fusion_revenue != null ? `${fmt(s.total_fusion_revenue)} €` : '—'}</div>
-          <div class="muted"><strong>Margine:</strong> ${s.gross_margin != null ? `${fmt(s.gross_margin)} €` : '—'}</div>
-        </div>
-      </div>
+    els.resetNote.textContent = lastFusionAt
+      ? `Ultima fusione registrata: ${formatDateTimeIT(lastFusionAt)}`
+      : 'Nessuna fusione registrata';
+
+    els.formsCount.textContent = `${forms.length} schede`;
+
+    if (!forms.length) {
+      els.formsBody.innerHTML = '<tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>';
+      return;
+    }
+
+    els.formsBody.innerHTML = forms.map(form => `
+      <tr>
+        <td>${formatDateTimeIT(form.created_at)}</td>
+        <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
+        <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
+        <td>${escapeHtml(form.store || '-')}</td>
+        <td class="right">${fmt(form.total_grams || 0)} g</td>
+        <td class="right">${fmt(form.total_eur || 0)} €</td>
+        <td>
+          <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
+            Ristampa
+          </button>
+        </td>
+      </tr>
     `).join('');
+
+    bindFormsActions();
   }
-
-function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
-  currentPureActiveGrams = Number(pureGramsActive || 0);
-  els.totalGrams.textContent = fmt(currentPureActiveGrams) + ' g';
-
-  const purePrice = getCurrentMarketPurePrice();
-  if (purePrice == null) {
-    els.nextAlert.textContent = 'Valore live teorico non disponibile';
-  } else {
-    const liveValue = currentPureActiveGrams * purePrice;
-    els.nextAlert.textContent = `Valore live teorico: ${fmt(liveValue)} € (${fmt(currentPureActiveGrams)} g × ${fmt(purePrice)} €/g)`;
-  }
-
-  els.resetNote.textContent = lastFusionAt
-    ? `Ultima fusione registrata: ${formatDateTimeIT(lastFusionAt)}`
-    : 'Nessuna fusione registrata';
-
-  els.formsCount.textContent = `${forms.length} schede`;
-
-  if (!forms.length) {
-    els.formsBody.innerHTML = '<tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>';
-    return;
-  }
-
-  els.formsBody.innerHTML = forms.map(form => `
-    <tr>
-      <td>${formatDateTimeIT(form.created_at)}</td>
-      <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
-      <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
-      <td>${escapeHtml(form.store || '-')}</td>
-      <td class="right">${fmt(form.total_grams || 0)} g</td>
-      <td class="right">${fmt(form.total_eur || 0)} €</td>
-      <td>
-        <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
-          Ristampa
-        </button>
-      </td>
-    </tr>
-  `).join('');
-
-  bindFormsActions();
-}
 
   function bindFormsActions() {
     els.formsBody.querySelectorAll('button[data-action="reprint-form"]').forEach(btn => {
@@ -1494,8 +1539,20 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
     });
   }
 
-  async function getGoldMetrics(state, forms) {
-    const lastFusionAt = state?.last_reset_at || null;
+  async function loadOperationalData() {
+    const [
+      sessionsRes,
+      formsRes
+    ] = await Promise.all([
+      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(100),
+      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(100)
+    ]);
+
+    if (sessionsRes.error) throw sessionsRes.error;
+    if (formsRes.error) throw formsRes.error;
+
+    const forms = formsRes.data || [];
+    const sessions = sessionsRes.data || [];
     const formIds = forms.map(f => f.id);
 
     let allItems = [];
@@ -1509,109 +1566,17 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
       allItems = itemsData || [];
     }
 
-    const itemsByFormId = {};
-    allItems.forEach(item => {
-      if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
-      itemsByFormId[item.form_id].push(item);
-    });
+    const inventory = buildGoldInventory(forms, sessions, allItems);
 
-    const allGoldForms = forms.filter(form => {
-      const items = itemsByFormId[form.id] || [];
-      return !isSilverOnlyItems(items);
-    });
-
-    const allGoldFormIds = new Set(allGoldForms.map(f => f.id));
-
-    const pureAll = allItems.reduce((sum, item) => {
-      if (!allGoldFormIds.has(item.form_id)) return sum;
-      const grams = Number(item.grams || 0);
-      const factor = getPureFactor(item.karat || '18');
-      return sum + (grams * factor);
-    }, 0);
-
-    const recentGoldForms = lastFusionAt
-      ? allGoldForms.filter(form => new Date(form.created_at).getTime() > new Date(lastFusionAt).getTime())
-      : allGoldForms.slice();
-
-    const recentGoldFormIds = new Set(recentGoldForms.map(f => f.id));
-
-    const pureRecent = allItems.reduce((sum, item) => {
-      if (!recentGoldFormIds.has(item.form_id)) return sum;
-      const grams = Number(item.grams || 0);
-      const factor = getPureFactor(item.karat || '18');
-      return sum + (grams * factor);
-    }, 0);
-
-    const currentPure = Number(currentPureActiveGrams || 0);
-
-    return {
-      lastFusionAt,
-      currentPure
-    };
+    renderSessions(sessions);
+    renderForms(
+      forms,
+      inventory.lastFusionAt,
+      inventory.pureActive,
+      inventory.costActive,
+      inventory.avgPurchasePrice
+    );
   }
-
-  async function loadOperationalData() {
-  const [
-    sessionsRes,
-    formsRes
-  ] = await Promise.all([
-    client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(50),
-    client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(100)
-  ]);
-
-  if (sessionsRes.error) throw sessionsRes.error;
-  if (formsRes.error) throw formsRes.error;
-
-  const forms = formsRes.data || [];
-  const sessions = sessionsRes.data || [];
-
-  const formIds = forms.map(f => f.id);
-
-  let allItems = [];
-  if (formIds.length) {
-    const { data: itemsData, error: itemsError } = await client
-      .from('gold_form_items')
-      .select('*')
-      .in('form_id', formIds);
-
-    if (itemsError) throw itemsError;
-    allItems = itemsData || [];
-  }
-
-  // mappa items
-  const itemsByFormId = {};
-  allItems.forEach(item => {
-    if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
-    itemsByFormId[item.form_id].push(item);
-  });
-
-  // solo oro (no argento)
-  const allGoldForms = forms.filter(form => {
-    const items = itemsByFormId[form.id] || [];
-    return !isSilverOnlyItems(items);
-  });
-
-  const goldFormIds = new Set(allGoldForms.map(f => f.id));
-
-  // 🔹 TOTALE PURO DA SCHEDE
-  const totalPureFromForms = allItems.reduce((sum, item) => {
-    if (!goldFormIds.has(item.form_id)) return sum;
-    const grams = Number(item.grams || 0);
-    const factor = getPureFactor(item.karat || '18');
-    return sum + (grams * factor);
-  }, 0);
-
-  // 🔹 TOTALE PURO GIÀ FUSO
-  const totalFusedPure = sessions.reduce((sum, s) => {
-    return sum + Number(s.pure_grams || 0);
-  }, 0);
-
-  // 🔥 SALDO FINALE
-  const pureGramsActive = Number((totalPureFromForms - totalFusedPure).toFixed(2));
-
-  renderSessions(sessions);
-  renderForms(forms, null, pureGramsActive);
-}
 
   async function sendFormEmailArchive(form, items) {
     try {
@@ -2015,134 +1980,102 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
   });
 
   els.resetBtn.addEventListener('click', async () => {
-  if (!currentStore || currentStore.role !== 'admin') return;
+    if (!currentStore || currentStore.role !== 'admin') return;
 
-  const pureToMeltInput = window.prompt('Quanti grammi di oro puro vuoi fondere?', '');
-  if (pureToMeltInput === null) return;
+    const pureToMeltInput = window.prompt('Quanti grammi di oro puro vuoi fondere?', '');
+    if (pureToMeltInput === null) return;
 
-  const pureToMelt = Number(String(pureToMeltInput).replace(',', '.'));
-  if (!Number.isFinite(pureToMelt) || pureToMelt <= 0) {
-    alert('Valore grammi non valido');
-    return;
-  }
+    const pureToMelt = Number(String(pureToMeltInput).replace(',', '.'));
+    if (!Number.isFinite(pureToMelt) || pureToMelt <= 0) {
+      alert('Valore grammi non valido');
+      return;
+    }
 
-  const foundryPriceInput = window.prompt('Inserisci prezzo concordato fonderia €/g PURO', '');
-  if (foundryPriceInput === null) return;
+    const foundryPriceInput = window.prompt('Inserisci prezzo concordato fonderia €/g PURO', '');
+    if (foundryPriceInput === null) return;
 
-  const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
-  if (!Number.isFinite(foundryPrice) || foundryPrice <= 0) {
-    alert('Prezzo fonderia non valido');
-    return;
-  }
+    const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
+    if (!Number.isFinite(foundryPrice) || foundryPrice <= 0) {
+      alert('Prezzo fonderia non valido');
+      return;
+    }
 
-  const ok = window.confirm(
-    `Confermi fusione di ${pureToMelt.toFixed(2)} g di puro con prezzo fonderia ${foundryPrice.toFixed(2)} €/g puro?`
-  );
-  if (!ok) return;
+    const ok = window.confirm(
+      `Confermi fusione di ${pureToMelt.toFixed(2)} g di puro con prezzo fonderia ${foundryPrice.toFixed(2)} €/g puro?`
+    );
+    if (!ok) return;
 
-  els.resetBtn.disabled = true;
-  setStatus('Fusione in corso...');
+    els.resetBtn.disabled = true;
+    setStatus('Fusione in corso...');
 
-  try {
-    let state = null;
     try {
-      state = await loadState();
+      const { data: formsData, error: formsError } = await client
+        .from('gold_forms')
+        .select('*');
+
+      if (formsError) throw formsError;
+
+      const { data: sessionsData, error: sessionsError } = await client
+        .from('gold_sessions')
+        .select('*');
+
+      if (sessionsError) throw sessionsError;
+
+      const allForms = formsData || [];
+      const sessions = sessionsData || [];
+      const formIds = allForms.map(f => f.id);
+
+      let allItems = [];
+      if (formIds.length) {
+        const { data: itemsData, error: itemsError } = await client
+          .from('gold_form_items')
+          .select('*')
+          .in('form_id', formIds);
+
+        if (itemsError) throw itemsError;
+        allItems = itemsData || [];
+      }
+
+      const inventory = buildGoldInventory(allForms, sessions, allItems);
+
+      const avgPurchasePrice = Number(inventory.avgPurchasePrice || 0);
+      const estimatedCostOfFusedPure = Number((pureToMelt * avgPurchasePrice).toFixed(2));
+      const totalFusionRevenue = Number((pureToMelt * foundryPrice).toFixed(2));
+      const realMargin = Number((totalFusionRevenue - estimatedCostOfFusedPure).toFixed(2));
+      const remainingPure = Number((inventory.pureActive - pureToMelt).toFixed(2));
+      const remainingCost = Number((inventory.costActive - estimatedCostOfFusedPure).toFixed(2));
+
+      const { error: sessionError } = await client
+        .from('gold_sessions')
+        .insert([{
+          total_grams: Number(pureToMelt.toFixed(2)),
+          pure_grams: Number(pureToMelt.toFixed(2)),
+          foundry_price_per_gram: Number(foundryPrice.toFixed(2)),
+          total_paid_clients: estimatedCostOfFusedPure,
+          total_fusion_revenue: totalFusionRevenue,
+          gross_margin: realMargin,
+          summary_text:
+            `Prezzo medio acquisto puro: ${fmt(avgPurchasePrice)} €/g\n` +
+            `Costo stimato puro fuso: ${fmt(estimatedCostOfFusedPure)} €\n` +
+            `Totale incassato fusione: ${fmt(totalFusionRevenue)} €\n` +
+            `Margine reale: ${fmt(realMargin)} €\n` +
+            `Puro residuo teorico: ${fmt(remainingPure)} g\n` +
+            `Costo residuo teorico: ${fmt(remainingCost)} €`
+        }]);
+
+      if (sessionError) throw sessionError;
+
+      await loadOperationalData();
+      setStatus('Fusione registrata', 'success');
     } catch (err) {
-      console.warn('loadState non disponibile, continuo con fallback', err);
-      state = null;
+      console.error('ERRORE FUSIONE DETTAGLIO:', err);
+      alert('Errore fusione: ' + (err?.message || JSON.stringify(err)));
+      setStatus('Errore fusione', 'error');
+    } finally {
+      els.resetBtn.disabled = false;
     }
+  });
 
-    const { data: formsData, error: formsError } = await client
-      .from('gold_forms')
-      .select('*');
-
-    if (formsError) throw formsError;
-
-    const allForms = formsData || [];
-    const formIds = allForms.map(f => f.id);
-
-    let allItems = [];
-    if (formIds.length) {
-      const { data: itemsData, error: itemsError } = await client
-        .from('gold_form_items')
-        .select('*')
-        .in('form_id', formIds);
-
-      if (itemsError) throw itemsError;
-      allItems = itemsData || [];
-    }
-
-    const itemsByFormId = {};
-    allItems.forEach(item => {
-      if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
-      itemsByFormId[item.form_id].push(item);
-    });
-
-    const allGoldForms = allForms.filter(form => {
-      const items = itemsByFormId[form.id] || [];
-      return !isSilverOnlyItems(items);
-    });
-
-    const allGoldFormIds = new Set(allGoldForms.map(f => f.id));
-
-    const pureAll = allItems.reduce((sum, item) => {
-      if (!allGoldFormIds.has(item.form_id)) return sum;
-      const grams = Number(item.grams || 0);
-      const factor = getPureFactor(item.karat || '18');
-      return sum + (grams * factor);
-    }, 0);
-
-    const lastFusionAt = state?.last_reset_at || null;
-
-    const recentGoldForms = lastFusionAt
-      ? allGoldForms.filter(form => new Date(form.created_at).getTime() > new Date(lastFusionAt).getTime())
-      : allGoldForms.slice();
-
-    const recentGoldFormIds = new Set(recentGoldForms.map(f => f.id));
-
-    const pureRecent = allItems.reduce((sum, item) => {
-      if (!recentGoldFormIds.has(item.form_id)) return sum;
-      const grams = Number(item.grams || 0);
-      const factor = getPureFactor(item.karat || '18');
-      return sum + (grams * factor);
-    }, 0);
-
-    const currentPure = (lastFusionAt && state?.remaining_pure_grams != null)
-      ? Number(state.remaining_pure_grams || 0) + pureRecent
-      : pureAll;
-
-    const remainingPure = Number((currentPure - pureToMelt).toFixed(2));
-    const totalFusionRevenue = Number((pureToMelt * foundryPrice).toFixed(2));
-
-    const { error: sessionError } = await client
-      .from('gold_sessions')
-      .insert([{
-        total_grams: Number(pureToMelt.toFixed(2)),
-        summary_text:
-          `Prezzo fonderia puro: ${fmt(foundryPrice)} €/g\n` +
-          `Totale puro fuso: ${fmt(pureToMelt)} g\n` +
-          `Totale incassato fusione: ${fmt(totalFusionRevenue)} €\n` +
-          `Puro residuo: ${fmt(remainingPure)} g`,
-        foundry_price_per_gram: Number(foundryPrice.toFixed(2)),
-        pure_grams: Number(pureToMelt.toFixed(2)),
-        total_paid_clients: 0,
-        total_fusion_revenue: totalFusionRevenue,
-        gross_margin: totalFusionRevenue
-      }]);
-
-    if (sessionError) throw sessionError;
-
-    await loadOperationalData();
-    setStatus('Fusione registrata', 'success');
-  } catch (err) {
-    console.error('ERRORE FUSIONE DETTAGLIO:', err);
-    alert('Errore fusione: ' + (err?.message || JSON.stringify(err)));
-    setStatus('Errore fusione', 'error');
-  } finally {
-    els.resetBtn.disabled = false;
-  }
-});
-  
   els.clearSessionsBtn.addEventListener('click', async () => {
     if (!currentStore || currentStore.role !== 'admin') return;
 
@@ -2290,19 +2223,6 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
       if (itemsError) throw itemsError;
 
       const archiveEmailSent = await sendFormEmailArchive(insertedForm, itemsPayload);
-
-      if (getCurrentMaterialType() === 'gold') {
-        const { error: entryError } = await client
-          .from('gold_entries')
-          .insert([{
-            store: currentStore.store_name,
-            client_name: clientName,
-            scheda_number: schedaNumber,
-            grams: totalGrams
-          }]);
-
-        if (entryError) throw entryError;
-      }
 
       await loadOperationalData();
 

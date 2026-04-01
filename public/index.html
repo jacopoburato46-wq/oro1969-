@@ -2038,8 +2038,8 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
   if (pureToMeltInput === null) return;
 
   const pureToMelt = Number(String(pureToMeltInput).replace(',', '.'));
-  if (!pureToMelt || pureToMelt <= 0) {
-    alert('Valore non valido');
+  if (!Number.isFinite(pureToMelt) || pureToMelt <= 0) {
+    alert('Valore grammi non valido');
     return;
   }
 
@@ -2047,7 +2047,7 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
   if (foundryPriceInput === null) return;
 
   const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
-  if (!foundryPrice || foundryPrice <= 0) {
+  if (!Number.isFinite(foundryPrice) || foundryPrice <= 0) {
     alert('Prezzo fonderia non valido');
     return;
   }
@@ -2061,12 +2061,22 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
   setStatus('Fusione in corso...');
 
   try {
-    const state = await loadState();
+    let state = null;
+    try {
+      state = await loadState();
+    } catch (err) {
+      console.warn('loadState non disponibile, continuo con fallback', err);
+      state = null;
+    }
 
-    const formIdsRes = await client.from('gold_forms').select('id');
-    if (formIdsRes.error) throw formIdsRes.error;
+    const { data: formsData, error: formsError } = await client
+      .from('gold_forms')
+      .select('*');
 
-    const formIds = (formIdsRes.data || []).map(f => f.id);
+    if (formsError) throw formsError;
+
+    const allForms = formsData || [];
+    const formIds = allForms.map(f => f.id);
 
     let allItems = [];
     if (formIds.length) {
@@ -2078,10 +2088,6 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
       if (itemsError) throw itemsError;
       allItems = itemsData || [];
     }
-
-    const formsRes = await client.from('gold_forms').select('*');
-    if (formsRes.error) throw formsRes.error;
-    const allForms = formsRes.data || [];
 
     const itemsByFormId = {};
     allItems.forEach(item => {
@@ -2125,36 +2131,49 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
     const remainingPure = Number((currentPure - pureToMelt).toFixed(2));
     const totalFusionRevenue = Number((pureToMelt * foundryPrice).toFixed(2));
 
-    const { error: sessionError } = await client.from('gold_sessions').insert([{
-      total_grams: Number(pureToMelt.toFixed(2)),
-      summary_text:
-        `Prezzo fonderia puro: ${fmt(foundryPrice)} €/g\n` +
-        `Totale puro fuso: ${fmt(pureToMelt)} g\n` +
-        `Totale incassato fusione: ${fmt(totalFusionRevenue)} €\n` +
-        `Puro residuo: ${fmt(remainingPure)} g`,
-      foundry_price_per_gram: foundryPrice,
-      pure_grams: Number(pureToMelt.toFixed(2)),
-      total_paid_clients: 0,
-      total_fusion_revenue: totalFusionRevenue,
-      gross_margin: totalFusionRevenue
-    }]);
+    const { error: sessionError } = await client
+      .from('gold_sessions')
+      .insert([{
+        total_grams: Number(pureToMelt.toFixed(2)),
+        summary_text:
+          `Prezzo fonderia puro: ${fmt(foundryPrice)} €/g\n` +
+          `Totale puro fuso: ${fmt(pureToMelt)} g\n` +
+          `Totale incassato fusione: ${fmt(totalFusionRevenue)} €\n` +
+          `Puro residuo: ${fmt(remainingPure)} g`,
+        foundry_price_per_gram: Number(foundryPrice.toFixed(2)),
+        pure_grams: Number(pureToMelt.toFixed(2)),
+        total_paid_clients: 0,
+        total_fusion_revenue: totalFusionRevenue,
+        gross_margin: totalFusionRevenue
+      }]);
 
     if (sessionError) throw sessionError;
 
+    const statePayload = {
+      remaining_pure_grams: remainingPure,
+      last_reset_at: new Date().toISOString()
+    };
+
     const { error: updateStateError } = await client
       .from('gold_state')
-      .update({
-        remaining_pure_grams: remainingPure,
-        last_reset_at: new Date().toISOString()
-      })
+      .update(statePayload)
       .eq('id', 1);
 
-    if (updateStateError) throw updateStateError;
+    if (updateStateError) {
+      console.warn('Update gold_state fallito, provo insert/upsert', updateStateError);
+
+      const { error: upsertError } = await client
+        .from('gold_state')
+        .upsert([{ id: 1, ...statePayload }], { onConflict: 'id' });
+
+      if (upsertError) throw upsertError;
+    }
 
     await loadOperationalData();
     setStatus('Fusione registrata', 'success');
   } catch (err) {
-    console.error(err);
+    console.error('ERRORE FUSIONE DETTAGLIO:', err);
+    alert('Errore fusione: ' + (err?.message || JSON.stringify(err)));
     setStatus('Errore fusione', 'error');
   } finally {
     els.resetBtn.disabled = false;

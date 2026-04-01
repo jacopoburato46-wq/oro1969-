@@ -1542,9 +1542,7 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
       return sum + (grams * factor);
     }, 0);
 
-    const currentPure = (lastFusionAt && state?.remaining_pure_grams != null)
-      ? Number(state.remaining_pure_grams || 0) + pureRecent
-      : pureAll;
+    const currentPure = Number(currentPureActiveGrams || 0);
 
     return {
       lastFusionAt,

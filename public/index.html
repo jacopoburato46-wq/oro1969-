@@ -1553,12 +1553,19 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
   }
 
   async function loadOperationalData() {
+  let state = null;
+
+  try {
+    state = await loadState();
+  } catch (err) {
+    console.warn('Errore loadState, continuo senza state', err);
+    state = null;
+  }
+
   const [
-    state,
     sessionsRes,
     formsRes
   ] = await Promise.all([
-    loadState(),
     client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
     client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
   ]);

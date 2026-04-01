@@ -1551,28 +1551,19 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
   }
 
   async function loadOperationalData() {
-  let state = null;
-
-  try {
-    state = await loadState();
-  } catch (err) {
-    console.warn('Errore loadState, continuo senza state', err);
-    state = null;
-  }
-
   const [
     sessionsRes,
     formsRes
   ] = await Promise.all([
-    client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(20),
-    client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(50)
+    client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(50),
+    client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(100)
   ]);
 
   if (sessionsRes.error) throw sessionsRes.error;
   if (formsRes.error) throw formsRes.error;
 
   const forms = formsRes.data || [];
-  const lastFusionAt = state?.last_reset_at || null;
+  const sessions = sessionsRes.data || [];
 
   const formIds = forms.map(f => f.id);
 
@@ -1587,46 +1578,40 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
     allItems = itemsData || [];
   }
 
+  // mappa items
   const itemsByFormId = {};
   allItems.forEach(item => {
     if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
     itemsByFormId[item.form_id].push(item);
   });
 
+  // solo oro (no argento)
   const allGoldForms = forms.filter(form => {
     const items = itemsByFormId[form.id] || [];
     return !isSilverOnlyItems(items);
   });
 
-  const allGoldFormIds = new Set(allGoldForms.map(f => f.id));
+  const goldFormIds = new Set(allGoldForms.map(f => f.id));
 
-  const pureAll = allItems.reduce((sum, item) => {
-    if (!allGoldFormIds.has(item.form_id)) return sum;
+  // 🔹 TOTALE PURO DA SCHEDE
+  const totalPureFromForms = allItems.reduce((sum, item) => {
+    if (!goldFormIds.has(item.form_id)) return sum;
     const grams = Number(item.grams || 0);
     const factor = getPureFactor(item.karat || '18');
     return sum + (grams * factor);
   }, 0);
 
-  const recentGoldForms = lastFusionAt
-    ? allGoldForms.filter(form => new Date(form.created_at).getTime() > new Date(lastFusionAt).getTime())
-    : allGoldForms.slice();
-
-  const recentGoldFormIds = new Set(recentGoldForms.map(f => f.id));
-
-  const pureRecent = allItems.reduce((sum, item) => {
-    if (!recentGoldFormIds.has(item.form_id)) return sum;
-    const grams = Number(item.grams || 0);
-    const factor = getPureFactor(item.karat || '18');
-    return sum + (grams * factor);
+  // 🔹 TOTALE PURO GIÀ FUSO
+  const totalFusedPure = sessions.reduce((sum, s) => {
+    return sum + Number(s.pure_grams || 0);
   }, 0);
 
-  const pureGramsActive = (state?.remaining_pure_grams != null)
-  ? Number(state.remaining_pure_grams || 0)
-  : pureAll;
+  // 🔥 SALDO FINALE
+  const pureGramsActive = Number((totalPureFromForms - totalFusedPure).toFixed(2));
 
-  renderSessions(sessionsRes.data || []);
-  renderForms(forms, lastFusionAt, pureGramsActive);
-  }
+  renderSessions(sessions);
+  renderForms(forms, null, pureGramsActive);
+}
 
   async function sendFormEmailArchive(form, items) {
     try {
@@ -2146,11 +2131,6 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
       }]);
 
     if (sessionError) throw sessionError;
-
-    const statePayload = {
-      remaining_pure_grams: remainingPure,
-      last_reset_at: new Date().toISOString()
-    };
 
     const { error: updateStateError } = await client
       .from('gold_state')

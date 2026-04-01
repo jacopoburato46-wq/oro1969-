@@ -2132,21 +2132,6 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
 
     if (sessionError) throw sessionError;
 
-    const { error: updateStateError } = await client
-      .from('gold_state')
-      .update(statePayload)
-      .eq('id', 1);
-
-    if (updateStateError) {
-      console.warn('Update gold_state fallito, provo insert/upsert', updateStateError);
-
-      const { error: upsertError } = await client
-        .from('gold_state')
-        .upsert([{ id: 1, ...statePayload }], { onConflict: 'id' });
-
-      if (upsertError) throw upsertError;
-    }
-
     await loadOperationalData();
     setStatus('Fusione registrata', 'success');
   } catch (err) {

@@ -1620,9 +1620,9 @@ function renderForms(forms, lastFusionAt, pureGramsActive = 0) {
     return sum + (grams * factor);
   }, 0);
 
-  const pureGramsActive = (lastFusionAt && state?.remaining_pure_grams != null)
-    ? Number(state.remaining_pure_grams || 0) + pureRecent
-    : pureAll;
+  const pureGramsActive = (state?.remaining_pure_grams != null)
+  ? Number(state.remaining_pure_grams || 0)
+  : pureAll;
 
   renderSessions(sessionsRes.data || []);
   renderForms(forms, lastFusionAt, pureGramsActive);

@@ -1346,19 +1346,16 @@
   }
 
   function updatePureValueDisplay() {
-    const purePrice = getCurrentMarketPurePrice();
+  const purePrice = getCurrentMarketPurePrice();
 
-    if (purePrice == null) {
-      els.nextAlert.textContent = 'Valore live teorico non disponibile';
-      return;
-    }
-
-    const liveValue = currentPureActiveGrams * purePrice;
-    els.nextAlert.textContent =
-      `Valore live teorico: ${fmt(liveValue)} € • ` +
-      `Prezzo medio carico: ${fmt(currentAvgPurchasePrice)} €/g • ` +
-      `Costo residuo teorico: ${fmt(currentPureActiveCost)} €`;
+  if (purePrice == null) {
+    els.nextAlert.textContent = 'Valore live teorico non disponibile';
+    return;
   }
+
+  const liveValue = currentPureActiveGrams * purePrice;
+  els.nextAlert.textContent = `Valore live teorico: ${fmt(liveValue)} €`;
+}
 
   if (!window.supabase || !window.supabase.createClient) {
     setAuthMessage('Errore: libreria Supabase non caricata');

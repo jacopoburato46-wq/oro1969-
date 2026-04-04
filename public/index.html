@@ -1056,7 +1056,7 @@
               <thead>
                 <tr>
                   <th>Descrizione oggetto</th>
-                  <th>Titolo</th>
+                  <th>Caratura</th>
                   <th>Numero pezzi</th>
                   <th>Grammi</th>
                   <th>€</th>
@@ -1450,15 +1450,6 @@
     if (karat === '800') return 800 / 1000;
     return 730 / 1000;
   }
-  
-  function formatTitle(karat) {
-  const map = {
-    '18': '750‰',
-    '14': '585‰',
-    '9': '375‰'
-  };
-  return map[String(karat)] || `${karat}`;
-}
 
   function getCurrentMaterialType() {
     return els.formMaterialType?.value || 'gold';
@@ -1872,9 +1863,9 @@
               ? `<input type="text" value="Argento 800" disabled />`
               : `
                 <select data-field="karat" data-index="${index}">
-                  <option value="18" ${formatTitle(item.karat) === '18' ? 'selected' : ''}>18kt</option>
-                  <option value="14" ${formatTitle(item.karat) === '14' ? 'selected' : ''}>14kt</option>
-                  <option value="9" ${formatTitle(item.karat) === '9' ? 'selected' : ''}>9kt</option>
+                  <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
+                  <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
+                  <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
                 </select>
               `
           }
@@ -2023,7 +2014,7 @@
       els.printItemsBody.innerHTML = validItems.map(item => `
         <tr>
           <td>${escapeHtml(item.description || '-')}</td>
-          <td style="text-align:center;">${String(formatTitle(item.karat) || '18') === '800' ? '800' : `${formatTitle(item.karat) || '18'} kt`}</td>
+          <td style="text-align:center;">${String(item.karat || '18') === '800' ? '800' : `${item.karat || '18'} kt`}</td>
           <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
           <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
         </tr>
@@ -2064,7 +2055,7 @@
       els.printItemsBody.innerHTML = items.map(item => `
         <tr>
           <td>${escapeHtml(item.description || '-')}</td>
-          <td style="text-align:center;">${String(formatTitle(item.karat) || '18') === '800' ? '800' : `${formatTitle(item.karat) || '18'} kt`}</td>
+          <td style="text-align:center;">${String(item.karat || '18') === '800' ? '800' : `${item.karat || '18'} kt`}</td>
           <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
           <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
         </tr>

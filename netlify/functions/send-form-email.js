@@ -47,6 +47,14 @@ function getEmailText(form = {}, items = []) {
   return `In allegato trovi la ${base} scaricabile #${form.scheda_number || 'Senza numero'}.`;
 }
 
+function getTitleLabel(karat) {
+  if (String(karat) === '18') return '750/1000';
+  if (String(karat) === '14') return '585/1000';
+  if (String(karat) === '9') return '375/1000';
+  if (String(karat) === '800') return '800/1000';
+  return '750/1000';
+}
+
 function buildItemsRows(items = []) {
   if (!items.length) {
     return `
@@ -64,7 +72,7 @@ function buildItemsRows(items = []) {
         ${escapeHtml(item.description || '-')}
       </td>
       <td style="padding:6px 8px;border:1px solid #e8e1d5;text-align:center;">
-        ${String(item.karat || '18') === '800' ? '800' : `${escapeHtml(item.karat || '18')} kt`}
+        ${getTitleLabel(item.karat || '18')}
       </td>
       <td style="padding:6px 8px;border:1px solid #e8e1d5;text-align:center;">
         ${escapeHtml(item.quantity || 1)}
@@ -278,17 +286,17 @@ function buildPrintableHtml(form = {}, items = []) {
     </div>
 
     <div class="print-section">
-  <div class="print-section-title">Dati cliente</div>
-  <div class="print-grid">
-    <div class="print-row"><strong>Nome:</strong> ${escapeHtml(form.client_name || '—')}</div>
-    <div class="print-row"><strong>Cognome:</strong> ${escapeHtml(form.client_surname || '—')}</div>
-    <div class="print-row"><strong>Codice fiscale:</strong> ${escapeHtml(form.client_cf || '—')}</div>
-    <div class="print-row"><strong>Telefono:</strong> ${escapeHtml(form.client_phone || '—')}</div>
-    <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> ${escapeHtml(form.client_address || '—')}</div>
-    <div class="print-row"><strong>Metodo pagamento:</strong> Bonifico</div>
-    <div class="print-row"><strong>IBAN:</strong> ${escapeHtml(form.iban || '—')}</div>
-  </div>
-</div>
+      <div class="print-section-title">Dati cliente</div>
+      <div class="print-grid">
+        <div class="print-row"><strong>Nome:</strong> ${escapeHtml(form.client_name || '—')}</div>
+        <div class="print-row"><strong>Cognome:</strong> ${escapeHtml(form.client_surname || '—')}</div>
+        <div class="print-row"><strong>Codice fiscale:</strong> ${escapeHtml(form.client_cf || '—')}</div>
+        <div class="print-row"><strong>Telefono:</strong> ${escapeHtml(form.client_phone || '—')}</div>
+        <div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> ${escapeHtml(form.client_address || '—')}</div>
+        <div class="print-row"><strong>Metodo pagamento:</strong> Bonifico</div>
+        <div class="print-row"><strong>IBAN:</strong> ${escapeHtml(form.iban || '—')}</div>
+      </div>
+    </div>
 
     <div class="print-section">
       <div class="print-section-title">Documento</div>
@@ -306,7 +314,7 @@ function buildPrintableHtml(form = {}, items = []) {
         <thead>
           <tr>
             <th style="width:50%;">Descrizione</th>
-            <th style="width:15%; text-align:center;">Caratura</th>
+            <th style="width:15%; text-align:center;">Titolo</th>
             <th style="width:15%; text-align:center;">Pezzi</th>
             <th style="width:20%; text-align:right;">Grammi</th>
           </tr>

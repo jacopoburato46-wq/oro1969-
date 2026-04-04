@@ -22,7 +22,9 @@
       --gold:#c6a769;
       --gold-soft:rgba(198,167,105,.14);
       --ok:#0f766e;
+      --ok-soft:#dff7ef;
       --bad:#b91c1c;
+      --bad-soft:#fde9e9;
       --shadow:0 22px 60px rgba(0,0,0,.06);
       --shadow-soft:0 12px 30px rgba(0,0,0,.05);
       --radius-xl:28px;
@@ -398,7 +400,7 @@
     table{
       width:100%;
       border-collapse:collapse;
-      min-width:920px;
+      min-width:1040px;
     }
 
     thead th{
@@ -536,6 +538,134 @@
     .store-logout-card{
       padding:18px 22px;
       border-radius:24px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      line-height:1;
+      white-space:nowrap;
+      border:1px solid transparent;
+    }
+
+    .badge.red{
+      background:var(--bad-soft);
+      color:#8f1d1d;
+      border-color:#f5c8c8;
+    }
+
+    .badge.green{
+      background:var(--ok-soft);
+      color:#065f46;
+      border-color:#b7ecd9;
+    }
+
+    .badge-dot{
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:currentColor;
+      display:inline-block;
+    }
+
+    .fusion-panel{
+      margin-top:18px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:linear-gradient(180deg,#fff,#fcfaf7);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .fusion-list{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+      max-height:360px;
+      overflow:auto;
+      padding-right:4px;
+    }
+
+    .fusion-item{
+      display:grid;
+      grid-template-columns:auto 1fr auto auto;
+      gap:14px;
+      align-items:center;
+      padding:14px 16px;
+      border:1px solid #efe8dc;
+      border-radius:16px;
+      background:#fff;
+    }
+
+    .fusion-item:hover{
+      background:#fcfaf7;
+    }
+
+    .fusion-item input[type="checkbox"]{
+      width:20px;
+      height:20px;
+      min-height:20px;
+      border-radius:6px;
+      accent-color:#111;
+    }
+
+    .fusion-item-main{
+      min-width:0;
+    }
+
+    .fusion-item-title{
+      font-weight:800;
+      font-size:14px;
+      color:#111;
+      margin-bottom:4px;
+    }
+
+    .fusion-item-sub{
+      font-size:12px;
+      color:#6f6f6f;
+      line-height:1.4;
+    }
+
+    .fusion-item-metric{
+      text-align:right;
+      font-size:13px;
+      color:#444;
+      white-space:nowrap;
+    }
+
+    .fusion-summary{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .fusion-summary-box{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .fusion-summary-box .label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:#777;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .fusion-summary-box .value{
+      font-size:20px;
+      font-weight:900;
+      color:#111;
+      line-height:1.05;
     }
 
     .print-sheet{
@@ -744,13 +874,22 @@
       .hero-side{
         grid-template-columns:1fr;
       }
-      .quote-grid,.two-col{grid-template-columns:1fr}
+      .quote-grid,.two-col,.fusion-summary{grid-template-columns:1fr}
       .quote-grid.store-view{grid-template-columns:1fr}
       .auth-form,.form-full,.control-row{grid-template-columns:1fr}
       .summary-grid{grid-template-columns:1fr}
       .quote-card,.section{padding:20px}
       .head{flex-direction:column;align-items:flex-start}
       .actions-row{flex-direction:column}
+      .fusion-item{
+        grid-template-columns:auto 1fr;
+      }
+      .fusion-item-metric{
+        text-align:left;
+      }
+      table{
+        min-width:1180px;
+      }
     }
   </style>
 </head>
@@ -969,6 +1108,48 @@
               <div id="resetNote" class="muted">Solo admin può registrare una fusione.</div>
               <div></div>
             </div>
+
+            <div id="fusionPanel" class="fusion-panel hidden">
+              <div class="head" style="margin-bottom:12px;">
+                <div>
+                  <div class="small-label" style="margin-bottom:6px;">Selezione</div>
+                  <h2 style="font-size:1.06rem;">Schede oro da fondere</h2>
+                </div>
+                <button id="closeFusionPanelBtn" class="secondary" type="button" style="min-height:42px;width:auto;">Chiudi</button>
+              </div>
+
+              <label style="max-width:280px;">
+                <span>Prezzo fonderia €/g PURO</span>
+                <input id="fusionFoundryPrice" type="number" step="0.01" placeholder="es. 98.50" />
+              </label>
+
+              <div class="fusion-summary">
+                <div class="fusion-summary-box">
+                  <div class="label">Schede selezionate</div>
+                  <div id="fusionSelectedCount" class="value">0</div>
+                </div>
+                <div class="fusion-summary-box">
+                  <div class="label">Grammi lordi</div>
+                  <div id="fusionSelectedGross" class="value">0 g</div>
+                </div>
+                <div class="fusion-summary-box">
+                  <div class="label">Puro selezionato</div>
+                  <div id="fusionSelectedPure" class="value">0 g</div>
+                </div>
+                <div class="fusion-summary-box">
+                  <div class="label">Margine stimato</div>
+                  <div id="fusionEstimatedMargin" class="value">0 €</div>
+                </div>
+              </div>
+
+              <div id="fusionList" class="fusion-list">
+                <div class="muted">Nessuna scheda oro disponibile da fondere</div>
+              </div>
+
+              <div class="actions-row">
+                <button id="confirmFusionBtn" type="button">Conferma fusione</button>
+              </div>
+            </div>
           </div>
 
           <div class="actions-row" style="margin-top:14px;">
@@ -1011,18 +1192,20 @@
                 <th>N° scheda</th>
                 <th>Cliente</th>
                 <th>Negozio</th>
+                <th>Stato</th>
+                <th>Rif. fusione</th>
                 <th class="right">Grammi</th>
                 <th class="right">Euro</th>
                 <th>Azioni</th>
               </tr>
             </thead>
             <tbody id="formsBody">
-              <tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>
+              <tr><td colspan="9" class="empty">Nessuna scheda salvata</td></tr>
             </tbody>
           </table>
         </div>
 
-        <div class="note">Da qui puoi controllare, ristampare e verificare tutte le schede già registrate.</div>
+        <div class="note">Le schede restano sempre disponibili per la ristampa, anche dopo la fusione.</div>
       </section>
 
       <div id="storeLogoutArea" class="card section store-logout-card hidden" style="margin-top:20px;">
@@ -1222,18 +1405,28 @@
     adminStatsCard: document.getElementById('adminStatsCard'),
     sessionCard: document.getElementById('sessionCard'),
     adminFusioniCard: document.getElementById('adminFusioniCard'),
-    storeLogoutArea: document.getElementById('storeLogoutArea')
+    storeLogoutArea: document.getElementById('storeLogoutArea'),
+
+    fusionPanel: document.getElementById('fusionPanel'),
+    closeFusionPanelBtn: document.getElementById('closeFusionPanelBtn'),
+    fusionFoundryPrice: document.getElementById('fusionFoundryPrice'),
+    fusionSelectedCount: document.getElementById('fusionSelectedCount'),
+    fusionSelectedGross: document.getElementById('fusionSelectedGross'),
+    fusionSelectedPure: document.getElementById('fusionSelectedPure'),
+    fusionEstimatedMargin: document.getElementById('fusionEstimatedMargin'),
+    fusionList: document.getElementById('fusionList'),
+    confirmFusionBtn: document.getElementById('confirmFusionBtn')
   };
 
   let priceRefreshInterval = null;
   let currentUser = null;
   let currentStore = null;
   let currentPureActiveGrams = 0;
-  let currentPureActiveCost = 0;
-  let currentAvgPurchasePrice = 0;
-  let formItems = [
-    { description: '', quantity: 1, grams: '', karat: '18' }
-  ];
+  let formItems = [{ description: '', quantity: 1, grams: '', karat: '18' }];
+  let allFormsCache = [];
+  let allSessionsCache = [];
+  let allItemsCache = [];
+  let fusionCandidates = [];
 
   function setAuthStatus(text, type = '') {
     els.authStatus.textContent = text;
@@ -1297,12 +1490,8 @@
     }
 
     formItems = formItems.map(item => {
-      if (isSilver) {
-        return { ...item, karat: '800' };
-      }
-      if (item.karat === '800') {
-        return { ...item, karat: '18' };
-      }
+      if (isSilver) return { ...item, karat: '800' };
+      if (item.karat === '800') return { ...item, karat: '18' };
       return item;
     });
 
@@ -1316,15 +1505,11 @@
     }).format(Number(n || 0));
 
   function formatDateTimeIT(value = new Date()) {
-    return new Date(value).toLocaleString('it-IT', {
-      timeZone: 'Europe/Rome'
-    });
+    return new Date(value).toLocaleString('it-IT', { timeZone: 'Europe/Rome' });
   }
 
   function formatDateIT(value = new Date()) {
-    return new Date(value).toLocaleDateString('it-IT', {
-      timeZone: 'Europe/Rome'
-    });
+    return new Date(value).toLocaleDateString('it-IT', { timeZone: 'Europe/Rome' });
   }
 
   const escapeHtml = (s) => String(s ?? '')
@@ -1346,16 +1531,15 @@
   }
 
   function updatePureValueDisplay() {
-  const purePrice = getCurrentMarketPurePrice();
+    const purePrice = getCurrentMarketPurePrice();
+    if (purePrice == null) {
+      els.nextAlert.textContent = 'Valore live teorico non disponibile';
+      return;
+    }
 
-  if (purePrice == null) {
-    els.nextAlert.textContent = 'Valore live teorico non disponibile';
-    return;
+    const liveValue = currentPureActiveGrams * purePrice;
+    els.nextAlert.textContent = `Valore live teorico: ${fmt(liveValue)} €`;
   }
-
-  const liveValue = currentPureActiveGrams * purePrice;
-  els.nextAlert.textContent = `Valore live teorico: ${fmt(liveValue)} €`;
-}
 
   if (!window.supabase || !window.supabase.createClient) {
     setAuthMessage('Errore: libreria Supabase non caricata');
@@ -1369,7 +1553,6 @@
 
   function startAutoRefresh() {
     if (priceRefreshInterval) return;
-
     priceRefreshInterval = setInterval(async () => {
       try {
         await loadPrice();
@@ -1406,49 +1589,48 @@
     updatePureValueDisplay();
   }
 
-  function buildGoldInventory(forms, sessions, allItems) {
-    const itemsByFormId = {};
-    allItems.forEach(item => {
-      if (!itemsByFormId[item.form_id]) itemsByFormId[item.form_id] = [];
-      itemsByFormId[item.form_id].push(item);
+  function buildItemsByFormId(items) {
+    const map = {};
+    items.forEach(item => {
+      if (!map[item.form_id]) map[item.form_id] = [];
+      map[item.form_id].push(item);
     });
+    return map;
+  }
 
-    const goldForms = forms.filter(form => {
-      const items = itemsByFormId[form.id] || [];
-      return !isSilverOnlyItems(items);
-    });
-
-    const goldFormIds = new Set(goldForms.map(f => f.id));
-
-    const totalPureFromForms = allItems.reduce((sum, item) => {
-      if (!goldFormIds.has(item.form_id)) return sum;
-      const grams = Number(item.grams || 0);
-      const factor = getPureFactor(item.karat || '18');
-      return sum + (grams * factor);
+  function calcFormPureAndGross(form, items) {
+    const gross = Number(form.total_grams || 0);
+    const pure = (items || []).reduce((sum, item) => {
+      return sum + (Number(item.grams || 0) * getPureFactor(item.karat || '18'));
     }, 0);
-
-    const totalCostFromForms = goldForms.reduce((sum, form) => {
-      return sum + Number(form.total_eur || 0);
-    }, 0);
-
-    const totalFusedPure = sessions.reduce((sum, s) => {
-      return sum + Number(s.pure_grams || 0);
-    }, 0);
-
-    const totalFusedCost = sessions.reduce((sum, s) => {
-      return sum + Number(s.total_paid_clients || 0);
-    }, 0);
-
-    const pureActive = Number((totalPureFromForms - totalFusedPure).toFixed(2));
-    const costActive = Number((totalCostFromForms - totalFusedCost).toFixed(2));
-    const avgPurchasePrice = pureActive !== 0 ? Number((costActive / pureActive).toFixed(6)) : 0;
-    const lastFusionAt = sessions.length ? sessions[0].closed_at : null;
 
     return {
-      pureActive,
-      costActive,
-      avgPurchasePrice,
-      lastFusionAt
+      gross: Number(gross.toFixed(2)),
+      pure: Number(pure.toFixed(2)),
+      eur: Number(form.total_eur || 0)
+    };
+  }
+
+  function buildGoldInventory(forms, items) {
+    const itemsByFormId = buildItemsByFormId(items);
+
+    const goldForms = forms.filter(form => {
+      const formItems = itemsByFormId[form.id] || [];
+      return !isSilverOnlyItems(formItems);
+    });
+
+    const unfusedGoldForms = goldForms.filter(form => !form.fusion_session_id);
+
+    const pureActive = unfusedGoldForms.reduce((sum, form) => {
+      const metrics = calcFormPureAndGross(form, itemsByFormId[form.id] || []);
+      return sum + metrics.pure;
+    }, 0);
+
+    return {
+      pureActive: Number(pureActive.toFixed(2)),
+      itemsByFormId,
+      goldForms,
+      unfusedGoldForms
     };
   }
 
@@ -1460,43 +1642,24 @@
       return;
     }
 
-    els.sessionsList.innerHTML = sessions.map(s => {
-      const pureFused = Number(s.pure_grams || 0);
-      const estimatedCost = Number(s.total_paid_clients || 0);
-      const avgPurchasePrice = pureFused !== 0 ? estimatedCost / pureFused : 0;
-
-      return `
-        <div class="session-card">
-          <div style="font-weight:800;margin-bottom:12px;font-size:16px;">
-            Fusione chiusa il ${formatDateTimeIT(s.closed_at)}
-          </div>
-
-          <div class="print-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;">
-            <div class="muted"><strong>Totale grammi fusi:</strong> ${fmt(s.total_grams)} g</div>
-            <div class="muted"><strong>Totale puro fuso:</strong> ${pureFused ? `${fmt(pureFused)} g` : '—'}</div>
-
-            <div class="muted"><strong>Prezzo medio acquisto puro:</strong> ${pureFused ? `${fmt(avgPurchasePrice)} €/g` : '—'}</div>
-            <div class="muted"><strong>Prezzo fonderia:</strong> ${s.foundry_price_per_gram != null ? `${fmt(s.foundry_price_per_gram)} €/g` : '—'}</div>
-
-            <div class="muted"><strong>Costo stimato puro fuso:</strong> ${s.total_paid_clients != null ? `${fmt(s.total_paid_clients)} €` : '—'}</div>
-            <div class="muted"><strong>Totale incassato:</strong> ${s.total_fusion_revenue != null ? `${fmt(s.total_fusion_revenue)} €` : '—'}</div>
-
-            <div class="muted"><strong>Margine reale:</strong> ${s.gross_margin != null ? `${fmt(s.gross_margin)} €` : '—'}</div>
-            <div class="muted"><strong>Riepilogo:</strong> ${escapeHtml(s.summary_text || '—').replace(/\n/g, '<br>')}</div>
-          </div>
+    els.sessionsList.innerHTML = sessions.map(s => `
+      <div class="session-card">
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:center;">
+          <div class="muted"><strong>Fusione #${s.id}</strong></div>
+          <div class="muted"><strong>Data:</strong> ${formatDateTimeIT(s.closed_at)}</div>
+          <div class="muted"><strong>Totale fuso:</strong> ${fmt(s.total_grams || 0)} g</div>
+          <div class="muted"><strong>Margine:</strong> ${fmt(s.gross_margin || 0)} €</div>
         </div>
-      `;
-    }).join('');
+      </div>
+    `).join('');
   }
 
-  function renderForms(forms, lastFusionAt, pureGramsActive = 0, pureCostActive = 0, avgPurchasePrice = 0) {
+  function renderForms(forms, pureGramsActive = 0) {
     currentPureActiveGrams = Number(pureGramsActive || 0);
-    currentPureActiveCost = Number(pureCostActive || 0);
-    currentAvgPurchasePrice = Number(avgPurchasePrice || 0);
-
     els.totalGrams.textContent = fmt(currentPureActiveGrams) + ' g';
     updatePureValueDisplay();
 
+    const lastFusionAt = allSessionsCache.length ? allSessionsCache[0].closed_at : null;
     els.resetNote.textContent = lastFusionAt
       ? `Ultima fusione registrata: ${formatDateTimeIT(lastFusionAt)}`
       : 'Nessuna fusione registrata';
@@ -1504,25 +1667,35 @@
     els.formsCount.textContent = `${forms.length} schede`;
 
     if (!forms.length) {
-      els.formsBody.innerHTML = '<tr><td colspan="7" class="empty">Nessuna scheda salvata</td></tr>';
+      els.formsBody.innerHTML = '<tr><td colspan="9" class="empty">Nessuna scheda salvata</td></tr>';
       return;
     }
 
-    els.formsBody.innerHTML = forms.map(form => `
-      <tr>
-        <td>${formatDateTimeIT(form.created_at)}</td>
-        <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
-        <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
-        <td>${escapeHtml(form.store || '-')}</td>
-        <td class="right">${fmt(form.total_grams || 0)} g</td>
-        <td class="right">${fmt(form.total_eur || 0)} €</td>
-        <td>
-          <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
-            Ristampa
-          </button>
-        </td>
-      </tr>
-    `).join('');
+    els.formsBody.innerHTML = forms.map(form => {
+      const fused = !!form.fusion_session_id;
+      return `
+        <tr>
+          <td>${formatDateTimeIT(form.created_at)}</td>
+          <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
+          <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
+          <td>${escapeHtml(form.store || '-')}</td>
+          <td>
+            ${fused
+              ? `<span class="badge green"><span class="badge-dot"></span>Fusa</span>`
+              : `<span class="badge red"><span class="badge-dot"></span>Da fondere</span>`
+            }
+          </td>
+          <td>${fused ? `Fusione #${form.fusion_session_id}` : '—'}</td>
+          <td class="right">${fmt(form.total_grams || 0)} g</td>
+          <td class="right">${fmt(form.total_eur || 0)} €</td>
+          <td>
+            <button type="button" class="secondary" data-action="reprint-form" data-id="${form.id}" style="min-height:42px;width:auto;">
+              Ristampa
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
 
     bindFormsActions();
   }
@@ -1536,23 +1709,92 @@
     });
   }
 
+  function renderFusionCandidates() {
+    const itemsByFormId = buildItemsByFormId(allItemsCache);
+
+    fusionCandidates = allFormsCache
+      .filter(form => !form.fusion_session_id)
+      .filter(form => {
+        const formItems = itemsByFormId[form.id] || [];
+        return formItems.length && !isSilverOnlyItems(formItems);
+      })
+      .map(form => {
+        const metrics = calcFormPureAndGross(form, itemsByFormId[form.id] || []);
+        return { ...form, metrics };
+      });
+
+    if (!fusionCandidates.length) {
+      els.fusionList.innerHTML = '<div class="muted">Nessuna scheda oro disponibile da fondere</div>';
+      updateFusionPreview();
+      return;
+    }
+
+    els.fusionList.innerHTML = fusionCandidates.map(form => `
+      <label class="fusion-item">
+        <input type="checkbox" data-fusion-form-id="${form.id}" />
+        <div class="fusion-item-main">
+          <div class="fusion-item-title">
+            #${escapeHtml(form.scheda_number || '-')} · ${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || 'Cliente')}
+          </div>
+          <div class="fusion-item-sub">
+            ${escapeHtml(form.store || '-')} · ${formatDateTimeIT(form.created_at)}
+          </div>
+        </div>
+        <div class="fusion-item-metric">
+          <strong>${fmt(form.metrics.gross)} g</strong><br>lordi
+        </div>
+        <div class="fusion-item-metric">
+          <strong>${fmt(form.metrics.pure)} g</strong><br>puro
+        </div>
+      </label>
+    `).join('');
+
+    els.fusionList.querySelectorAll('input[data-fusion-form-id]').forEach(input => {
+      input.addEventListener('change', updateFusionPreview);
+    });
+
+    updateFusionPreview();
+  }
+
+  function getSelectedFusionForms() {
+    const selectedIds = Array.from(
+      els.fusionList.querySelectorAll('input[data-fusion-form-id]:checked')
+    ).map(el => Number(el.dataset.fusionFormId));
+
+    return fusionCandidates.filter(form => selectedIds.includes(Number(form.id)));
+  }
+
+  function updateFusionPreview() {
+    const selectedForms = getSelectedFusionForms();
+    const foundryPrice = Number(String(els.fusionFoundryPrice.value || '0').replace(',', '.')) || 0;
+
+    const totalGross = selectedForms.reduce((sum, form) => sum + Number(form.metrics.gross || 0), 0);
+    const totalPure = selectedForms.reduce((sum, form) => sum + Number(form.metrics.pure || 0), 0);
+    const totalPaid = selectedForms.reduce((sum, form) => sum + Number(form.metrics.eur || 0), 0);
+    const totalRevenue = totalPure * foundryPrice;
+    const margin = totalRevenue - totalPaid;
+
+    els.fusionSelectedCount.textContent = String(selectedForms.length);
+    els.fusionSelectedGross.textContent = `${fmt(totalGross)} g`;
+    els.fusionSelectedPure.textContent = `${fmt(totalPure)} g`;
+    els.fusionEstimatedMargin.textContent = `${fmt(margin)} €`;
+  }
+
   async function loadOperationalData() {
-    const [
-      sessionsRes,
-      formsRes
-    ] = await Promise.all([
+    const [sessionsRes, formsRes] = await Promise.all([
       client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(100),
-      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(100)
+      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(200)
     ]);
 
     if (sessionsRes.error) throw sessionsRes.error;
     if (formsRes.error) throw formsRes.error;
 
-    const forms = formsRes.data || [];
-    const sessions = sessionsRes.data || [];
-    const formIds = forms.map(f => f.id);
+    allSessionsCache = sessionsRes.data || [];
+    allFormsCache = formsRes.data || [];
 
-    let allItems = [];
+    const formIds = allFormsCache.map(f => f.id);
+
+    let items = [];
     if (formIds.length) {
       const { data: itemsData, error: itemsError } = await client
         .from('gold_form_items')
@@ -1560,19 +1802,16 @@
         .in('form_id', formIds);
 
       if (itemsError) throw itemsError;
-      allItems = itemsData || [];
+      items = itemsData || [];
     }
 
-    const inventory = buildGoldInventory(forms, sessions, allItems);
+    allItemsCache = items;
 
-    renderSessions(sessions);
-    renderForms(
-      forms,
-      inventory.lastFusionAt,
-      inventory.pureActive,
-      inventory.costActive,
-      inventory.avgPurchasePrice
-    );
+    const inventory = buildGoldInventory(allFormsCache, allItemsCache);
+
+    renderSessions(allSessionsCache);
+    renderForms(allFormsCache, inventory.pureActive);
+    renderFusionCandidates();
   }
 
   async function sendFormEmailArchive(form, items) {
@@ -1660,15 +1899,12 @@
     const materialType = getCurrentMaterialType();
     const quote = Number(els.formQuotePerGram.value || 0);
 
-    if (materialType === 'silver800') {
-      return grams * quote;
-    }
+    if (materialType === 'silver800') return grams * quote;
 
     if (quote > 0) {
       let multiplier = 1;
       if (karat === '14') multiplier = 565 / 730;
       if (karat === '9') multiplier = 355 / 730;
-
       const pricePerGram = quote * multiplier;
       return grams * pricePerGram;
     }
@@ -1696,7 +1932,6 @@
       input.addEventListener('input', (e) => {
         const index = Number(e.target.dataset.index);
         const field = e.target.dataset.field;
-
         formItems[index][field] = e.target.value;
         recalcFormTotals();
         updateRowValue(index);
@@ -1719,10 +1954,7 @@
 
   function recalcFormTotals() {
     const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
-
-    const totalEur = formItems.reduce((sum, item) => {
-      return sum + calcItemValue(item);
-    }, 0);
+    const totalEur = formItems.reduce((sum, item) => sum + calcItemValue(item), 0);
 
     els.formTotalGrams.textContent = fmt(totalGrams) + ' g';
     els.formTotalEur.textContent = fmt(totalEur) + ' €';
@@ -1736,9 +1968,7 @@
   function resetGoldForm(statusText = 'Non salvata') {
     els.goldForm.reset();
     els.formStore.value = currentStore ? currentStore.store_name : '';
-    if (els.formMaterialType) {
-      els.formMaterialType.value = 'gold';
-    }
+    if (els.formMaterialType) els.formMaterialType.value = 'gold';
     formItems = [{ description: '', quantity: 1, grams: '', karat: '18' }];
     els.formSaveStatus.textContent = statusText;
 
@@ -1755,11 +1985,7 @@
 
   function fillPrintSheet() {
     const { totalGrams, totalEur } = getFormTotals();
-
-    const validItems = formItems.filter(item =>
-      String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0
-    );
-
+    const validItems = formItems.filter(item => String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0);
     const isSilver = getCurrentMaterialType() === 'silver800';
 
     els.printSchedaNumber.textContent = els.formSchedaNumber.value.trim() || '—';
@@ -1860,9 +2086,7 @@
       if (itemsError) throw itemsError;
 
       fillPrintSheetFromSaved(form, items || []);
-      setTimeout(() => {
-        window.print();
-      }, 100);
+      setTimeout(() => window.print(), 100);
     } catch (err) {
       console.error(err);
       alert('Errore ristampa scheda');
@@ -1872,21 +2096,15 @@
   function updateRowValue(index) {
     const row = els.formItemsBody.querySelectorAll('tr')[index];
     if (!row) return;
-
     const valueCell = row.children[4];
     const value = calcItemValue(formItems[index]);
-
     valueCell.innerHTML = value.toFixed(2) + ' €';
   }
 
   function getFormTotals() {
     const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
-
     let totalEur = 0;
-
-    formItems.forEach(item => {
-      totalEur += calcItemValue(item);
-    });
+    formItems.forEach(item => { totalEur += calcItemValue(item); });
 
     return {
       totalGrams: Number(totalGrams.toFixed(2)),
@@ -1976,91 +2194,92 @@
     }
   });
 
-  els.resetBtn.addEventListener('click', async () => {
+  els.resetBtn.addEventListener('click', () => {
+    if (!currentStore || currentStore.role !== 'admin') return;
+    els.fusionPanel.classList.remove('hidden');
+    renderFusionCandidates();
+    updateFusionPreview();
+  });
+
+  els.closeFusionPanelBtn.addEventListener('click', () => {
+    els.fusionPanel.classList.add('hidden');
+  });
+
+  els.fusionFoundryPrice.addEventListener('input', updateFusionPreview);
+
+  els.confirmFusionBtn.addEventListener('click', async () => {
     if (!currentStore || currentStore.role !== 'admin') return;
 
-    const pureToMeltInput = window.prompt('Quanti grammi di oro puro vuoi fondere?', '');
-    if (pureToMeltInput === null) return;
-
-    const pureToMelt = Number(String(pureToMeltInput).replace(',', '.'));
-    if (!Number.isFinite(pureToMelt) || pureToMelt <= 0) {
-      alert('Valore grammi non valido');
+    const selectedForms = getSelectedFusionForms();
+    if (!selectedForms.length) {
+      alert('Seleziona almeno una scheda da fondere');
       return;
     }
 
-    const foundryPriceInput = window.prompt('Inserisci prezzo concordato fonderia €/g PURO', '');
-    if (foundryPriceInput === null) return;
-
-    const foundryPrice = Number(String(foundryPriceInput).replace(',', '.'));
+    const foundryPrice = Number(String(els.fusionFoundryPrice.value || '0').replace(',', '.'));
     if (!Number.isFinite(foundryPrice) || foundryPrice <= 0) {
-      alert('Prezzo fonderia non valido');
+      alert('Inserisci un prezzo fonderia valido');
       return;
     }
+
+    const totalGross = selectedForms.reduce((sum, form) => sum + Number(form.metrics.gross || 0), 0);
+    const totalPure = selectedForms.reduce((sum, form) => sum + Number(form.metrics.pure || 0), 0);
+    const totalPaid = selectedForms.reduce((sum, form) => sum + Number(form.metrics.eur || 0), 0);
+    const avgPurchasePrice = totalPure > 0 ? totalPaid / totalPure : 0;
+    const totalRevenue = totalPure * foundryPrice;
+    const realMargin = totalRevenue - totalPaid;
 
     const ok = window.confirm(
-      `Confermi fusione di ${pureToMelt.toFixed(2)} g di puro con prezzo fonderia ${foundryPrice.toFixed(2)} €/g puro?`
+      `Confermi fusione di ${selectedForms.length} schede?\n` +
+      `Lordo: ${fmt(totalGross)} g\n` +
+      `Puro: ${fmt(totalPure)} g\n` +
+      `Totale pagato: ${fmt(totalPaid)} €\n` +
+      `Prezzo medio acquisto: ${fmt(avgPurchasePrice)} €/g\n` +
+      `Prezzo fonderia: ${fmt(foundryPrice)} €/g\n` +
+      `Margine: ${fmt(realMargin)} €`
     );
+
     if (!ok) return;
 
+    els.confirmFusionBtn.disabled = true;
     els.resetBtn.disabled = true;
     setStatus('Fusione in corso...');
 
     try {
-      const { data: formsData, error: formsError } = await client
-        .from('gold_forms')
-        .select('*');
-
-      if (formsError) throw formsError;
-
-      const { data: sessionsData, error: sessionsError } = await client
-        .from('gold_sessions')
-        .select('*');
-
-      if (sessionsError) throw sessionsError;
-
-      const allForms = formsData || [];
-      const sessions = sessionsData || [];
-      const formIds = allForms.map(f => f.id);
-
-      let allItems = [];
-      if (formIds.length) {
-        const { data: itemsData, error: itemsError } = await client
-          .from('gold_form_items')
-          .select('*')
-          .in('form_id', formIds);
-
-        if (itemsError) throw itemsError;
-        allItems = itemsData || [];
-      }
-
-      const inventory = buildGoldInventory(allForms, sessions, allItems);
-
-      const avgPurchasePrice = Number(inventory.avgPurchasePrice || 0);
-      const estimatedCostOfFusedPure = Number((pureToMelt * avgPurchasePrice).toFixed(2));
-      const totalFusionRevenue = Number((pureToMelt * foundryPrice).toFixed(2));
-      const realMargin = Number((totalFusionRevenue - estimatedCostOfFusedPure).toFixed(2));
-      const remainingPure = Number((inventory.pureActive - pureToMelt).toFixed(2));
-      const remainingCost = Number((inventory.costActive - estimatedCostOfFusedPure).toFixed(2));
-
-      const { error: sessionError } = await client
+      const { data: insertedSession, error: sessionError } = await client
         .from('gold_sessions')
         .insert([{
-          total_grams: Number(pureToMelt.toFixed(2)),
-          pure_grams: Number(pureToMelt.toFixed(2)),
+          total_grams: Number(totalGross.toFixed(2)),
+          pure_grams: Number(totalPure.toFixed(2)),
           foundry_price_per_gram: Number(foundryPrice.toFixed(2)),
-          total_paid_clients: estimatedCostOfFusedPure,
-          total_fusion_revenue: totalFusionRevenue,
-          gross_margin: realMargin,
+          total_paid_clients: Number(totalPaid.toFixed(2)),
+          total_fusion_revenue: Number(totalRevenue.toFixed(2)),
+          gross_margin: Number(realMargin.toFixed(2)),
           summary_text:
-            `Prezzo medio acquisto puro: ${fmt(avgPurchasePrice)} €/g\n` +
-            `Costo stimato puro fuso: ${fmt(estimatedCostOfFusedPure)} €\n` +
-            `Totale incassato fusione: ${fmt(totalFusionRevenue)} €\n` +
-            `Margine reale: ${fmt(realMargin)} €\n` +
-            `Puro residuo teorico: ${fmt(remainingPure)} g\n` +
-            `Costo residuo teorico: ${fmt(remainingCost)} €`
-        }]);
+            `Schede fuse: ${selectedForms.length}\n` +
+            `Lordo: ${fmt(totalGross)} g\n` +
+            `Puro: ${fmt(totalPure)} g\n` +
+            `Totale pagato: ${fmt(totalPaid)} €\n` +
+            `Prezzo medio acquisto: ${fmt(avgPurchasePrice)} €/g\n` +
+            `Prezzo fonderia: ${fmt(foundryPrice)} €/g\n` +
+            `Margine: ${fmt(realMargin)} €`
+        }])
+        .select()
+        .single();
 
       if (sessionError) throw sessionError;
+
+      const selectedIds = selectedForms.map(form => form.id);
+
+      const { error: updateFormsError } = await client
+        .from('gold_forms')
+        .update({ fusion_session_id: insertedSession.id })
+        .in('id', selectedIds);
+
+      if (updateFormsError) throw updateFormsError;
+
+      els.fusionFoundryPrice.value = '';
+      els.fusionPanel.classList.add('hidden');
 
       await loadOperationalData();
       setStatus('Fusione registrata', 'success');
@@ -2069,6 +2288,7 @@
       alert('Errore fusione: ' + (err?.message || JSON.stringify(err)));
       setStatus('Errore fusione', 'error');
     } finally {
+      els.confirmFusionBtn.disabled = false;
       els.resetBtn.disabled = false;
     }
   });
@@ -2076,13 +2296,20 @@
   els.clearSessionsBtn.addEventListener('click', async () => {
     if (!currentStore || currentStore.role !== 'admin') return;
 
-    const ok = window.confirm('Sei sicuro di eliminare tutto lo storico fusioni?');
+    const ok = window.confirm('Sei sicuro di eliminare tutto lo storico fusioni e azzerare il collegamento sulle schede?');
     if (!ok) return;
 
     els.clearSessionsBtn.disabled = true;
     setStatus('Eliminazione storico...');
 
     try {
+      const { error: resetFormsError } = await client
+        .from('gold_forms')
+        .update({ fusion_session_id: null })
+        .not('fusion_session_id', 'is', null);
+
+      if (resetFormsError) throw resetFormsError;
+
       const { error } = await client
         .from('gold_sessions')
         .delete()
@@ -2198,7 +2425,8 @@
           quote_per_gram: quotePerGram,
           total_grams: totalGrams,
           total_eur: totalEur,
-          notes
+          notes,
+          fusion_session_id: null
         }])
         .select()
         .single();
@@ -2262,9 +2490,7 @@
 
   window.printGoldForm = function () {
     fillPrintSheet();
-    setTimeout(() => {
-      window.print();
-    }, 100);
+    setTimeout(() => window.print(), 100);
   };
 })();
 </script>

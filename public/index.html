@@ -835,34 +835,82 @@
     }
 
     @media print {
-      html,body{
-        background:#fff !important;
-        margin:0 !important;
-        padding:0 !important;
-      }
+  html,body{
+    background:#fff !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
 
-      body{
-        -webkit-print-color-adjust:exact;
-        print-color-adjust:exact;
-      }
+  body{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
 
-      .page > *{
-        display:none !important;
-      }
+  .page > *{
+    display:none !important;
+  }
 
-      #printSheet{
-        display:block !important;
-        background:#fff !important;
-        color:#111 !important;
-        padding:0 !important;
-        margin:0 !important;
-      }
+  .print-target{
+    display:block !important;
+    background:#fff !important;
+    color:#111 !important;
+    padding:0 !important;
+    margin:0 !important;
+  }
 
-      @page{
-        size:A4;
-        margin:9mm;
-      }
-    }
+  @page{
+    size:A4;
+    margin:9mm;
+  }
+}
+    .badge.amber{
+  background:#fff4db;
+  color:#9a6700;
+  border-color:#f3d38a;
+}
+
+.session-list-min{
+  display:grid;
+  gap:10px;
+}
+
+.session-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:14px;
+  align-items:center;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:linear-gradient(180deg,#fff,#fcfaf7);
+  box-shadow:var(--shadow-soft);
+}
+
+.session-row-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  min-width:0;
+}
+
+.session-row-title{
+  font-weight:800;
+  font-size:14px;
+  color:#111;
+}
+
+.session-row-date{
+  font-size:13px;
+  color:#666;
+}
+
+.session-row-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
 
     @media (max-width:960px){
       .page{padding:16px}
@@ -1741,125 +1789,65 @@
   }
 
   function renderSessions(sessions) {
-    els.sessionsCount.textContent = `${sessions.length} fusioni`;
+  els.sessionsCount.textContent = `${sessions.length} fusioni`;
 
-    if (!sessions.length) {
-      els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>';
-      return;
-    }
+  if (!sessions.length) {
+    els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>';
+    return;
+  }
 
-    const formsBySession = {};
-    allFormsCache.forEach(form => {
-      if (!form.fusion_session_id) return;
-      if (!formsBySession[form.fusion_session_id]) formsBySession[form.fusion_session_id] = [];
-      formsBySession[form.fusion_session_id].push(form);
-    });
+  els.sessionsList.className = 'session-list-min';
 
-    els.sessionsList.innerHTML = sessions.map(session => {
-      const meta = getSessionStatusMeta(session.status);
-      const estimatedRevenue = Number(session.estimated_fusion_revenue || 0);
-      const actualRevenue = Number(session.actual_fusion_revenue || 0);
-      const estimatedMargin = Number(session.estimated_margin || 0);
-      const actualMargin = Number(session.actual_margin || 0);
-      const pureDiff = Number(session.pure_diff_grams || 0);
-      const marginDiff = Number(session.margin_diff_eur || 0);
-      const linkedForms = formsBySession[session.id] || [];
+  els.sessionsList.innerHTML = sessions.map(session => {
+    const meta = getSessionStatusMeta(session.status);
+    const dateRef = session.status === 'completed'
+      ? formatDateTimeIT(session.completed_at || session.locked_at || session.closed_at)
+      : formatDateTimeIT(session.locked_at || session.closed_at);
 
-      return `
-        <div class="session-card">
-          <div class="session-toolbar">
-            <div>
-              <div class="session-meta">
-                <span class="${meta.className}"><span class="badge-dot"></span>${meta.label}</span>
-                <span class="muted"><strong>Fusione #${session.id}</strong></span>
-                <span class="muted">Blocco: ${formatDateTimeIT(session.locked_at || session.closed_at)}</span>
-                <span class="muted">Schede: ${linkedForms.length}</span>
-              </div>
-            </div>
-            <div class="session-actions">
-              <button type="button" class="secondary" data-action="print-session" data-id="${session.id}" style="min-height:42px;width:auto;">Stampa</button>
-              ${
-                session.status === 'locked'
-                  ? `<button type="button" data-action="open-complete-session" data-id="${session.id}" style="min-height:42px;width:auto;">Registra esito</button>`
-                  : ''
-              }
-            </div>
-          </div>
+    return `
+      <div class="session-row">
+        <div class="session-row-left">
+          <span class="${meta.className}"><span class="badge-dot"></span>${meta.label}</span>
+          <div class="session-row-title">Fusione #${session.id}</div>
+          <div class="session-row-date">${dateRef}</div>
+        </div>
 
-          <div class="session-grid">
-            <div class="session-box">
-              <div class="label">Prezzo fonderia</div>
-              <div class="value">${fmt(session.foundry_price_per_gram)} €/g</div>
-            </div>
-            <div class="session-box">
-              <div class="label">Lordo stimato</div>
-              <div class="value">${fmt(session.estimated_gross_grams)} g</div>
-            </div>
-            <div class="session-box">
-              <div class="label">Puro stimato</div>
-              <div class="value">${fmt(session.estimated_pure_grams)} g</div>
-            </div>
-            <div class="session-box">
-              <div class="label">Tot. pagato clienti</div>
-              <div class="value">${fmt(session.total_paid_clients)} €</div>
-            </div>
-            <div class="session-box">
-              <div class="label">Ricavo stimato</div>
-              <div class="value">${fmt(estimatedRevenue)} €</div>
-            </div>
-            <div class="session-box">
-              <div class="label">Margine stimato</div>
-              <div class="value">${fmt(estimatedMargin)} €</div>
-            </div>
-            <div class="session-box">
-              <div class="label">Puro reale</div>
-              <div class="value">${session.actual_pure_grams == null ? '—' : `${fmt(session.actual_pure_grams)} g`}</div>
-            </div>
-            <div class="session-box">
-              <div class="label">Margine reale</div>
-              <div class="value">${session.actual_margin == null ? '—' : `${fmt(actualMargin)} €`}</div>
-            </div>
-          </div>
-
-          ${
-            session.status === 'completed'
-              ? `
-                <div class="muted" style="margin-top:14px;">
-                  Ricavo reale: <strong>${fmt(actualRevenue)} €</strong> ·
-                  Diff. puro: <strong>${pureDiff >= 0 ? '+' : ''}${fmt(pureDiff)} g</strong> ·
-                  Scostamento margine: <strong>${marginDiff >= 0 ? '+' : ''}${fmt(marginDiff)} €</strong>
-                </div>
-              `
-              : `
-                <div class="muted" style="margin-top:14px;">
-                  Fusione bloccata in attesa di esito reale dalla fonderia.
-                </div>
-              `
-          }
-
+        <div class="session-row-actions">
+          <button type="button" class="secondary" data-action="print-session" data-id="${session.id}" style="min-height:42px;width:auto;">Stampa</button>
           ${
             session.status === 'locked'
-              ? `
-                <div class="session-inline-form hidden" id="completeSessionForm-${session.id}">
-                  <label>
-                    <span>Puro reale uscito da fusione</span>
-                    <input type="number" step="0.01" id="actualPureInput-${session.id}" placeholder="es. 72.40" />
-                  </label>
-                  <label>
-                    <span>Riferimento / note fonderia</span>
-                    <input type="text" id="foundryRefInput-${session.id}" placeholder="es. Doc. 123 / nota interna" />
-                  </label>
-                  <button type="button" data-action="complete-session" data-id="${session.id}" style="min-height:42px;width:auto;">Conferma esito</button>
-                </div>
-              `
+              ? `<button type="button" data-action="open-complete-session" data-id="${session.id}" style="min-height:42px;width:auto;">Registra esito</button>`
               : ''
           }
         </div>
-      `;
-    }).join('');
+      </div>
 
-    bindSessionActions();
-  }
+      ${
+        session.status === 'locked'
+          ? `
+            <div class="session-inline-form hidden" id="completeSessionForm-${session.id}" style="margin-top:-2px;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:#fff;">
+              <div class="form-full">
+                <label>
+                  <span>Puro reale uscito da fusione</span>
+                  <input type="number" step="0.01" id="actualPureInput-${session.id}" placeholder="es. 72.40" />
+                </label>
+                <label>
+                  <span>Riferimento / note fonderia</span>
+                  <input type="text" id="foundryRefInput-${session.id}" placeholder="es. Doc. 123 / nota interna" />
+                </label>
+              </div>
+              <div class="actions-row" style="margin-top:12px;">
+                <button type="button" data-action="complete-session" data-id="${session.id}" style="min-height:42px;width:auto;">Conferma esito</button>
+              </div>
+            </div>
+          `
+          : ''
+      }
+    `;
+  }).join('');
+
+  bindSessionActions();
+}
 
   function bindSessionActions() {
     els.sessionsList.querySelectorAll('button[data-action="print-session"]').forEach(btn => {
@@ -2339,54 +2327,65 @@
     }
   }
 
-  async function printFusionSession(sessionId) {
-    try {
-      const session = sessionsById[sessionId];
-      if (!session) return;
+async function printFusionSession(sessionId) {
+  try {
+    const session = sessionsById[sessionId];
+    if (!session) return;
 
-      const forms = allFormsCache.filter(f => Number(f.fusion_session_id) === Number(sessionId));
+    const forms = allFormsCache.filter(f => Number(f.fusion_session_id) === Number(sessionId));
 
-      els.fusionPrintId.textContent = `#${session.id}`;
-      els.fusionPrintStatus.textContent = session.status === 'completed' ? 'Fusa' : 'Bloccata';
-      els.fusionPrintLockedAt.textContent = formatDateTimeIT(session.locked_at || session.closed_at);
-      els.fusionPrintCompletedAt.textContent = formatDateTimeIT(session.completed_at);
+    els.fusionPrintId.textContent = `#${session.id}`;
+    els.fusionPrintStatus.textContent = session.status === 'completed' ? 'Fusa' : 'Bloccata';
+    els.fusionPrintLockedAt.textContent = formatDateTimeIT(session.locked_at || session.closed_at);
+    els.fusionPrintCompletedAt.textContent = formatDateTimeIT(session.completed_at);
 
-      els.fusionPrintFoundryPrice.textContent = `${fmt(session.foundry_price_per_gram)} €/g`;
-      els.fusionPrintPaid.textContent = `${fmt(session.total_paid_clients)} €`;
-      els.fusionPrintEstimatedGross.textContent = `${fmt(session.estimated_gross_grams)} g`;
-      els.fusionPrintEstimatedPure.textContent = `${fmt(session.estimated_pure_grams)} g`;
-      els.fusionPrintActualPure.textContent = session.actual_pure_grams == null ? '—' : `${fmt(session.actual_pure_grams)} g`;
-      els.fusionPrintPureDiff.textContent = session.pure_diff_grams == null ? '—' : `${session.pure_diff_grams >= 0 ? '+' : ''}${fmt(session.pure_diff_grams)} g`;
-      els.fusionPrintEstimatedRevenue.textContent = `${fmt(session.estimated_fusion_revenue)} €`;
-      els.fusionPrintActualRevenue.textContent = session.actual_fusion_revenue == null ? '—' : `${fmt(session.actual_fusion_revenue)} €`;
-      els.fusionPrintEstimatedMargin.textContent = `${fmt(session.estimated_margin)} €`;
-      els.fusionPrintActualMargin.textContent = session.actual_margin == null ? '—' : `${fmt(session.actual_margin)} €`;
-      els.fusionPrintMarginDiff.textContent = session.margin_diff_eur == null ? '—' : `${session.margin_diff_eur >= 0 ? '+' : ''}${fmt(session.margin_diff_eur)} €`;
-      els.fusionPrintReference.textContent = session.foundry_reference || '—';
-      els.fusionPrintNotes.textContent = session.notes || '—';
+    els.fusionPrintFoundryPrice.textContent = `${fmt(session.foundry_price_per_gram)} €/g`;
+    els.fusionPrintPaid.textContent = `${fmt(session.total_paid_clients)} €`;
+    els.fusionPrintEstimatedGross.textContent = `${fmt(session.estimated_gross_grams)} g`;
+    els.fusionPrintEstimatedPure.textContent = `${fmt(session.estimated_pure_grams)} g`;
+    els.fusionPrintActualPure.textContent = session.actual_pure_grams == null ? '—' : `${fmt(session.actual_pure_grams)} g`;
+    els.fusionPrintPureDiff.textContent = session.pure_diff_grams == null ? '—' : `${session.pure_diff_grams >= 0 ? '+' : ''}${fmt(session.pure_diff_grams)} g`;
+    els.fusionPrintEstimatedRevenue.textContent = `${fmt(session.estimated_fusion_revenue)} €`;
+    els.fusionPrintActualRevenue.textContent = session.actual_fusion_revenue == null ? '—' : `${fmt(session.actual_fusion_revenue)} €`;
+    els.fusionPrintEstimatedMargin.textContent = `${fmt(session.estimated_margin)} €`;
+    els.fusionPrintActualMargin.textContent = session.actual_margin == null ? '—' : `${fmt(session.actual_margin)} €`;
+    els.fusionPrintMarginDiff.textContent = session.margin_diff_eur == null ? '—' : `${session.margin_diff_eur >= 0 ? '+' : ''}${fmt(session.margin_diff_eur)} €`;
+    els.fusionPrintReference.textContent = session.foundry_reference || '—';
+    els.fusionPrintNotes.textContent = session.notes || '—';
 
-      if (!forms.length) {
-        els.fusionPrintFormsBody.innerHTML = '<tr><td colspan="6">Nessuna scheda</td></tr>';
-      } else {
-        els.fusionPrintFormsBody.innerHTML = forms.map(form => `
-          <tr>
-            <td>${formatDateTimeIT(form.created_at)}</td>
-            <td>${escapeHtml(form.scheda_number || '-')}</td>
-            <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
-            <td>${escapeHtml(form.store || '-')}</td>
-            <td style="text-align:right;">${fmt(form.total_grams || 0)} g</td>
-            <td style="text-align:right;">${fmt(form.total_eur || 0)} €</td>
-          </tr>
-        `).join('');
-      }
-
-      setTimeout(() => window.print(), 100);
-    } catch (err) {
-      console.error(err);
-      alert('Errore stampa fusione');
+    if (!forms.length) {
+      els.fusionPrintFormsBody.innerHTML = '<tr><td colspan="6">Nessuna scheda</td></tr>';
+    } else {
+      els.fusionPrintFormsBody.innerHTML = forms.map(form => `
+        <tr>
+          <td>${formatDateTimeIT(form.created_at)}</td>
+          <td>${escapeHtml(form.scheda_number || '-')}</td>
+          <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
+          <td>${escapeHtml(form.store || '-')}</td>
+          <td style="text-align:right;">${fmt(form.total_grams || 0)} g</td>
+          <td style="text-align:right;">${fmt(form.total_eur || 0)} €</td>
+        </tr>
+      `).join('');
     }
-  }
 
+    const goldSheet = document.getElementById('printSheet');
+    const fusionSheet = document.getElementById('fusionPrintSheet');
+
+    if (goldSheet) goldSheet.classList.remove('print-target');
+    if (fusionSheet) fusionSheet.classList.add('print-target');
+
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => {
+        if (fusionSheet) fusionSheet.classList.remove('print-target');
+      }, 300);
+    }, 100);
+  } catch (err) {
+    console.error(err);
+    alert('Errore stampa fusione');
+  }
+}
+  
   function updateRowValue(index) {
     const row = els.formItemsBody.querySelectorAll('tr')[index];
     if (!row) return;
@@ -2844,9 +2843,21 @@
   }
 
   window.printGoldForm = function () {
-    fillPrintSheet();
-    setTimeout(() => window.print(), 100);
-  };
+  const goldSheet = document.getElementById('printSheet');
+  const fusionSheet = document.getElementById('fusionPrintSheet');
+
+  fillPrintSheet();
+
+  if (fusionSheet) fusionSheet.classList.remove('print-target');
+  if (goldSheet) goldSheet.classList.add('print-target');
+
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => {
+      if (goldSheet) goldSheet.classList.remove('print-target');
+    }, 300);
+  }, 100);
+};
 })();
 </script>
 </body>

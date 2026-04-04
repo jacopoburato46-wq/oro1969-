@@ -112,8 +112,12 @@
     .fusion-item-main{min-width:0}.fusion-item-title{font-weight:800;font-size:14px;color:#111;margin-bottom:4px}.fusion-item-sub{font-size:12px;color:#6f6f6f;line-height:1.4}.fusion-item-metric{text-align:right;font-size:13px;color:#444;white-space:nowrap}
     .fusion-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
     .fusion-summary-box{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px}.fusion-summary-box .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#777;font-weight:800;margin-bottom:6px}.fusion-summary-box .value{font-size:20px;font-weight:900;color:#111;line-height:1.05}
-    .session-list-min{display:grid;gap:10px}.session-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fff,#fcfaf7);box-shadow:var(--shadow-soft)}
-    .session-row-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}.session-row-title{font-weight:800;font-size:14px;color:#111}.session-row-date{font-size:13px;color:#666}.session-row-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .session-list-min{display:grid;gap:10px}
+    .session-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fff,#fcfaf7);box-shadow:var(--shadow-soft)}
+    .session-row-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}
+    .session-row-title{font-weight:800;font-size:14px;color:#111}
+    .session-row-date{font-size:13px;color:#666}
+    .session-row-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
     .print-sheet{display:none;font-family:Arial,Helvetica,sans-serif;color:#111}
     .print-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #d9d1c4;padding-bottom:10px;margin-bottom:12px}
     .print-brand{font-size:20px;font-weight:800;letter-spacing:.01em;line-height:1}.print-sub{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}.print-meta{text-align:right;font-size:11px;color:#444;line-height:1.45}.print-section{margin-bottom:10px}.print-section-title{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#666;margin-bottom:5px;font-weight:700}
@@ -236,6 +240,45 @@
         <div id="fixesList" class="session-list-min" style="margin-top:18px;"><div class="muted">Nessuna fissazione registrata</div></div>
       </section>
 
+      <section id="profitCard" class="card section hidden">
+        <div class="head">
+          <div>
+            <div class="small-label" style="margin-bottom:6px;">Analisi</div>
+            <h2>Guadagno reale</h2>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-box">
+            <div class="small-label">Puro coperto / venduto</div>
+            <div id="profitPureSold" class="big-sub">0 g</div>
+          </div>
+          <div class="summary-box">
+            <div class="small-label">Ricavo realizzato</div>
+            <div id="profitRevenue" class="big-sub">0 €</div>
+          </div>
+          <div class="summary-box">
+            <div class="small-label">Costo attribuito</div>
+            <div id="profitCost" class="big-sub">0 €</div>
+          </div>
+        </div>
+
+        <div class="summary-grid" style="margin-top:12px;">
+          <div class="summary-box">
+            <div class="small-label">Guadagno netto</div>
+            <div id="profitNet" class="big-sub">0 €</div>
+          </div>
+          <div class="summary-box">
+            <div class="small-label">Margine €/g</div>
+            <div id="profitPerGram" class="big-sub">0 €/g</div>
+          </div>
+          <div class="summary-box">
+            <div class="small-label">Fissazioni scoperte</div>
+            <div id="profitUncovered" class="big-sub">0 g</div>
+          </div>
+        </div>
+      </section>
+
       <section class="card section">
         <div class="head"><div><div class="small-label" style="margin-bottom:6px;">Archivio</div><h2>Schede salvate</h2></div><div id="formsCount" class="muted">0 schede</div></div>
         <div class="table-wrap"><table><thead><tr><th>Data</th><th>N° scheda</th><th>Cliente</th><th>Negozio</th><th>Stato</th><th>Rif. fusione</th><th class="right">Grammi</th><th class="right">Euro</th><th>Azioni</th></tr></thead><tbody id="formsBody"><tr><td colspan="9" class="empty">Nessuna scheda salvata</td></tr></tbody></table></div>
@@ -258,7 +301,24 @@
 
     <section id="fusionPrintSheet" class="print-sheet">
       <div class="print-header"><div><div class="print-brand">BURATO GIOIELLI S.P.A.</div><div class="print-sub">Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278</div><div class="print-sub" style="margin-top:6px;">Report fusione reale</div></div><div class="print-meta"><div><strong>ID fusione:</strong> <span id="fusionPrintId">—</span></div><div><strong>Stato:</strong> <span id="fusionPrintStatus">—</span></div><div><strong>Data creazione:</strong> <span id="fusionPrintLockedAt">—</span></div><div><strong>Data esito:</strong> <span id="fusionPrintCompletedAt">—</span></div></div></div>
-      <div class="print-section"><div class="print-section-title">Dati fusione</div><div class="print-grid"><div class="print-row"><strong>Lordo stimato:</strong> <span id="fusionPrintEstimatedGross">—</span></div><div class="print-row"><strong>Puro stimato:</strong> <span id="fusionPrintEstimatedPure">—</span></div><div class="print-row"><strong>Puro reale:</strong> <span id="fusionPrintActualPure">—</span></div><div class="print-row"><strong>Diff. puro:</strong> <span id="fusionPrintPureDiff">—</span></div><div class="print-row"><strong>Costo clienti:</strong> <span id="fusionPrintPaid">—</span></div><div class="print-row"><strong>Costo medio reale:</strong> <span id="fusionPrintActualRevenue">—</span></div><div class="print-row" style="grid-column:1 / -1;"><strong>Riferimento:</strong> <span id="fusionPrintReference">—</span></div></div></div>
+      <div class="print-section">
+        <div class="print-section-title">Dati fusione</div>
+        <div class="print-grid">
+          <div class="print-row"><strong>Lordo stimato:</strong> <span id="fusionPrintEstimatedGross">—</span></div>
+          <div class="print-row"><strong>Puro stimato:</strong> <span id="fusionPrintEstimatedPure">—</span></div>
+          <div class="print-row"><strong>Puro reale:</strong> <span id="fusionPrintActualPure">—</span></div>
+          <div class="print-row"><strong>Diff. puro:</strong> <span id="fusionPrintPureDiff">—</span></div>
+          <div class="print-row"><strong>Costo clienti:</strong> <span id="fusionPrintPaid">—</span></div>
+          <div class="print-row"><strong>Costo medio reale:</strong> <span id="fusionPrintActualRevenue">—</span></div>
+          <div class="print-row"><strong>Già fissato:</strong> <span id="fusionPrintAllocatedPure">—</span></div>
+          <div class="print-row"><strong>Ricavo realizzato:</strong> <span id="fusionPrintAllocatedRevenue">—</span></div>
+          <div class="print-row"><strong>Costo attribuito:</strong> <span id="fusionPrintAllocatedCost">—</span></div>
+          <div class="print-row"><strong>Guadagno realizzato:</strong> <span id="fusionPrintRealizedProfit">—</span></div>
+          <div class="print-row"><strong>Residuo non fissato:</strong> <span id="fusionPrintResidualPure">—</span></div>
+          <div class="print-row"><strong>Residuo a costo:</strong> <span id="fusionPrintResidualCost">—</span></div>
+          <div class="print-row" style="grid-column:1 / -1;"><strong>Riferimento:</strong> <span id="fusionPrintReference">—</span></div>
+        </div>
+      </div>
       <div class="print-section"><div class="print-section-title">Schede incluse</div><table class="print-table"><thead><tr><th>Data</th><th>N° scheda</th><th>Cliente</th><th>Negozio</th><th style="text-align:right;">Grammi</th><th style="text-align:right;">Euro</th></tr></thead><tbody id="fusionPrintFormsBody"><tr><td colspan="6">Nessuna scheda</td></tr></tbody></table></div>
       <div class="print-section" style="margin-top:10px;"><div class="print-section-title">Note</div><div id="fusionPrintNotes" class="print-row" style="min-height:40px;">—</div></div>
       <div class="print-signatures"><div class="print-sign-box">Firma interna Burato Gioielli</div><div class="print-sign-box">Firma / timbro fonderia</div></div>
@@ -266,7 +326,19 @@
 
     <section id="fixPrintSheet" class="print-sheet">
       <div class="print-header"><div><div class="print-brand">BURATO GIOIELLI S.P.A.</div><div class="print-sub">Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278</div><div class="print-sub" style="margin-top:6px;">Report fissazione prezzo</div></div><div class="print-meta"><div><strong>ID fissazione:</strong> <span id="fixPrintId">—</span></div><div><strong>Data:</strong> <span id="fixPrintDate">—</span></div></div></div>
-      <div class="print-section"><div class="print-section-title">Dati fissazione</div><div class="print-grid"><div class="print-row"><strong>Puro fissato:</strong> <span id="fixPrintPure">—</span></div><div class="print-row"><strong>Prezzo €/g:</strong> <span id="fixPrintPrice">—</span></div><div class="print-row"><strong>Valore totale:</strong> <span id="fixPrintValue">—</span></div><div class="print-row"><strong>Riferimento:</strong> <span id="fixPrintReference">—</span></div></div></div>
+      <div class="print-section">
+        <div class="print-section-title">Dati fissazione</div>
+        <div class="print-grid">
+          <div class="print-row"><strong>Puro fissato:</strong> <span id="fixPrintPure">—</span></div>
+          <div class="print-row"><strong>Prezzo €/g:</strong> <span id="fixPrintPrice">—</span></div>
+          <div class="print-row"><strong>Valore totale:</strong> <span id="fixPrintValue">—</span></div>
+          <div class="print-row"><strong>Coperto:</strong> <span id="fixPrintCovered">—</span></div>
+          <div class="print-row"><strong>Scoperto:</strong> <span id="fixPrintUncovered">—</span></div>
+          <div class="print-row"><strong>Costo attribuito:</strong> <span id="fixPrintCost">—</span></div>
+          <div class="print-row"><strong>Profitto realizzato:</strong> <span id="fixPrintProfit">—</span></div>
+          <div class="print-row"><strong>Riferimento:</strong> <span id="fixPrintReference">—</span></div>
+        </div>
+      </div>
       <div class="print-section" style="margin-top:10px;"><div class="print-section-title">Note</div><div id="fixPrintNotes" class="print-row" style="min-height:40px;">—</div></div>
       <div class="print-signatures"><div class="print-sign-box">Firma interna Burato Gioielli</div><div class="print-sign-box">Firma / conferma fonderia</div></div>
     </section>
@@ -293,6 +365,7 @@
   let allSessionsCache = [];
   let allItemsCache = [];
   let allFixesCache = [];
+  let allAllocationsCache = [];
   let fusionCandidates = [];
   let sessionsById = {};
 
@@ -319,7 +392,9 @@
     const isSilver = getCurrentMaterialType()==='silver800';
     els.formSectionTitle.textContent = isSilver ? 'Nuova scheda rientro argento 800' : 'Nuova scheda rientro oro';
     els.formQuoteLabel.textContent = isSilver ? 'Quotazione €/g argento 800' : 'Quotazione €/g (18kt)';
-    if(isSilver){ els.formQuotePerGram.value=''; } else if(els.buratoPrice.textContent && els.buratoPrice.textContent!=='—' && !els.formQuotePerGram.value){
+    if(isSilver){
+      els.formQuotePerGram.value='';
+    } else if(els.buratoPrice.textContent && els.buratoPrice.textContent!=='—' && !els.formQuotePerGram.value){
       const numeric = parseFloat(els.buratoPrice.textContent.replace(' €/g','').replace(/\./g,'').replace(',','.'));
       if(!Number.isNaN(numeric) && numeric>0) els.formQuotePerGram.value = numeric.toFixed(2);
     }
@@ -357,7 +432,10 @@
 
   function buildItemsByFormId(items){
     const map = {};
-    items.forEach(item => { if(!map[item.form_id]) map[item.form_id] = []; map[item.form_id].push(item); });
+    items.forEach(item => {
+      if(!map[item.form_id]) map[item.form_id] = [];
+      map[item.form_id].push(item);
+    });
     return map;
   }
 
@@ -381,6 +459,21 @@
     els.nextAlert.textContent = `Saldo puro fonderia: ${sign}${fmt(balance)} g · Valore teorico: ${sign}${fmt(value)} €`;
   }
 
+  function updateProfitAnalysis(){
+    const coveredPure = allFixesCache.reduce((sum, f) => sum + Number(f.covered_pure_grams || 0), 0);
+    const realizedRevenue = allFixesCache.reduce((sum, f) => sum + Number(f.realized_revenue || 0), 0);
+    const realizedCost = allFixesCache.reduce((sum, f) => sum + Number(f.realized_cost || 0), 0);
+    const realizedProfit = allFixesCache.reduce((sum, f) => sum + Number(f.realized_profit || 0), 0);
+    const uncoveredPure = allFixesCache.reduce((sum, f) => sum + Number(f.uncovered_pure_grams || 0), 0);
+
+    els.profitPureSold.textContent = `${fmt(coveredPure)} g`;
+    els.profitRevenue.textContent = `${fmt(realizedRevenue)} €`;
+    els.profitCost.textContent = `${fmt(realizedCost)} €`;
+    els.profitNet.textContent = `${fmt(realizedProfit)} €`;
+    els.profitPerGram.textContent = coveredPure > 0 ? `${fmt(realizedProfit / coveredPure)} €/g` : `0,00 €/g`;
+    els.profitUncovered.textContent = `${fmt(uncoveredPure)} g`;
+  }
+
   function buildGoldInventory(forms, items){
     const itemsByFormId = buildItemsByFormId(items);
     const goldForms = forms.filter(form => !isSilverOnlyItems(itemsByFormId[form.id] || []));
@@ -397,17 +490,28 @@
 
   function renderSessions(sessions){
     els.sessionsCount.textContent = `${sessions.length} fusioni`;
-    if(!sessions.length){ els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>'; return; }
+    if(!sessions.length){
+      els.sessionsList.innerHTML = '<div class="muted">Nessuna fusione registrata</div>';
+      return;
+    }
     els.sessionsList.className = 'session-list-min';
     els.sessionsList.innerHTML = sessions.map(session => {
       const meta = getSessionStatusMeta(String(session.status || 'pending'));
-      const dateRef = String(session.status || 'pending') === 'completed' ? formatDateTimeIT(session.completed_at || session.locked_at || session.created_at) : formatDateTimeIT(session.locked_at || session.created_at);
+      const dateRef = String(session.status || 'pending') === 'completed'
+        ? formatDateTimeIT(session.completed_at || session.locked_at || session.created_at)
+        : formatDateTimeIT(session.locked_at || session.created_at);
+
+      const completedExtra = String(session.status || 'pending') === 'completed'
+        ? `<div class="session-row-date">Fissato: ${fmt(session.fixed_allocated_grams || 0)} g · Guadagno: ${fmt(session.realized_profit || 0)} € · Residuo: ${fmt(session.residual_pure_grams || 0)} g</div>`
+        : '';
+
       return `
         <div class="session-row">
           <div class="session-row-left">
             <span class="${meta.className}"><span class="badge-dot"></span>${meta.label}</span>
             <div class="session-row-title">Fusione #${session.id}</div>
             <div class="session-row-date">${dateRef}</div>
+            ${completedExtra}
           </div>
           <div class="session-row-actions">
             <button type="button" class="secondary" data-action="print-session" data-id="${session.id}" style="min-height:42px;width:auto;">Stampa</button>
@@ -429,7 +533,10 @@
 
   function renderFixes(fixes){
     els.fixesCount.textContent = `${fixes.length} fissazioni`;
-    if(!fixes.length){ els.fixesList.innerHTML = '<div class="muted">Nessuna fissazione registrata</div>'; return; }
+    if(!fixes.length){
+      els.fixesList.innerHTML = '<div class="muted">Nessuna fissazione registrata</div>';
+      return;
+    }
     els.fixesList.innerHTML = fixes.map(fix => `
       <div class="session-row">
         <div class="session-row-left">
@@ -437,6 +544,7 @@
           <div class="session-row-title">Fissazione #${fix.id}</div>
           <div class="session-row-date">${formatDateTimeIT(fix.fixed_at || fix.created_at)}</div>
           <div class="session-row-date">${fmt(fix.pure_grams)} g · ${fmt(fix.price_per_gram)} €/g</div>
+          <div class="session-row-date">Coperto: ${fmt(fix.covered_pure_grams || 0)} g · Scoperto: ${fmt(fix.uncovered_pure_grams || 0)} g · Profitto: ${fmt(fix.realized_profit || 0)} €</div>
         </div>
         <div class="session-row-actions"><button type="button" class="secondary" data-action="print-fix" data-id="${fix.id}" style="min-height:42px;width:auto;">Stampa</button></div>
       </div>
@@ -449,7 +557,10 @@
     els.totalGrams.textContent = fmt(currentPureActiveGrams) + ' g';
     updateFoundryBalanceDisplay();
     els.formsCount.textContent = `${forms.length} schede`;
-    if(!forms.length){ els.formsBody.innerHTML = '<tr><td colspan="9" class="empty">Nessuna scheda salvata</td></tr>'; return; }
+    if(!forms.length){
+      els.formsBody.innerHTML = '<tr><td colspan="9" class="empty">Nessuna scheda salvata</td></tr>';
+      return;
+    }
     els.formsBody.innerHTML = forms.map(form => {
       const status = getFormStatus(form);
       let badge = '<span class="badge red"><span class="badge-dot"></span>Da fondere</span>';
@@ -477,7 +588,13 @@
       const formItems = itemsByFormId[form.id] || [];
       return formItems.length && !isSilverOnlyItems(formItems);
     }).map(form => ({ ...form, metrics:calcFormPureAndGross(form, itemsByFormId[form.id] || []) }));
-    if(!fusionCandidates.length){ els.fusionList.innerHTML = '<div class="muted">Nessuna scheda oro disponibile da fondere</div>'; updateFusionPreview(); return; }
+
+    if(!fusionCandidates.length){
+      els.fusionList.innerHTML = '<div class="muted">Nessuna scheda oro disponibile da fondere</div>';
+      updateFusionPreview();
+      return;
+    }
+
     els.fusionList.innerHTML = fusionCandidates.map(form => `
       <label class="fusion-item">
         <input type="checkbox" data-fusion-form-id="${form.id}" />
@@ -485,6 +602,7 @@
         <div class="fusion-item-metric"><strong>${fmt(form.metrics.gross)} g</strong><br>lordi</div>
         <div class="fusion-item-metric"><strong>${fmt(form.metrics.pure)} g</strong><br>puro stimato</div>
       </label>`).join('');
+
     els.fusionList.querySelectorAll('input[data-fusion-form-id]').forEach(input => input.addEventListener('change', updateFusionPreview));
     updateFusionPreview();
   }
@@ -511,10 +629,20 @@
     const materialType = getCurrentMaterialType();
     const quote = Number(els.formQuotePerGram.value || 0);
     if(materialType === 'silver800') return grams * quote;
-    if(quote > 0){ let multiplier = 1; if(karat === '14') multiplier = 565 / 730; if(karat === '9') multiplier = 355 / 730; return grams * (quote * multiplier); }
+    if(quote > 0){
+      let multiplier = 1;
+      if(karat === '14') multiplier = 565 / 730;
+      if(karat === '9') multiplier = 355 / 730;
+      return grams * (quote * multiplier);
+    }
     const market = parseFloat(els.marketPrice.textContent.replace(' €/g','').replace(/\./g,'').replace(',','.'));
     if(isNaN(market)) return 0;
-    const net24 = market - 15; const base = net24 / 1000; let multiplier = 730; if(karat === '14') multiplier = 565; if(karat === '9') multiplier = 355; return grams * (base * multiplier);
+    const net24 = market - 15;
+    const base = net24 / 1000;
+    let multiplier = 730;
+    if(karat === '14') multiplier = 565;
+    if(karat === '9') multiplier = 355;
+    return grams * (base * multiplier);
   }
 
   function renderFormItems(){
@@ -528,12 +656,21 @@
         <td><div>${fmt(calcItemValue(item))} €</div></td>
         <td><button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button></td>
       </tr>`).join('');
+
     els.formItemsBody.querySelectorAll('input, select').forEach(input => input.addEventListener('input', (e) => {
-      const index = Number(e.target.dataset.index); const field = e.target.dataset.field; formItems[index][field] = e.target.value; recalcFormTotals(); updateRowValue(index);
+      const index = Number(e.target.dataset.index);
+      const field = e.target.dataset.field;
+      formItems[index][field] = e.target.value;
+      recalcFormTotals();
+      updateRowValue(index);
     }));
+
     els.formItemsBody.querySelectorAll('button[data-action="remove-row"]').forEach(btn => btn.addEventListener('click', () => {
-      formItems.splice(Number(btn.dataset.index), 1); if(!formItems.length) formItems.push({ description:'', quantity:1, grams:'', karat:'18' }); renderFormItems();
+      formItems.splice(Number(btn.dataset.index), 1);
+      if(!formItems.length) formItems.push({ description:'', quantity:1, grams:'', karat:'18' });
+      renderFormItems();
     }));
+
     recalcFormTotals();
   }
 
@@ -545,7 +682,9 @@
   }
 
   function updateRowValue(index){
-    const row = els.formItemsBody.querySelectorAll('tr')[index]; if(!row) return; row.children[4].innerHTML = fmt(calcItemValue(formItems[index])) + ' €';
+    const row = els.formItemsBody.querySelectorAll('tr')[index];
+    if(!row) return;
+    row.children[4].innerHTML = fmt(calcItemValue(formItems[index])) + ' €';
   }
 
   function resetGoldForm(statusText='Non salvata'){
@@ -614,14 +753,21 @@
     const { data: form } = await client.from('gold_forms').select('*').eq('id', formId).single();
     const { data: items } = await client.from('gold_form_items').select('*').eq('form_id', formId).order('id', { ascending:true });
     fillPrintSheetFromSaved(form, items || []);
-    const goldSheet = document.getElementById('printSheet'); const fusionSheet = document.getElementById('fusionPrintSheet'); const fixSheet = document.getElementById('fixPrintSheet');
-    fusionSheet.classList.remove('print-target'); fixSheet.classList.remove('print-target'); goldSheet.classList.add('print-target');
+    const goldSheet = document.getElementById('printSheet');
+    const fusionSheet = document.getElementById('fusionPrintSheet');
+    const fixSheet = document.getElementById('fixPrintSheet');
+    fusionSheet.classList.remove('print-target');
+    fixSheet.classList.remove('print-target');
+    goldSheet.classList.add('print-target');
     setTimeout(() => { window.print(); setTimeout(() => goldSheet.classList.remove('print-target'), 300); }, 100);
   }
 
   async function printFusionSession(sessionId){
-    const session = sessionsById[sessionId]; if(!session) return;
+    const session = sessionsById[sessionId];
+    if(!session) return;
+
     const forms = allFormsCache.filter(f => Number(f.fusion_session_id) === Number(sessionId));
+
     els.fusionPrintId.textContent = `#${session.id}`;
     els.fusionPrintStatus.textContent = String(session.status || 'pending') === 'completed' ? 'Fusa' : 'In lavorazione';
     els.fusionPrintLockedAt.textContent = formatDateTimeIT(session.locked_at || session.created_at);
@@ -631,52 +777,276 @@
     els.fusionPrintActualPure.textContent = session.actual_pure_grams == null ? '—' : `${fmt(session.actual_pure_grams)} g`;
     els.fusionPrintPureDiff.textContent = session.pure_diff_grams == null ? '—' : `${session.pure_diff_grams >= 0 ? '+' : ''}${fmt(session.pure_diff_grams)} g`;
     els.fusionPrintPaid.textContent = `${fmt(session.total_paid_clients)} €`;
-    const avgReal = Number(session.actual_pure_grams || 0) > 0 ? Number(session.total_paid_clients || 0) / Number(session.actual_pure_grams || 1) : 0;
-    els.fusionPrintActualRevenue.textContent = Number(session.actual_pure_grams || 0) > 0 ? `${fmt(avgReal)} €/g` : '—';
+    els.fusionPrintActualRevenue.textContent = Number(session.actual_cost_per_gram || 0) > 0 ? `${fmt(session.actual_cost_per_gram)} €/g` : '—';
+    els.fusionPrintAllocatedPure.textContent = `${fmt(session.fixed_allocated_grams || 0)} g`;
+    els.fusionPrintAllocatedRevenue.textContent = `${fmt(session.fixed_allocated_revenue || 0)} €`;
+    els.fusionPrintAllocatedCost.textContent = `${fmt(session.fixed_allocated_cost || 0)} €`;
+    els.fusionPrintRealizedProfit.textContent = `${fmt(session.realized_profit || 0)} €`;
+    els.fusionPrintResidualPure.textContent = `${fmt(session.residual_pure_grams || 0)} g`;
+    els.fusionPrintResidualCost.textContent = `${fmt(session.residual_cost_value || 0)} €`;
     els.fusionPrintReference.textContent = session.foundry_reference || '—';
     els.fusionPrintNotes.textContent = session.notes || '—';
+
     els.fusionPrintFormsBody.innerHTML = !forms.length ? '<tr><td colspan="6">Nessuna scheda</td></tr>' : forms.map(form => `<tr><td>${formatDateTimeIT(form.created_at)}</td><td>${escapeHtml(form.scheda_number || '-')}</td><td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td><td>${escapeHtml(form.store || '-')}</td><td style="text-align:right;">${fmt(form.total_grams || 0)} g</td><td style="text-align:right;">${fmt(form.total_eur || 0)} €</td></tr>`).join('');
-    const goldSheet = document.getElementById('printSheet'); const fusionSheet = document.getElementById('fusionPrintSheet'); const fixSheet = document.getElementById('fixPrintSheet');
-    goldSheet.classList.remove('print-target'); fixSheet.classList.remove('print-target'); fusionSheet.classList.add('print-target');
+
+    const goldSheet = document.getElementById('printSheet');
+    const fusionSheet = document.getElementById('fusionPrintSheet');
+    const fixSheet = document.getElementById('fixPrintSheet');
+    goldSheet.classList.remove('print-target');
+    fixSheet.classList.remove('print-target');
+    fusionSheet.classList.add('print-target');
     setTimeout(() => { window.print(); setTimeout(() => fusionSheet.classList.remove('print-target'), 300); }, 100);
   }
 
   function printFix(fixId){
-    const fix = allFixesCache.find(f => Number(f.id) === Number(fixId)); if(!fix) return;
+    const fix = allFixesCache.find(f => Number(f.id) === Number(fixId));
+    if(!fix) return;
+
     document.getElementById('fixPrintId').textContent = `#${fix.id}`;
     document.getElementById('fixPrintDate').textContent = formatDateTimeIT(fix.fixed_at || fix.created_at);
     document.getElementById('fixPrintPure').textContent = `${fmt(fix.pure_grams)} g`;
     document.getElementById('fixPrintPrice').textContent = `${fmt(fix.price_per_gram)} €/g`;
     document.getElementById('fixPrintValue').textContent = `${fmt(fix.total_value)} €`;
+    document.getElementById('fixPrintCovered').textContent = `${fmt(fix.covered_pure_grams || 0)} g`;
+    document.getElementById('fixPrintUncovered').textContent = `${fmt(fix.uncovered_pure_grams || 0)} g`;
+    document.getElementById('fixPrintCost').textContent = `${fmt(fix.realized_cost || 0)} €`;
+    document.getElementById('fixPrintProfit').textContent = `${fmt(fix.realized_profit || 0)} €`;
     document.getElementById('fixPrintReference').textContent = fix.reference || '—';
     document.getElementById('fixPrintNotes').textContent = fix.notes || '—';
-    const goldSheet = document.getElementById('printSheet'); const fusionSheet = document.getElementById('fusionPrintSheet'); const fixSheet = document.getElementById('fixPrintSheet');
-    goldSheet.classList.remove('print-target'); fusionSheet.classList.remove('print-target'); fixSheet.classList.add('print-target');
+
+    const goldSheet = document.getElementById('printSheet');
+    const fusionSheet = document.getElementById('fusionPrintSheet');
+    const fixSheet = document.getElementById('fixPrintSheet');
+    goldSheet.classList.remove('print-target');
+    fusionSheet.classList.remove('print-target');
+    fixSheet.classList.add('print-target');
     setTimeout(() => { window.print(); setTimeout(() => fixSheet.classList.remove('print-target'), 300); }, 100);
   }
 
+  async function recalcSessionFinancials(sessionId) {
+    const session = sessionsById[sessionId];
+    if (!session) return;
+
+    const actualPure = Number(session.actual_pure_grams || 0);
+    const totalPaid = Number(session.total_paid_clients || 0);
+
+    let actualCostPerGram = 0;
+    if (actualPure > 0) {
+      actualCostPerGram = totalPaid / actualPure;
+    }
+
+    const { data: allocations, error: allocError } = await client
+      .from('gold_fix_allocations')
+      .select('*')
+      .eq('fusion_session_id', sessionId);
+
+    if (allocError) throw allocError;
+
+    const fixedAllocatedGrams = (allocations || []).reduce((sum, row) => sum + Number(row.allocated_pure_grams || 0), 0);
+    const fixedAllocatedRevenue = (allocations || []).reduce((sum, row) => sum + Number(row.allocated_revenue || 0), 0);
+    const fixedAllocatedCost = (allocations || []).reduce((sum, row) => sum + Number(row.allocated_cost || 0), 0);
+    const realizedProfit = (allocations || []).reduce((sum, row) => sum + Number(row.allocated_profit || 0), 0);
+
+    const residualPureGrams = actualPure - fixedAllocatedGrams;
+    const residualCostValue = residualPureGrams * actualCostPerGram;
+
+    const { error: updateError } = await client
+      .from('gold_sessions')
+      .update({
+        actual_cost_per_gram: Number(actualCostPerGram.toFixed(2)),
+        fixed_allocated_grams: Number(fixedAllocatedGrams.toFixed(2)),
+        fixed_allocated_revenue: Number(fixedAllocatedRevenue.toFixed(2)),
+        fixed_allocated_cost: Number(fixedAllocatedCost.toFixed(2)),
+        realized_profit: Number(realizedProfit.toFixed(2)),
+        residual_pure_grams: Number(residualPureGrams.toFixed(2)),
+        residual_cost_value: Number(residualCostValue.toFixed(2))
+      })
+      .eq('id', sessionId);
+
+    if (updateError) throw updateError;
+  }
+
+  async function recalcFixFinancials(fixId) {
+    const { data: fix, error: fixError } = await client
+      .from('gold_fixes')
+      .select('*')
+      .eq('id', fixId)
+      .single();
+
+    if (fixError) throw fixError;
+
+    const { data: allocations, error: allocError } = await client
+      .from('gold_fix_allocations')
+      .select('*')
+      .eq('fix_id', fixId);
+
+    if (allocError) throw allocError;
+
+    const coveredPureGrams = (allocations || []).reduce((sum, row) => sum + Number(row.allocated_pure_grams || 0), 0);
+    const realizedRevenue = (allocations || []).reduce((sum, row) => sum + Number(row.allocated_revenue || 0), 0);
+    const realizedCost = (allocations || []).reduce((sum, row) => sum + Number(row.allocated_cost || 0), 0);
+    const realizedProfit = (allocations || []).reduce((sum, row) => sum + Number(row.allocated_profit || 0), 0);
+    const uncoveredPureGrams = Number(fix.pure_grams || 0) - coveredPureGrams;
+
+    const { error: updateError } = await client
+      .from('gold_fixes')
+      .update({
+        covered_pure_grams: Number(coveredPureGrams.toFixed(2)),
+        uncovered_pure_grams: Number(uncoveredPureGrams.toFixed(2)),
+        realized_revenue: Number(realizedRevenue.toFixed(2)),
+        realized_cost: Number(realizedCost.toFixed(2)),
+        realized_profit: Number(realizedProfit.toFixed(2))
+      })
+      .eq('id', fixId);
+
+    if (updateError) throw updateError;
+  }
+
+  async function allocateFixToCompletedSessions(fixId, pureGrams, pricePerGram) {
+    let remaining = Number(pureGrams || 0);
+    if (remaining <= 0) return;
+
+    const completedSessions = (allSessionsCache || [])
+      .filter(s => String(s.status || '') === 'completed')
+      .filter(s => Number(s.residual_pure_grams || 0) > 0)
+      .sort((a, b) => new Date(a.completed_at || a.closed_at || 0) - new Date(b.completed_at || b.closed_at || 0));
+
+    for (const session of completedSessions) {
+      if (remaining <= 0) break;
+
+      const available = Number(session.residual_pure_grams || 0);
+      if (available <= 0) continue;
+
+      const used = Math.min(available, remaining);
+      const costPerGram = Number(session.actual_cost_per_gram || 0);
+      const allocatedRevenue = used * Number(pricePerGram || 0);
+      const allocatedCost = used * costPerGram;
+      const allocatedProfit = allocatedRevenue - allocatedCost;
+
+      const { error: insertError } = await client
+        .from('gold_fix_allocations')
+        .insert([{
+          fix_id: fixId,
+          fusion_session_id: session.id,
+          allocated_pure_grams: Number(used.toFixed(2)),
+          allocated_revenue: Number(allocatedRevenue.toFixed(2)),
+          allocated_cost: Number(allocatedCost.toFixed(2)),
+          allocated_profit: Number(allocatedProfit.toFixed(2))
+        }]);
+
+      if (insertError) throw insertError;
+
+      remaining -= used;
+    }
+
+    await recalcFixFinancials(fixId);
+
+    const touchedSessionIds = completedSessions.map(s => s.id);
+    for (const sessionId of touchedSessionIds) {
+      await recalcSessionFinancials(sessionId);
+    }
+  }
+
+  async function allocateCompletedSessionToOpenFixes(sessionId) {
+    const session = sessionsById[sessionId];
+    if (!session) return;
+
+    let remaining = Number(session.residual_pure_grams || session.actual_pure_grams || 0);
+    if (remaining <= 0) return;
+
+    const openFixes = (allFixesCache || [])
+      .filter(f => Number(f.uncovered_pure_grams || 0) > 0)
+      .sort((a, b) => new Date(a.fixed_at || a.created_at || 0) - new Date(b.fixed_at || b.created_at || 0));
+
+    const costPerGram = Number(session.actual_cost_per_gram || 0);
+
+    for (const fix of openFixes) {
+      if (remaining <= 0) break;
+
+      const uncovered = Number(fix.uncovered_pure_grams || 0);
+      if (uncovered <= 0) continue;
+
+      const used = Math.min(remaining, uncovered);
+      const pricePerGram = Number(fix.price_per_gram || 0);
+      const allocatedRevenue = used * pricePerGram;
+      const allocatedCost = used * costPerGram;
+      const allocatedProfit = allocatedRevenue - allocatedCost;
+
+      const { error: insertError } = await client
+        .from('gold_fix_allocations')
+        .insert([{
+          fix_id: fix.id,
+          fusion_session_id: sessionId,
+          allocated_pure_grams: Number(used.toFixed(2)),
+          allocated_revenue: Number(allocatedRevenue.toFixed(2)),
+          allocated_cost: Number(allocatedCost.toFixed(2)),
+          allocated_profit: Number(allocatedProfit.toFixed(2))
+        }]);
+
+      if (insertError) throw insertError;
+
+      remaining -= used;
+      await recalcFixFinancials(fix.id);
+      await loadOperationalDataShallow();
+    }
+
+    await recalcSessionFinancials(sessionId);
+  }
+
+  async function loadOperationalDataShallow(){
+    const [sessionsRes, fixesRes, allocRes] = await Promise.all([
+      client.from('gold_sessions').select('*').order('locked_at', { ascending:false }).limit(200),
+      client.from('gold_fixes').select('*').order('fixed_at', { ascending:false }).limit(200),
+      client.from('gold_fix_allocations').select('*').order('created_at', { ascending:false }).limit(1000)
+    ]);
+
+    if(sessionsRes.error) throw sessionsRes.error;
+    if(fixesRes.error) throw fixesRes.error;
+    if(allocRes.error) throw allocRes.error;
+
+    allSessionsCache = sessionsRes.data || [];
+    allFixesCache = fixesRes.data || [];
+    allAllocationsCache = allocRes.data || [];
+    sessionsById = {};
+    allSessionsCache.forEach(session => { sessionsById[session.id] = session; });
+  }
+
   async function loadOperationalData(){
-    const [sessionsRes, formsRes, fixesRes] = await Promise.all([
+    const [sessionsRes, formsRes, fixesRes, allocRes] = await Promise.all([
       client.from('gold_sessions').select('*').order('locked_at', { ascending:false }).limit(200),
       client.from('gold_forms').select('*').order('created_at', { ascending:false }).limit(300),
-      client.from('gold_fixes').select('*').order('fixed_at', { ascending:false }).limit(200)
+      client.from('gold_fixes').select('*').order('fixed_at', { ascending:false }).limit(200),
+      client.from('gold_fix_allocations').select('*').order('created_at', { ascending:false }).limit(1000)
     ]);
+
     if(sessionsRes.error) throw sessionsRes.error;
     if(formsRes.error) throw formsRes.error;
     if(fixesRes.error) throw fixesRes.error;
+    if(allocRes.error) throw allocRes.error;
+
     allSessionsCache = sessionsRes.data || [];
     allFormsCache = formsRes.data || [];
     allFixesCache = fixesRes.data || [];
-    sessionsById = {}; allSessionsCache.forEach(session => { sessionsById[session.id] = session; });
+    allAllocationsCache = allocRes.data || [];
+    sessionsById = {};
+    allSessionsCache.forEach(session => { sessionsById[session.id] = session; });
+
     const formIds = allFormsCache.map(f => f.id);
     let items = [];
-    if(formIds.length){ const { data: itemsData, error: itemsError } = await client.from('gold_form_items').select('*').in('form_id', formIds); if(itemsError) throw itemsError; items = itemsData || []; }
+    if(formIds.length){
+      const { data: itemsData, error: itemsError } = await client.from('gold_form_items').select('*').in('form_id', formIds);
+      if(itemsError) throw itemsError;
+      items = itemsData || [];
+    }
+
     allItemsCache = items;
     const inventory = buildGoldInventory(allFormsCache, allItemsCache);
+
     renderSessions(allSessionsCache);
     renderFixes(allFixesCache);
     renderForms(allFormsCache, inventory.pureActive);
     renderFusionCandidates();
+    updateProfitAnalysis();
   }
 
   function bindSessionActions(){
@@ -686,17 +1056,41 @@
   }
 
   async function completeFusionSession(sessionId){
-    const session = sessionsById[sessionId]; if(!session) return;
+    const session = sessionsById[sessionId];
+    if(!session) return;
+
     const actualPure = Number(String(document.getElementById(`actualPureInput-${sessionId}`)?.value || '0').replace(',','.'));
     const foundryReference = String(document.getElementById(`foundryRefInput-${sessionId}`)?.value || '').trim();
-    if(!Number.isFinite(actualPure) || actualPure <= 0){ alert('Inserisci un puro reale valido'); return; }
+
+    if(!Number.isFinite(actualPure) || actualPure <= 0){
+      alert('Inserisci un puro reale valido');
+      return;
+    }
+
     try{
       const pureDiff = actualPure - Number(session.estimated_pure_grams || 0);
-      const { error } = await client.from('gold_sessions').update({ status:'completed', completed_at:new Date().toISOString(), actual_pure_grams:Number(actualPure.toFixed(2)), pure_diff_grams:Number(pureDiff.toFixed(2)), foundry_reference:foundryReference || null, notes:foundryReference || null, closed_at:new Date().toISOString() }).eq('id', sessionId);
+      const { error } = await client.from('gold_sessions').update({
+        status:'completed',
+        completed_at:new Date().toISOString(),
+        actual_pure_grams:Number(actualPure.toFixed(2)),
+        pure_diff_grams:Number(pureDiff.toFixed(2)),
+        foundry_reference:foundryReference || null,
+        notes:foundryReference || null,
+        closed_at:new Date().toISOString()
+      }).eq('id', sessionId);
+
       if(error) throw error;
+
+      await loadOperationalDataShallow();
+      await recalcSessionFinancials(sessionId);
+      await loadOperationalDataShallow();
+      await allocateCompletedSessionToOpenFixes(sessionId);
       await loadOperationalData();
       setStatus('Esito fusione registrato', 'success');
-    } catch(err){ console.error(err); setStatus('Errore registrazione esito', 'error'); }
+    } catch(err){
+      console.error(err);
+      setStatus('Errore registrazione esito', 'error');
+    }
   }
 
   function enterApp(profile){
@@ -711,21 +1105,40 @@
     els.sessionCard.classList.toggle('hidden', !isAdmin);
     els.adminFusioniCard.classList.toggle('hidden', !isAdmin);
     els.adminFixCard.classList.toggle('hidden', !isAdmin);
+    els.profitCard.classList.toggle('hidden', !isAdmin);
     els.quoteGrid.classList.toggle('store-view', !isAdmin);
     els.dashboardGrid.classList.toggle('store-view', !isAdmin);
     els.storeLogoutArea.classList.toggle('hidden', isAdmin);
-    if(!isAdmin){ els.goldFormArea.classList.remove('hidden'); els.toggleFormBtn.classList.add('hidden'); } else { els.goldFormArea.classList.add('hidden'); els.toggleFormBtn.classList.remove('hidden'); els.toggleFormBtn.textContent='Apri scheda'; }
+    if(!isAdmin){
+      els.goldFormArea.classList.remove('hidden');
+      els.toggleFormBtn.classList.add('hidden');
+    } else {
+      els.goldFormArea.classList.add('hidden');
+      els.toggleFormBtn.classList.remove('hidden');
+      els.toggleFormBtn.textContent='Apri scheda';
+    }
     els.formStore.value = profile.store_name;
     resetGoldForm();
     updateFormMode();
   }
 
-  async function loadAll(){ await Promise.all([loadPrice(), loadOperationalData()]); setStatus('Sincronizzato', 'success'); }
+  async function loadAll(){
+    await Promise.all([loadPrice(), loadOperationalData()]);
+    setStatus('Sincronizzato', 'success');
+  }
 
-  function startAutoRefresh(){ if(priceRefreshInterval) return; priceRefreshInterval = setInterval(async () => { try { await loadPrice(); } catch(e) { console.error(e); } }, 5 * 60 * 1000); }
+  function startAutoRefresh(){
+    if(priceRefreshInterval) return;
+    priceRefreshInterval = setInterval(async () => {
+      try { await loadPrice(); } catch(e) { console.error(e); }
+    }, 5 * 60 * 1000);
+  }
 
   els.loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); setAuthMessage(''); setAuthStatus('Accesso...'); els.loginBtn.disabled = true;
+    e.preventDefault();
+    setAuthMessage('');
+    setAuthStatus('Accesso...');
+    els.loginBtn.disabled = true;
     try{
       const { data, error } = await client.auth.signInWithPassword({ email:els.email.value.trim(), password:els.password.value });
       if(error || !data?.user) throw new Error(error?.message || 'Utente non restituito');
@@ -733,13 +1146,27 @@
       const profile = await getProfile(currentUser.id);
       enterApp(profile);
       setAuthStatus('Accesso riuscito', 'success');
-      await loadAll(); startAutoRefresh();
-    } catch(err){ console.error(err); setAuthMessage('ERRORE: ' + err.message); setAuthStatus('Errore', 'error'); }
-    finally { els.loginBtn.disabled = false; }
+      await loadAll();
+      startAutoRefresh();
+    } catch(err){
+      console.error(err);
+      setAuthMessage('ERRORE: ' + err.message);
+      setAuthStatus('Errore', 'error');
+    } finally {
+      els.loginBtn.disabled = false;
+    }
   });
 
-  els.toggleFormBtn.addEventListener('click', () => { els.goldFormArea.classList.toggle('hidden'); els.toggleFormBtn.textContent = els.goldFormArea.classList.contains('hidden') ? 'Apri scheda' : 'Chiudi scheda'; });
-  els.addItemRowBtn.addEventListener('click', () => { formItems.push({ description:'', quantity:1, grams:'', karat:getCurrentMaterialType()==='silver800' ? '800' : '18' }); renderFormItems(); });
+  els.toggleFormBtn.addEventListener('click', () => {
+    els.goldFormArea.classList.toggle('hidden');
+    els.toggleFormBtn.textContent = els.goldFormArea.classList.contains('hidden') ? 'Apri scheda' : 'Chiudi scheda';
+  });
+
+  els.addItemRowBtn.addEventListener('click', () => {
+    formItems.push({ description:'', quantity:1, grams:'', karat:getCurrentMaterialType()==='silver800' ? '800' : '18' });
+    renderFormItems();
+  });
+
   els.formMaterialType.addEventListener('change', updateFormMode);
   els.formQuotePerGram.addEventListener('input', () => { recalcFormTotals(); renderFormItems(); });
   els.resetBtn.addEventListener('click', () => { els.fusionPanel.classList.remove('hidden'); renderFusionCandidates(); updateFusionPreview(); });
@@ -749,21 +1176,42 @@
 
   els.confirmFusionBtn.addEventListener('click', async () => {
     const selectedForms = getSelectedFusionForms();
-    if(!selectedForms.length){ alert('Seleziona almeno una scheda'); return; }
+    if(!selectedForms.length){
+      alert('Seleziona almeno una scheda');
+      return;
+    }
+
     const totalGross = selectedForms.reduce((sum, form) => sum + Number(form.metrics.gross || 0), 0);
     const totalPure = selectedForms.reduce((sum, form) => sum + Number(form.metrics.pure || 0), 0);
     const totalPaid = selectedForms.reduce((sum, form) => sum + Number(form.metrics.eur || 0), 0);
+
     const ok = window.confirm(`Confermi creazione lotto fusione di ${selectedForms.length} schede?\nLordo stimato: ${fmt(totalGross)} g\nPuro stimato: ${fmt(totalPure)} g\nCosto clienti: ${fmt(totalPaid)} €`);
     if(!ok) return;
+
     try{
-      const { data: insertedSession, error: sessionError } = await client.from('gold_sessions').insert([{ status:'pending', locked_at:new Date().toISOString(), estimated_gross_grams:Number(totalGross.toFixed(2)), estimated_pure_grams:Number(totalPure.toFixed(2)), total_paid_clients:Number(totalPaid.toFixed(2)), total_grams:Number(totalGross.toFixed(2)), pure_grams:Number(totalPure.toFixed(2)), summary_text:`Schede: ${selectedForms.length}\nLordo stimato: ${fmt(totalGross)} g\nPuro stimato: ${fmt(totalPure)} g\nCosto clienti: ${fmt(totalPaid)} €` }]).select().single();
+      const { data: insertedSession, error: sessionError } = await client.from('gold_sessions').insert([{
+        status:'pending',
+        locked_at:new Date().toISOString(),
+        estimated_gross_grams:Number(totalGross.toFixed(2)),
+        estimated_pure_grams:Number(totalPure.toFixed(2)),
+        total_paid_clients:Number(totalPaid.toFixed(2)),
+        total_grams:Number(totalGross.toFixed(2)),
+        pure_grams:Number(totalPure.toFixed(2)),
+        summary_text:`Schede: ${selectedForms.length}\nLordo stimato: ${fmt(totalGross)} g\nPuro stimato: ${fmt(totalPure)} g\nCosto clienti: ${fmt(totalPaid)} €`
+      }]).select().single();
+
       if(sessionError) throw sessionError;
+
       const { error: updateFormsError } = await client.from('gold_forms').update({ fusion_session_id: insertedSession.id }).in('id', selectedForms.map(f => f.id));
       if(updateFormsError) throw updateFormsError;
+
       els.fusionPanel.classList.add('hidden');
       await loadOperationalData();
       setStatus('Lotto fusione creato', 'success');
-    } catch(err){ console.error(err); setStatus('Errore creazione lotto', 'error'); }
+    } catch(err){
+      console.error(err);
+      setStatus('Errore creazione lotto', 'error');
+    }
   });
 
   els.saveFixBtn.addEventListener('click', async () => {
@@ -771,16 +1219,44 @@
     const price = Number(String(els.fixPricePerGram.value || '0').replace(',','.'));
     const reference = String(els.fixReference.value || '').trim();
     const notes = String(els.fixNotes.value || '').trim();
-    if(!Number.isFinite(pure) || pure <= 0){ alert('Inserisci grammi puri validi'); return; }
-    if(!Number.isFinite(price) || price <= 0){ alert('Inserisci un prezzo valido'); return; }
+
+    if(!Number.isFinite(pure) || pure <= 0){
+      alert('Inserisci grammi puri validi');
+      return;
+    }
+    if(!Number.isFinite(price) || price <= 0){
+      alert('Inserisci un prezzo valido');
+      return;
+    }
+
     try{
       const totalValue = pure * price;
-      const { error } = await client.from('gold_fixes').insert([{ fixed_at:new Date().toISOString(), pure_grams:Number(pure.toFixed(2)), price_per_gram:Number(price.toFixed(2)), total_value:Number(totalValue.toFixed(2)), reference:reference || null, notes:notes || null }]);
+      const { data: insertedFix, error } = await client.from('gold_fixes').insert([{
+        fixed_at:new Date().toISOString(),
+        pure_grams:Number(pure.toFixed(2)),
+        price_per_gram:Number(price.toFixed(2)),
+        total_value:Number(totalValue.toFixed(2)),
+        reference:reference || null,
+        notes:notes || null
+      }]).select().single();
+
       if(error) throw error;
-      els.fixPureGrams.value=''; els.fixPricePerGram.value=''; els.fixReference.value=''; els.fixNotes.value=''; updateFixTotalPreview();
+
+      await loadOperationalDataShallow();
+      await allocateFixToCompletedSessions(insertedFix.id, pure, price);
+
+      els.fixPureGrams.value='';
+      els.fixPricePerGram.value='';
+      els.fixReference.value='';
+      els.fixNotes.value='';
+      updateFixTotalPreview();
+
       await loadOperationalData();
       setStatus('Fissazione salvata', 'success');
-    } catch(err){ console.error(err); setStatus('Errore fissazione', 'error'); }
+    } catch(err){
+      console.error(err);
+      setStatus('Errore fissazione', 'error');
+    }
   });
 
   els.clearSessionsBtn.addEventListener('click', async () => {
@@ -789,54 +1265,134 @@
     try{
       const { error: resetFormsError } = await client.from('gold_forms').update({ fusion_session_id:null }).not('fusion_session_id','is',null);
       if(resetFormsError) throw resetFormsError;
+
+      const { error: deleteAllocError } = await client.from('gold_fix_allocations').delete().neq('id',0);
+      if(deleteAllocError) throw deleteAllocError;
+
       const { error } = await client.from('gold_sessions').delete().neq('id',0);
       if(error) throw error;
+
       await loadOperationalData();
       setStatus('Storico fusioni eliminato', 'success');
-    } catch(err){ console.error(err); setStatus('Errore eliminazione storico', 'error'); }
+    } catch(err){
+      console.error(err);
+      setStatus('Errore eliminazione storico', 'error');
+    }
   });
 
   els.saveFormBtn.addEventListener('click', async () => {
     if(!currentStore || !currentUser) return;
+
     const schedaNumber = els.formSchedaNumber.value.trim();
     const clientName = els.formClientName.value.trim();
     const validItems = formItems.filter(item => String(item.description || '').trim() !== '' && Number(item.grams || 0) > 0);
+
     if(!schedaNumber){ els.formSaveStatus.textContent='Inserisci N° scheda'; return; }
     if(!clientName){ els.formSaveStatus.textContent='Inserisci nome cliente'; return; }
     if(!validItems.length){ els.formSaveStatus.textContent='Inserisci almeno un oggetto valido'; return; }
+
     const totalGrams = Number(formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0).toFixed(2));
     const totalEur = Number(formItems.reduce((sum, item) => sum + calcItemValue(item), 0).toFixed(2));
     const quotePerGram = Number(els.formQuotePerGram.value || 0);
-    if(!quotePerGram || quotePerGram <= 0){ els.formSaveStatus.textContent='Inserisci quotazione valida'; return; }
-    els.saveFormBtn.disabled = true; els.formSaveStatus.textContent = 'Salvataggio in corso...';
+
+    if(!quotePerGram || quotePerGram <= 0){
+      els.formSaveStatus.textContent='Inserisci quotazione valida';
+      return;
+    }
+
+    els.saveFormBtn.disabled = true;
+    els.formSaveStatus.textContent = 'Salvataggio in corso...';
+
     try{
       const { data: existingForm } = await client.from('gold_forms').select('id').eq('scheda_number', schedaNumber).maybeSingle();
-      if(existingForm){ els.formSaveStatus.textContent='Numero scheda già esistente'; return; }
-      const { data: insertedForm, error: formError } = await client.from('gold_forms').insert([{ scheda_number:schedaNumber, store:currentStore.store_name, created_by_user_id:currentUser.id, client_name:els.formClientName.value.trim(), client_surname:els.formClientSurname.value.trim(), client_cf:els.formClientCf.value.trim(), client_phone:els.formClientPhone.value.trim(), client_address:els.formClientAddress.value.trim(), document_type:els.formDocumentType.value.trim(), document_number:els.formDocumentNumber.value.trim(), document_issued_by:els.formDocumentIssuedBy.value.trim(), document_expiry:els.formDocumentExpiry.value || null, iban:els.formIban.value.trim(), quote_per_gram:quotePerGram, total_grams:totalGrams, total_eur:totalEur, notes:els.formNotes.value.trim(), fusion_session_id:null }]).select().single();
+      if(existingForm){
+        els.formSaveStatus.textContent='Numero scheda già esistente';
+        return;
+      }
+
+      const { data: insertedForm, error: formError } = await client.from('gold_forms').insert([{
+        scheda_number:schedaNumber,
+        store:currentStore.store_name,
+        created_by_user_id:currentUser.id,
+        client_name:els.formClientName.value.trim(),
+        client_surname:els.formClientSurname.value.trim(),
+        client_cf:els.formClientCf.value.trim(),
+        client_phone:els.formClientPhone.value.trim(),
+        client_address:els.formClientAddress.value.trim(),
+        document_type:els.formDocumentType.value.trim(),
+        document_number:els.formDocumentNumber.value.trim(),
+        document_issued_by:els.formDocumentIssuedBy.value.trim(),
+        document_expiry:els.formDocumentExpiry.value || null,
+        iban:els.formIban.value.trim(),
+        quote_per_gram:quotePerGram,
+        total_grams:totalGrams,
+        total_eur:totalEur,
+        notes:els.formNotes.value.trim(),
+        fusion_session_id:null
+      }]).select().single();
+
       if(formError) throw formError;
-      const itemsPayload = validItems.map(item => ({ form_id:insertedForm.id, description:String(item.description || '').trim(), quantity:Number(item.quantity || 1), grams:Number(item.grams || 0), karat:item.karat || '18' }));
+
+      const itemsPayload = validItems.map(item => ({
+        form_id:insertedForm.id,
+        description:String(item.description || '').trim(),
+        quantity:Number(item.quantity || 1),
+        grams:Number(item.grams || 0),
+        karat:item.karat || '18'
+      }));
+
       const { error: itemsError } = await client.from('gold_form_items').insert(itemsPayload);
       if(itemsError) throw itemsError;
-      try { await fetch('/.netlify/functions/send-form-email', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ form:{ ...insertedForm, created_at_display:formatDateTimeIT() }, items:itemsPayload }) }); } catch(_) {}
+
+      try {
+        await fetch('/.netlify/functions/send-form-email', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ form:{ ...insertedForm, created_at_display:formatDateTimeIT() }, items:itemsPayload })
+        });
+      } catch(_) {}
+
       await loadOperationalData();
       resetGoldForm(`Scheda salvata correttamente (#${schedaNumber})`);
       setStatus('Scheda salvata', 'success');
-    } catch(err){ console.error(err); els.formSaveStatus.textContent='Errore salvataggio scheda'; setStatus('Errore salvataggio', 'error'); }
-    finally { els.saveFormBtn.disabled = false; }
+    } catch(err){
+      console.error(err);
+      els.formSaveStatus.textContent='Errore salvataggio scheda';
+      setStatus('Errore salvataggio', 'error');
+    } finally {
+      els.saveFormBtn.disabled = false;
+    }
   });
 
-  async function doLogout(){ await client.auth.signOut(); window.location.reload(); }
-  els.logoutBtn.addEventListener('click', doLogout); els.logoutBtnStore.addEventListener('click', doLogout);
+  async function doLogout(){
+    await client.auth.signOut();
+    window.location.reload();
+  }
+
+  els.logoutBtn.addEventListener('click', doLogout);
+  els.logoutBtnStore.addEventListener('click', doLogout);
 
   try{
     const { data } = await client.auth.getUser();
-    if(data?.user){ currentUser = data.user; const profile = await getProfile(currentUser.id); enterApp(profile); await loadAll(); startAutoRefresh(); }
-  } catch(err){ console.error(err); }
+    if(data?.user){
+      currentUser = data.user;
+      const profile = await getProfile(currentUser.id);
+      enterApp(profile);
+      await loadAll();
+      startAutoRefresh();
+    }
+  } catch(err){
+    console.error(err);
+  }
 
   window.printGoldForm = function () {
     fillPrintSheet();
-    const goldSheet = document.getElementById('printSheet'); const fusionSheet = document.getElementById('fusionPrintSheet'); const fixSheet = document.getElementById('fixPrintSheet');
-    fusionSheet.classList.remove('print-target'); fixSheet.classList.remove('print-target'); goldSheet.classList.add('print-target');
+    const goldSheet = document.getElementById('printSheet');
+    const fusionSheet = document.getElementById('fusionPrintSheet');
+    const fixSheet = document.getElementById('fixPrintSheet');
+    fusionSheet.classList.remove('print-target');
+    fixSheet.classList.remove('print-target');
+    goldSheet.classList.add('print-target');
     setTimeout(() => { window.print(); setTimeout(() => goldSheet.classList.remove('print-target'), 300); }, 100);
   };
 })();

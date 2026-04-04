@@ -1056,7 +1056,7 @@
               <thead>
                 <tr>
                   <th>Descrizione oggetto</th>
-                  <th>Caratura</th>
+                  <th>Titolo</th>
                   <th>Numero pezzi</th>
                   <th>Grammi</th>
                   <th>€</th>
@@ -1263,7 +1263,7 @@
           <thead>
             <tr>
               <th style="width:52%;">Descrizione</th>
-              <th style="width:16%; text-align:center;">Caratura</th>
+              <th style="width:16%; text-align:center;">Titolo</th>
               <th style="width:12%; text-align:center;">Pezzi</th>
               <th style="width:20%; text-align:right;">Grammi</th>
             </tr>
@@ -1449,6 +1449,14 @@
     if (karat === '9') return 355 / 1000;
     if (karat === '800') return 800 / 1000;
     return 730 / 1000;
+  }
+
+  function getTitleLabel(karat) {
+    if (String(karat) === '18') return '750/1000';
+    if (String(karat) === '14') return '585/1000';
+    if (String(karat) === '9') return '375/1000';
+    if (String(karat) === '800') return '800/1000';
+    return '750/1000';
   }
 
   function getCurrentMaterialType() {
@@ -1860,12 +1868,12 @@
         <td>
           ${
             isSilver
-              ? `<input type="text" value="Argento 800" disabled />`
+              ? `<input type="text" value="800/1000" disabled />`
               : `
                 <select data-field="karat" data-index="${index}">
-                  <option value="18" ${item.karat === '18' ? 'selected' : ''}>18kt</option>
-                  <option value="14" ${item.karat === '14' ? 'selected' : ''}>14kt</option>
-                  <option value="9" ${item.karat === '9' ? 'selected' : ''}>9kt</option>
+                  <option value="18" ${item.karat === '18' ? 'selected' : ''}>750/1000</option>
+                  <option value="14" ${item.karat === '14' ? 'selected' : ''}>585/1000</option>
+                  <option value="9" ${item.karat === '9' ? 'selected' : ''}>375/1000</option>
                 </select>
               `
           }
@@ -2014,7 +2022,7 @@
       els.printItemsBody.innerHTML = validItems.map(item => `
         <tr>
           <td>${escapeHtml(item.description || '-')}</td>
-          <td style="text-align:center;">${String(item.karat || '18') === '800' ? '800' : `${item.karat || '18'} kt`}</td>
+          <td style="text-align:center;">${getTitleLabel(item.karat || '18')}</td>
           <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
           <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
         </tr>
@@ -2055,7 +2063,7 @@
       els.printItemsBody.innerHTML = items.map(item => `
         <tr>
           <td>${escapeHtml(item.description || '-')}</td>
-          <td style="text-align:center;">${String(item.karat || '18') === '800' ? '800' : `${item.karat || '18'} kt`}</td>
+          <td style="text-align:center;">${getTitleLabel(item.karat || '18')}</td>
           <td style="text-align:center;">${escapeHtml(item.quantity || 1)}</td>
           <td style="text-align:right;">${fmt(item.grams || 0)} g</td>
         </tr>

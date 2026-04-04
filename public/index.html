@@ -1314,7 +1314,72 @@
       </div>
     </section>
   </div>
+<section id="fusionPrintSheet" class="print-sheet">
+  <div class="print-header">
+    <div>
+      <div class="print-brand">BURATO GIOIELLI S.P.A.</div>
+      <div class="print-sub">
+        Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278
+      </div>
+      <div class="print-sub" style="margin-top:6px;">
+        Report fusione / blocco prezzo
+      </div>
+    </div>
+    <div class="print-meta">
+      <div><strong>ID fusione:</strong> <span id="fusionPrintId">—</span></div>
+      <div><strong>Stato:</strong> <span id="fusionPrintStatus">—</span></div>
+      <div><strong>Data blocco:</strong> <span id="fusionPrintLockedAt">—</span></div>
+      <div><strong>Data chiusura:</strong> <span id="fusionPrintCompletedAt">—</span></div>
+    </div>
+  </div>
 
+  <div class="print-section">
+    <div class="print-section-title">Dati economici</div>
+    <div class="print-grid">
+      <div class="print-row"><strong>Prezzo fonderia:</strong> <span id="fusionPrintFoundryPrice">—</span></div>
+      <div class="print-row"><strong>Totale pagato clienti:</strong> <span id="fusionPrintPaid">—</span></div>
+      <div class="print-row"><strong>Lordo stimato:</strong> <span id="fusionPrintEstimatedGross">—</span></div>
+      <div class="print-row"><strong>Puro stimato:</strong> <span id="fusionPrintEstimatedPure">—</span></div>
+      <div class="print-row"><strong>Puro reale:</strong> <span id="fusionPrintActualPure">—</span></div>
+      <div class="print-row"><strong>Diff. puro:</strong> <span id="fusionPrintPureDiff">—</span></div>
+      <div class="print-row"><strong>Ricavo stimato:</strong> <span id="fusionPrintEstimatedRevenue">—</span></div>
+      <div class="print-row"><strong>Ricavo reale:</strong> <span id="fusionPrintActualRevenue">—</span></div>
+      <div class="print-row"><strong>Margine stimato:</strong> <span id="fusionPrintEstimatedMargin">—</span></div>
+      <div class="print-row"><strong>Margine reale:</strong> <span id="fusionPrintActualMargin">—</span></div>
+      <div class="print-row"><strong>Scostamento margine:</strong> <span id="fusionPrintMarginDiff">—</span></div>
+      <div class="print-row"><strong>Rif. fonderia:</strong> <span id="fusionPrintReference">—</span></div>
+    </div>
+  </div>
+
+  <div class="print-section">
+    <div class="print-section-title">Schede incluse</div>
+    <table class="print-table">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>N° scheda</th>
+          <th>Cliente</th>
+          <th>Negozio</th>
+          <th style="text-align:right;">Grammi</th>
+          <th style="text-align:right;">Euro</th>
+        </tr>
+      </thead>
+      <tbody id="fusionPrintFormsBody">
+        <tr><td colspan="6">Nessuna scheda</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="print-section" style="margin-top:10px;">
+    <div class="print-section-title">Note</div>
+    <div id="fusionPrintNotes" class="print-row" style="min-height:40px;">—</div>
+  </div>
+
+  <div class="print-signatures">
+    <div class="print-sign-box">Firma interna Burato Gioielli</div>
+    <div class="print-sign-box">Firma / timbro fonderia</div>
+  </div>
+</section>
 <script>
 (async function () {
   const cfg = window.BURATO_CONFIG || {};
@@ -1379,7 +1444,6 @@
     formsCount: document.getElementById('formsCount'),
     formsBody: document.getElementById('formsBody'),
 
-    printSheet: document.getElementById('printSheet'),
     printSchedaNumber: document.getElementById('printSchedaNumber'),
     printStore: document.getElementById('printStore'),
     printDate: document.getElementById('printDate'),
@@ -1415,7 +1479,26 @@
     fusionSelectedPure: document.getElementById('fusionSelectedPure'),
     fusionEstimatedMargin: document.getElementById('fusionEstimatedMargin'),
     fusionList: document.getElementById('fusionList'),
-    confirmFusionBtn: document.getElementById('confirmFusionBtn')
+    confirmFusionBtn: document.getElementById('confirmFusionBtn'),
+
+    fusionPrintId: document.getElementById('fusionPrintId'),
+    fusionPrintStatus: document.getElementById('fusionPrintStatus'),
+    fusionPrintLockedAt: document.getElementById('fusionPrintLockedAt'),
+    fusionPrintCompletedAt: document.getElementById('fusionPrintCompletedAt'),
+    fusionPrintFoundryPrice: document.getElementById('fusionPrintFoundryPrice'),
+    fusionPrintPaid: document.getElementById('fusionPrintPaid'),
+    fusionPrintEstimatedGross: document.getElementById('fusionPrintEstimatedGross'),
+    fusionPrintEstimatedPure: document.getElementById('fusionPrintEstimatedPure'),
+    fusionPrintActualPure: document.getElementById('fusionPrintActualPure'),
+    fusionPrintPureDiff: document.getElementById('fusionPrintPureDiff'),
+    fusionPrintEstimatedRevenue: document.getElementById('fusionPrintEstimatedRevenue'),
+    fusionPrintActualRevenue: document.getElementById('fusionPrintActualRevenue'),
+    fusionPrintEstimatedMargin: document.getElementById('fusionPrintEstimatedMargin'),
+    fusionPrintActualMargin: document.getElementById('fusionPrintActualMargin'),
+    fusionPrintMarginDiff: document.getElementById('fusionPrintMarginDiff'),
+    fusionPrintReference: document.getElementById('fusionPrintReference'),
+    fusionPrintFormsBody: document.getElementById('fusionPrintFormsBody'),
+    fusionPrintNotes: document.getElementById('fusionPrintNotes')
   };
 
   let priceRefreshInterval = null;
@@ -1427,6 +1510,7 @@
   let allSessionsCache = [];
   let allItemsCache = [];
   let fusionCandidates = [];
+  let sessionsById = {};
 
   function setAuthStatus(text, type = '') {
     els.authStatus.textContent = text;
@@ -1444,10 +1528,10 @@
   }
 
   function getPureFactor(karat) {
-    if (karat === '18') return 730 / 1000;
-    if (karat === '14') return 565 / 1000;
-    if (karat === '9') return 355 / 1000;
-    if (karat === '800') return 800 / 1000;
+    if (String(karat) === '18') return 730 / 1000;
+    if (String(karat) === '14') return 565 / 1000;
+    if (String(karat) === '9') return 355 / 1000;
+    if (String(karat) === '800') return 800 / 1000;
     return 730 / 1000;
   }
 
@@ -1471,17 +1555,13 @@
     const materialType = getCurrentMaterialType();
     const isSilver = materialType === 'silver800';
 
-    if (els.formSectionTitle) {
-      els.formSectionTitle.textContent = isSilver
-        ? 'Nuova scheda rientro argento 800'
-        : 'Nuova scheda rientro oro';
-    }
+    els.formSectionTitle.textContent = isSilver
+      ? 'Nuova scheda rientro argento 800'
+      : 'Nuova scheda rientro oro';
 
-    if (els.formQuoteLabel) {
-      els.formQuoteLabel.textContent = isSilver
-        ? 'Quotazione €/g argento 800'
-        : 'Quotazione €/g (18kt)';
-    }
+    els.formQuoteLabel.textContent = isSilver
+      ? 'Quotazione €/g argento 800'
+      : 'Quotazione €/g (18kt)';
 
     if (isSilver) {
       els.formQuotePerGram.value = '';
@@ -1513,10 +1593,12 @@
     }).format(Number(n || 0));
 
   function formatDateTimeIT(value = new Date()) {
+    if (!value) return '—';
     return new Date(value).toLocaleString('it-IT', { timeZone: 'Europe/Rome' });
   }
 
   function formatDateIT(value = new Date()) {
+    if (!value) return '—';
     return new Date(value).toLocaleDateString('it-IT', { timeZone: 'Europe/Rome' });
   }
 
@@ -1547,6 +1629,16 @@
 
     const liveValue = currentPureActiveGrams * purePrice;
     els.nextAlert.textContent = `Valore live teorico: ${fmt(liveValue)} €`;
+  }
+
+  function getSessionStatusMeta(status) {
+    if (status === 'completed') {
+      return { label: 'Fusa', className: 'badge green' };
+    }
+    if (status === 'locked') {
+      return { label: 'Bloccata', className: 'badge amber' };
+    }
+    return { label: 'Da fondere', className: 'badge red' };
   }
 
   if (!window.supabase || !window.supabase.createClient) {
@@ -1619,6 +1711,12 @@
     };
   }
 
+  function getFormStatus(form) {
+    if (!form.fusion_session_id) return 'open';
+    const session = sessionsById[form.fusion_session_id];
+    return session?.status === 'completed' ? 'completed' : 'locked';
+  }
+
   function buildGoldInventory(forms, items) {
     const itemsByFormId = buildItemsByFormId(items);
 
@@ -1627,9 +1725,9 @@
       return !isSilverOnlyItems(formItems);
     });
 
-    const unfusedGoldForms = goldForms.filter(form => !form.fusion_session_id);
+    const activeGoldForms = goldForms.filter(form => !form.fusion_session_id);
 
-    const pureActive = unfusedGoldForms.reduce((sum, form) => {
+    const pureActive = activeGoldForms.reduce((sum, form) => {
       const metrics = calcFormPureAndGross(form, itemsByFormId[form.id] || []);
       return sum + metrics.pure;
     }, 0);
@@ -1638,7 +1736,7 @@
       pureActive: Number(pureActive.toFixed(2)),
       itemsByFormId,
       goldForms,
-      unfusedGoldForms
+      activeGoldForms
     };
   }
 
@@ -1650,16 +1748,140 @@
       return;
     }
 
-    els.sessionsList.innerHTML = sessions.map(s => `
-      <div class="session-card">
-        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:center;">
-          <div class="muted"><strong>Fusione #${s.id}</strong></div>
-          <div class="muted"><strong>Data:</strong> ${formatDateTimeIT(s.closed_at)}</div>
-          <div class="muted"><strong>Totale fuso:</strong> ${fmt(s.total_grams || 0)} g</div>
-          <div class="muted"><strong>Margine:</strong> ${fmt(s.gross_margin || 0)} €</div>
+    const formsBySession = {};
+    allFormsCache.forEach(form => {
+      if (!form.fusion_session_id) return;
+      if (!formsBySession[form.fusion_session_id]) formsBySession[form.fusion_session_id] = [];
+      formsBySession[form.fusion_session_id].push(form);
+    });
+
+    els.sessionsList.innerHTML = sessions.map(session => {
+      const meta = getSessionStatusMeta(session.status);
+      const estimatedRevenue = Number(session.estimated_fusion_revenue || 0);
+      const actualRevenue = Number(session.actual_fusion_revenue || 0);
+      const estimatedMargin = Number(session.estimated_margin || 0);
+      const actualMargin = Number(session.actual_margin || 0);
+      const pureDiff = Number(session.pure_diff_grams || 0);
+      const marginDiff = Number(session.margin_diff_eur || 0);
+      const linkedForms = formsBySession[session.id] || [];
+
+      return `
+        <div class="session-card">
+          <div class="session-toolbar">
+            <div>
+              <div class="session-meta">
+                <span class="${meta.className}"><span class="badge-dot"></span>${meta.label}</span>
+                <span class="muted"><strong>Fusione #${session.id}</strong></span>
+                <span class="muted">Blocco: ${formatDateTimeIT(session.locked_at || session.closed_at)}</span>
+                <span class="muted">Schede: ${linkedForms.length}</span>
+              </div>
+            </div>
+            <div class="session-actions">
+              <button type="button" class="secondary" data-action="print-session" data-id="${session.id}" style="min-height:42px;width:auto;">Stampa</button>
+              ${
+                session.status === 'locked'
+                  ? `<button type="button" data-action="open-complete-session" data-id="${session.id}" style="min-height:42px;width:auto;">Registra esito</button>`
+                  : ''
+              }
+            </div>
+          </div>
+
+          <div class="session-grid">
+            <div class="session-box">
+              <div class="label">Prezzo fonderia</div>
+              <div class="value">${fmt(session.foundry_price_per_gram)} €/g</div>
+            </div>
+            <div class="session-box">
+              <div class="label">Lordo stimato</div>
+              <div class="value">${fmt(session.estimated_gross_grams)} g</div>
+            </div>
+            <div class="session-box">
+              <div class="label">Puro stimato</div>
+              <div class="value">${fmt(session.estimated_pure_grams)} g</div>
+            </div>
+            <div class="session-box">
+              <div class="label">Tot. pagato clienti</div>
+              <div class="value">${fmt(session.total_paid_clients)} €</div>
+            </div>
+            <div class="session-box">
+              <div class="label">Ricavo stimato</div>
+              <div class="value">${fmt(estimatedRevenue)} €</div>
+            </div>
+            <div class="session-box">
+              <div class="label">Margine stimato</div>
+              <div class="value">${fmt(estimatedMargin)} €</div>
+            </div>
+            <div class="session-box">
+              <div class="label">Puro reale</div>
+              <div class="value">${session.actual_pure_grams == null ? '—' : `${fmt(session.actual_pure_grams)} g`}</div>
+            </div>
+            <div class="session-box">
+              <div class="label">Margine reale</div>
+              <div class="value">${session.actual_margin == null ? '—' : `${fmt(actualMargin)} €`}</div>
+            </div>
+          </div>
+
+          ${
+            session.status === 'completed'
+              ? `
+                <div class="muted" style="margin-top:14px;">
+                  Ricavo reale: <strong>${fmt(actualRevenue)} €</strong> ·
+                  Diff. puro: <strong>${pureDiff >= 0 ? '+' : ''}${fmt(pureDiff)} g</strong> ·
+                  Scostamento margine: <strong>${marginDiff >= 0 ? '+' : ''}${fmt(marginDiff)} €</strong>
+                </div>
+              `
+              : `
+                <div class="muted" style="margin-top:14px;">
+                  Fusione bloccata in attesa di esito reale dalla fonderia.
+                </div>
+              `
+          }
+
+          ${
+            session.status === 'locked'
+              ? `
+                <div class="session-inline-form hidden" id="completeSessionForm-${session.id}">
+                  <label>
+                    <span>Puro reale uscito da fusione</span>
+                    <input type="number" step="0.01" id="actualPureInput-${session.id}" placeholder="es. 72.40" />
+                  </label>
+                  <label>
+                    <span>Riferimento / note fonderia</span>
+                    <input type="text" id="foundryRefInput-${session.id}" placeholder="es. Doc. 123 / nota interna" />
+                  </label>
+                  <button type="button" data-action="complete-session" data-id="${session.id}" style="min-height:42px;width:auto;">Conferma esito</button>
+                </div>
+              `
+              : ''
+          }
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+
+    bindSessionActions();
+  }
+
+  function bindSessionActions() {
+    els.sessionsList.querySelectorAll('button[data-action="print-session"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await printFusionSession(Number(btn.dataset.id));
+      });
+    });
+
+    els.sessionsList.querySelectorAll('button[data-action="open-complete-session"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.dataset.id);
+        const box = document.getElementById(`completeSessionForm-${id}`);
+        if (box) box.classList.toggle('hidden');
+      });
+    });
+
+    els.sessionsList.querySelectorAll('button[data-action="complete-session"]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const sessionId = Number(btn.dataset.id);
+        await completeFusionSession(sessionId);
+      });
+    });
   }
 
   function renderForms(forms, pureGramsActive = 0) {
@@ -1667,9 +1889,9 @@
     els.totalGrams.textContent = fmt(currentPureActiveGrams) + ' g';
     updatePureValueDisplay();
 
-    const lastFusionAt = allSessionsCache.length ? allSessionsCache[0].closed_at : null;
-    els.resetNote.textContent = lastFusionAt
-      ? `Ultima fusione registrata: ${formatDateTimeIT(lastFusionAt)}`
+    const lastLockedAt = allSessionsCache.length ? (allSessionsCache[0].locked_at || allSessionsCache[0].closed_at) : null;
+    els.resetNote.textContent = lastLockedAt
+      ? `Ultimo blocco fusione: ${formatDateTimeIT(lastLockedAt)}`
       : 'Nessuna fusione registrata';
 
     els.formsCount.textContent = `${forms.length} schede`;
@@ -1680,20 +1902,25 @@
     }
 
     els.formsBody.innerHTML = forms.map(form => {
-      const fused = !!form.fusion_session_id;
+      const status = getFormStatus(form);
+      const session = form.fusion_session_id ? sessionsById[form.fusion_session_id] : null;
+
+      let badge = `<span class="badge red"><span class="badge-dot"></span>Da fondere</span>`;
+      if (status === 'locked') {
+        badge = `<span class="badge amber"><span class="badge-dot"></span>Bloccata</span>`;
+      }
+      if (status === 'completed') {
+        badge = `<span class="badge green"><span class="badge-dot"></span>Fusa</span>`;
+      }
+
       return `
         <tr>
           <td>${formatDateTimeIT(form.created_at)}</td>
           <td><strong>${escapeHtml(form.scheda_number || '-')}</strong></td>
           <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
           <td>${escapeHtml(form.store || '-')}</td>
-          <td>
-            ${fused
-              ? `<span class="badge green"><span class="badge-dot"></span>Fusa</span>`
-              : `<span class="badge red"><span class="badge-dot"></span>Da fondere</span>`
-            }
-          </td>
-          <td>${fused ? `Fusione #${form.fusion_session_id}` : '—'}</td>
+          <td>${badge}</td>
+          <td>${form.fusion_session_id ? `Fusione #${form.fusion_session_id}${session?.status === 'locked' ? ' (attesa)' : ''}` : '—'}</td>
           <td class="right">${fmt(form.total_grams || 0)} g</td>
           <td class="right">${fmt(form.total_eur || 0)} €</td>
           <td>
@@ -1711,8 +1938,7 @@
   function bindFormsActions() {
     els.formsBody.querySelectorAll('button[data-action="reprint-form"]').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const formId = btn.dataset.id;
-        await reprintSavedForm(formId);
+        await reprintSavedForm(btn.dataset.id);
       });
     });
   }
@@ -1752,7 +1978,7 @@
           <strong>${fmt(form.metrics.gross)} g</strong><br>lordi
         </div>
         <div class="fusion-item-metric">
-          <strong>${fmt(form.metrics.pure)} g</strong><br>puro
+          <strong>${fmt(form.metrics.pure)} g</strong><br>puro stimato
         </div>
       </label>
     `).join('');
@@ -1790,8 +2016,8 @@
 
   async function loadOperationalData() {
     const [sessionsRes, formsRes] = await Promise.all([
-      client.from('gold_sessions').select('*').order('closed_at', { ascending: false }).limit(100),
-      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(200)
+      client.from('gold_sessions').select('*').order('locked_at', { ascending: false }).limit(200),
+      client.from('gold_forms').select('*').order('created_at', { ascending: false }).limit(300)
     ]);
 
     if (sessionsRes.error) throw sessionsRes.error;
@@ -1800,9 +2026,14 @@
     allSessionsCache = sessionsRes.data || [];
     allFormsCache = formsRes.data || [];
 
-    const formIds = allFormsCache.map(f => f.id);
+    sessionsById = {};
+    allSessionsCache.forEach(session => {
+      sessionsById[session.id] = session;
+    });
 
+    const formIds = allFormsCache.map(f => f.id);
     let items = [];
+
     if (formIds.length) {
       const { data: itemsData, error: itemsError } = await client
         .from('gold_form_items')
@@ -1864,7 +2095,6 @@
         <td>
           <input type="text" value="${escapeHtml(item.description)}" data-field="description" data-index="${index}" />
         </td>
-
         <td>
           ${
             isSilver
@@ -1878,19 +2108,15 @@
               `
           }
         </td>
-
         <td>
           <input type="number" min="1" step="1" value="${escapeHtml(item.quantity)}" data-field="quantity" data-index="${index}" />
         </td>
-
         <td>
           <input type="number" min="0.01" step="0.01" value="${escapeHtml(item.grams)}" data-field="grams" data-index="${index}" />
         </td>
-
         <td>
           <div>${fmt(calcItemValue(item))} €</div>
         </td>
-
         <td>
           <button type="button" class="secondary" data-action="remove-row" data-index="${index}" style="min-height:42px;">Elimina</button>
         </td>
@@ -1989,6 +2215,18 @@
     }
 
     updateFormMode();
+  }
+
+  function getFormTotals() {
+    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
+    let totalEur = 0;
+    formItems.forEach(item => { totalEur += calcItemValue(item); });
+
+    return {
+      totalGrams: Number(totalGrams.toFixed(2)),
+      quotePerGram: Number(els.formQuotePerGram.value || 0),
+      totalEur: Number(totalEur.toFixed(2))
+    };
   }
 
   function fillPrintSheet() {
@@ -2101,24 +2339,126 @@
     }
   }
 
+  async function printFusionSession(sessionId) {
+    try {
+      const session = sessionsById[sessionId];
+      if (!session) return;
+
+      const forms = allFormsCache.filter(f => Number(f.fusion_session_id) === Number(sessionId));
+
+      els.fusionPrintId.textContent = `#${session.id}`;
+      els.fusionPrintStatus.textContent = session.status === 'completed' ? 'Fusa' : 'Bloccata';
+      els.fusionPrintLockedAt.textContent = formatDateTimeIT(session.locked_at || session.closed_at);
+      els.fusionPrintCompletedAt.textContent = formatDateTimeIT(session.completed_at);
+
+      els.fusionPrintFoundryPrice.textContent = `${fmt(session.foundry_price_per_gram)} €/g`;
+      els.fusionPrintPaid.textContent = `${fmt(session.total_paid_clients)} €`;
+      els.fusionPrintEstimatedGross.textContent = `${fmt(session.estimated_gross_grams)} g`;
+      els.fusionPrintEstimatedPure.textContent = `${fmt(session.estimated_pure_grams)} g`;
+      els.fusionPrintActualPure.textContent = session.actual_pure_grams == null ? '—' : `${fmt(session.actual_pure_grams)} g`;
+      els.fusionPrintPureDiff.textContent = session.pure_diff_grams == null ? '—' : `${session.pure_diff_grams >= 0 ? '+' : ''}${fmt(session.pure_diff_grams)} g`;
+      els.fusionPrintEstimatedRevenue.textContent = `${fmt(session.estimated_fusion_revenue)} €`;
+      els.fusionPrintActualRevenue.textContent = session.actual_fusion_revenue == null ? '—' : `${fmt(session.actual_fusion_revenue)} €`;
+      els.fusionPrintEstimatedMargin.textContent = `${fmt(session.estimated_margin)} €`;
+      els.fusionPrintActualMargin.textContent = session.actual_margin == null ? '—' : `${fmt(session.actual_margin)} €`;
+      els.fusionPrintMarginDiff.textContent = session.margin_diff_eur == null ? '—' : `${session.margin_diff_eur >= 0 ? '+' : ''}${fmt(session.margin_diff_eur)} €`;
+      els.fusionPrintReference.textContent = session.foundry_reference || '—';
+      els.fusionPrintNotes.textContent = session.notes || '—';
+
+      if (!forms.length) {
+        els.fusionPrintFormsBody.innerHTML = '<tr><td colspan="6">Nessuna scheda</td></tr>';
+      } else {
+        els.fusionPrintFormsBody.innerHTML = forms.map(form => `
+          <tr>
+            <td>${formatDateTimeIT(form.created_at)}</td>
+            <td>${escapeHtml(form.scheda_number || '-')}</td>
+            <td>${escapeHtml([form.client_name, form.client_surname].filter(Boolean).join(' ') || '-')}</td>
+            <td>${escapeHtml(form.store || '-')}</td>
+            <td style="text-align:right;">${fmt(form.total_grams || 0)} g</td>
+            <td style="text-align:right;">${fmt(form.total_eur || 0)} €</td>
+          </tr>
+        `).join('');
+      }
+
+      setTimeout(() => window.print(), 100);
+    } catch (err) {
+      console.error(err);
+      alert('Errore stampa fusione');
+    }
+  }
+
   function updateRowValue(index) {
     const row = els.formItemsBody.querySelectorAll('tr')[index];
     if (!row) return;
     const valueCell = row.children[4];
     const value = calcItemValue(formItems[index]);
-    valueCell.innerHTML = value.toFixed(2) + ' €';
+    valueCell.innerHTML = fmt(value) + ' €';
   }
 
-  function getFormTotals() {
-    const totalGrams = formItems.reduce((sum, item) => sum + Number(item.grams || 0), 0);
-    let totalEur = 0;
-    formItems.forEach(item => { totalEur += calcItemValue(item); });
+  async function completeFusionSession(sessionId) {
+    if (!currentStore || currentStore.role !== 'admin') return;
 
-    return {
-      totalGrams: Number(totalGrams.toFixed(2)),
-      quotePerGram: Number(els.formQuotePerGram.value || 0),
-      totalEur: Number(totalEur.toFixed(2))
-    };
+    const session = sessionsById[sessionId];
+    if (!session) return;
+
+    const actualPureInput = document.getElementById(`actualPureInput-${sessionId}`);
+    const foundryRefInput = document.getElementById(`foundryRefInput-${sessionId}`);
+
+    const actualPure = Number(String(actualPureInput?.value || '0').replace(',', '.'));
+    const foundryReference = String(foundryRefInput?.value || '').trim();
+
+    if (!Number.isFinite(actualPure) || actualPure <= 0) {
+      alert('Inserisci un puro reale valido');
+      return;
+    }
+
+    const foundryPrice = Number(session.foundry_price_per_gram || 0);
+    const actualRevenue = actualPure * foundryPrice;
+    const actualMargin = actualRevenue - Number(session.total_paid_clients || 0);
+    const pureDiff = actualPure - Number(session.estimated_pure_grams || 0);
+    const marginDiff = actualMargin - Number(session.estimated_margin || 0);
+
+    const ok = window.confirm(
+      `Confermi esito reale fusione #${sessionId}?\n` +
+      `Puro reale: ${fmt(actualPure)} g\n` +
+      `Ricavo reale: ${fmt(actualRevenue)} €\n` +
+      `Margine reale: ${fmt(actualMargin)} €\n` +
+      `Diff. puro: ${pureDiff >= 0 ? '+' : ''}${fmt(pureDiff)} g\n` +
+      `Diff. margine: ${marginDiff >= 0 ? '+' : ''}${fmt(marginDiff)} €`
+    );
+
+    if (!ok) return;
+
+    setStatus('Registrazione esito...', 'warning');
+
+    try {
+      const { error } = await client
+        .from('gold_sessions')
+        .update({
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          actual_pure_grams: Number(actualPure.toFixed(2)),
+          actual_fusion_revenue: Number(actualRevenue.toFixed(2)),
+          actual_margin: Number(actualMargin.toFixed(2)),
+          pure_diff_grams: Number(pureDiff.toFixed(2)),
+          margin_diff_eur: Number(marginDiff.toFixed(2)),
+          foundry_reference: foundryReference || null,
+          gross_margin: Number(actualMargin.toFixed(2)),
+          pure_grams: Number(actualPure.toFixed(2)),
+          total_fusion_revenue: Number(actualRevenue.toFixed(2)),
+          closed_at: new Date().toISOString()
+        })
+        .eq('id', sessionId);
+
+      if (error) throw error;
+
+      await loadOperationalData();
+      setStatus('Esito fusione registrato', 'success');
+    } catch (err) {
+      console.error(err);
+      setStatus('Errore registrazione esito', 'error');
+      alert('Errore registrazione esito');
+    }
   }
 
   function enterApp(profile) {
@@ -2150,6 +2490,8 @@
       els.toggleFormBtn.classList.remove('hidden');
       els.toggleFormBtn.textContent = 'Apri scheda';
     }
+
+    els.confirmFusionBtn.textContent = 'Blocca prezzo fusione';
 
     els.formStore.value = profile.store_name;
     resetGoldForm();
@@ -2220,7 +2562,7 @@
 
     const selectedForms = getSelectedFusionForms();
     if (!selectedForms.length) {
-      alert('Seleziona almeno una scheda da fondere');
+      alert('Seleziona almeno una scheda da includere');
       return;
     }
 
@@ -2233,44 +2575,49 @@
     const totalGross = selectedForms.reduce((sum, form) => sum + Number(form.metrics.gross || 0), 0);
     const totalPure = selectedForms.reduce((sum, form) => sum + Number(form.metrics.pure || 0), 0);
     const totalPaid = selectedForms.reduce((sum, form) => sum + Number(form.metrics.eur || 0), 0);
-    const avgPurchasePrice = totalPure > 0 ? totalPaid / totalPure : 0;
     const totalRevenue = totalPure * foundryPrice;
-    const realMargin = totalRevenue - totalPaid;
+    const estimatedMargin = totalRevenue - totalPaid;
 
     const ok = window.confirm(
-      `Confermi fusione di ${selectedForms.length} schede?\n` +
-      `Lordo: ${fmt(totalGross)} g\n` +
-      `Puro: ${fmt(totalPure)} g\n` +
-      `Totale pagato: ${fmt(totalPaid)} €\n` +
-      `Prezzo medio acquisto: ${fmt(avgPurchasePrice)} €/g\n` +
+      `Confermi blocco prezzo di ${selectedForms.length} schede?\n` +
+      `Lordo stimato: ${fmt(totalGross)} g\n` +
+      `Puro stimato: ${fmt(totalPure)} g\n` +
+      `Totale pagato clienti: ${fmt(totalPaid)} €\n` +
       `Prezzo fonderia: ${fmt(foundryPrice)} €/g\n` +
-      `Margine: ${fmt(realMargin)} €`
+      `Ricavo stimato: ${fmt(totalRevenue)} €\n` +
+      `Margine stimato: ${fmt(estimatedMargin)} €`
     );
 
     if (!ok) return;
 
     els.confirmFusionBtn.disabled = true;
     els.resetBtn.disabled = true;
-    setStatus('Fusione in corso...');
+    setStatus('Blocco prezzo in corso...');
 
     try {
       const { data: insertedSession, error: sessionError } = await client
         .from('gold_sessions')
         .insert([{
-          total_grams: Number(totalGross.toFixed(2)),
-          pure_grams: Number(totalPure.toFixed(2)),
+          status: 'locked',
+          locked_at: new Date().toISOString(),
+          estimated_gross_grams: Number(totalGross.toFixed(2)),
+          estimated_pure_grams: Number(totalPure.toFixed(2)),
           foundry_price_per_gram: Number(foundryPrice.toFixed(2)),
           total_paid_clients: Number(totalPaid.toFixed(2)),
+          estimated_fusion_revenue: Number(totalRevenue.toFixed(2)),
+          estimated_margin: Number(estimatedMargin.toFixed(2)),
+          total_grams: Number(totalGross.toFixed(2)),
+          pure_grams: Number(totalPure.toFixed(2)),
           total_fusion_revenue: Number(totalRevenue.toFixed(2)),
-          gross_margin: Number(realMargin.toFixed(2)),
+          gross_margin: Number(estimatedMargin.toFixed(2)),
           summary_text:
-            `Schede fuse: ${selectedForms.length}\n` +
-            `Lordo: ${fmt(totalGross)} g\n` +
-            `Puro: ${fmt(totalPure)} g\n` +
+            `Schede bloccate: ${selectedForms.length}\n` +
+            `Lordo stimato: ${fmt(totalGross)} g\n` +
+            `Puro stimato: ${fmt(totalPure)} g\n` +
             `Totale pagato: ${fmt(totalPaid)} €\n` +
-            `Prezzo medio acquisto: ${fmt(avgPurchasePrice)} €/g\n` +
             `Prezzo fonderia: ${fmt(foundryPrice)} €/g\n` +
-            `Margine: ${fmt(realMargin)} €`
+            `Ricavo stimato: ${fmt(totalRevenue)} €\n` +
+            `Margine stimato: ${fmt(estimatedMargin)} €`
         }])
         .select()
         .single();
@@ -2290,11 +2637,11 @@
       els.fusionPanel.classList.add('hidden');
 
       await loadOperationalData();
-      setStatus('Fusione registrata', 'success');
+      setStatus('Prezzo fusione bloccato', 'success');
     } catch (err) {
-      console.error('ERRORE FUSIONE DETTAGLIO:', err);
-      alert('Errore fusione: ' + (err?.message || JSON.stringify(err)));
-      setStatus('Errore fusione', 'error');
+      console.error('ERRORE BLOCCO FUSIONE:', err);
+      alert('Errore blocco fusione: ' + (err?.message || JSON.stringify(err)));
+      setStatus('Errore blocco fusione', 'error');
     } finally {
       els.confirmFusionBtn.disabled = false;
       els.resetBtn.disabled = false;

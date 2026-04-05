@@ -7,196 +7,40 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
   <style>
-    :root{
-      --bg1:#f6f1e8;
-      --bg2:#fcfbf8;
-      --bg3:#efe6d8;
-      --card:rgba(255,255,255,.96);
-      --line:rgba(17,24,39,.08);
-      --line-strong:rgba(17,24,39,.14);
-      --text:#151515;
-      --muted:#6f6f6f;
-      --muted-2:#919191;
-      --soft:#f6efe4;
-      --soft-2:#fcf8f2;
-      --gold:#c6a769;
-      --gold-soft:rgba(198,167,105,.14);
-      --ok:#0f766e;
-      --ok-soft:#dff7ef;
-      --bad:#b91c1c;
-      --bad-soft:#fde9e9;
-      --amber:#9a6700;
-      --amber-soft:#fff4db;
-      --shadow:0 22px 60px rgba(0,0,0,.06);
-      --shadow-soft:0 12px 30px rgba(0,0,0,.05);
-      --radius-xl:28px;
-      --radius-lg:22px;
-      --radius-md:16px;
-      --radius-sm:12px;
-    }
-
-    *{box-sizing:border-box;transition:all .15s ease}
-    html,body{margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 30%),
-        linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 48%,var(--bg3) 100%);
-      color:var(--text);
-      min-height:100vh;
-    }
-
-    .page{max-width:1380px;margin:0 auto;padding:28px}
-    .card{background:var(--card);border:1px solid rgba(0,0,0,.05);border-radius:var(--radius-xl);box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-
-    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;padding:30px 32px;margin-bottom:20px;position:relative;overflow:hidden;min-height:168px;align-items:center}
-    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 86% 20%, rgba(198,167,105,.14), transparent 24%),radial-gradient(circle at 100% 100%, rgba(198,167,105,.08), transparent 28%);pointer-events:none}
-    .eyebrow,.small-label{text-transform:uppercase;letter-spacing:.13em;font-size:11px;color:var(--muted-2);font-weight:800}
-    .hero h1{margin:10px 0 0;font-size:clamp(2.5rem,5vw,4.6rem);line-height:.94;letter-spacing:-.06em;position:relative;z-index:1;font-weight:900;color:#111}
-    .hero-left{position:relative;z-index:1}
-    .hero-left .hero-mini{margin-top:14px;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:linear-gradient(135deg,#fff,#f5efe6);border:1px solid rgba(198,167,105,.25);color:#5f5f5f;font-size:12px;font-weight:700;box-shadow:var(--shadow-soft)}
-    .hero-side{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-self:start;position:relative;z-index:1}
-    .hero-info-card{background:rgba(255,255,255,.82);border:1px solid rgba(17,24,39,.06);border-radius:22px;padding:16px 18px;box-shadow:var(--shadow-soft);min-height:92px;display:flex;flex-direction:column;justify-content:center}
-    .hero-side .value{margin-top:8px;font-weight:800;font-size:16px;color:#222;line-height:1.35}
-
-    .muted{color:var(--muted);font-size:14px;line-height:1.5}
-    .quote-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-bottom:20px}
-    .quote-grid.store-view{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .quote-card,.section{padding:24px 26px}
-    .quote-card{position:relative;overflow:hidden;background:linear-gradient(160deg,#ffffff,#f8f3ea);border:1px solid rgba(198,167,105,.25)}
-    .quote-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(180deg,var(--gold),transparent);opacity:.75}
-    .quote-card::after{content:"";position:absolute;right:-36px;bottom:-36px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle, var(--gold-soft), transparent 72%);pointer-events:none}
-    .big-price{font-size:clamp(2.6rem,5vw,4.8rem);line-height:.92;margin:14px 0 8px;font-weight:900;letter-spacing:-.065em;color:#111}
-    .big-sub{font-size:clamp(1.6rem,3.4vw,2.25rem);line-height:1.02;margin:14px 0 8px;font-weight:850;letter-spacing:-.05em;color:#2a2a2a}
-
-    .head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px}
-    .head h2{margin:0;font-size:1.22rem;letter-spacing:-.025em}
-    .pill{padding:10px 14px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:12px;font-weight:800;white-space:nowrap;color:#5a5a5a;box-shadow:0 3px 10px rgba(0,0,0,.03)}
-    .pill.success{color:#065f46;background:#dff7ef;border:1px solid #b7ecd9}
-    .pill.error{color:#8f1d1d;background:#fde9e9;border:1px solid #f5c8c8}
-
-    .auth-form{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end}
-    .form-full{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .form-full .full{grid-column:1 / -1}
-    label{display:block}
-    label span{display:block;margin-bottom:8px;font-size:12px;color:#5d5d5d;font-weight:800;letter-spacing:.02em}
-    input,select,button,textarea{width:100%;min-height:54px;border-radius:18px;font:inherit}
-    input,select,textarea{padding:0 16px;background:#fff;color:var(--text);outline:none;border:1px solid rgba(0,0,0,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
-    input:focus,select:focus,textarea:focus{border-color:rgba(198,167,105,.8);box-shadow:0 0 0 3px rgba(198,167,105,.18)}
-    input:disabled{background:#faf8f4;color:#666}
-    textarea{min-height:96px;padding:14px 16px;resize:vertical}
-    button{padding:0 20px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);color:#fff;cursor:pointer;font-weight:850;letter-spacing:.01em;border:1px solid rgba(0,0,0,.2);box-shadow:0 10px 20px rgba(0,0,0,.12)}
-    button.secondary{background:#fff;color:#111;border:1px solid rgba(0,0,0,.08);box-shadow:0 8px 18px rgba(0,0,0,.05)}
-    button.reset{background:linear-gradient(135deg,#b91c1c,#d93025)}
-    button:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
-
-    .control-row{display:grid;grid-template-columns:220px 1fr auto;gap:14px;align-items:center;margin-top:16px}
-    .table-wrap{overflow:auto;border-radius:22px;border:1px solid var(--line);background:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
-    table{width:100%;border-collapse:collapse;min-width:1040px}
-    thead th{text-align:left;background:#faf7f2;color:#6b6b6b;font-size:12px;font-weight:800;letter-spacing:.04em;padding:15px 18px;text-transform:uppercase;position:sticky;top:0;z-index:1}
-    tbody td{padding:16px 18px;border-top:1px solid #f2eee7;font-size:14px;vertical-align:middle}
-    .items-table-wrap{overflow:auto;border-radius:20px;border:1px solid var(--line);background:#fff;margin-top:16px;box-shadow:var(--shadow-soft)}
-    .items-table{width:100%;border-collapse:collapse;min-width:720px}
-    .items-table th{text-align:left;background:#faf7f2;color:#6b6b6b;font-size:12px;font-weight:800;padding:12px 14px;text-transform:uppercase;letter-spacing:.04em}
-    .items-table td{padding:12px 14px;border-top:1px solid #f1ece4;vertical-align:middle;background:#fff}
-    .items-table td:nth-child(5){font-weight:700;color:#111}
-    .items-table input{min-height:46px;border-radius:14px}
-    .actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-    .summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
-    .summary-box{background:linear-gradient(180deg,#fff,#fcfaf7);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow-soft)}
-
-    .admin-shell{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-bottom:20px}
-    .admin-left,.admin-right{display:grid;gap:18px;align-content:start}
-    .admin-right{grid-template-rows:auto auto}
-    .dual-card{display:grid;grid-template-columns:1fr;gap:18px}
-
-    .right{text-align:right}
-    .empty{text-align:center;color:#888;padding:34px 18px}
-    .note{margin-top:14px;font-size:13px;color:#777;line-height:1.45}
-    .hidden{display:none !important}
-    .stack{display:grid;gap:12px}
-    #authMessage{margin-top:12px;font-size:14px;font-weight:700;color:var(--bad);white-space:pre-wrap}
-    .store-logout-card{padding:18px 22px;border-radius:24px}
-
-    .badge{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:800;line-height:1;white-space:nowrap;border:1px solid transparent}
-    .badge.red{background:var(--bad-soft);color:#8f1d1d;border-color:#f5c8c8}
-    .badge.green{background:var(--ok-soft);color:#065f46;border-color:#b7ecd9}
-    .badge.amber{background:var(--amber-soft);color:var(--amber);border-color:#f3d38a}
-    .badge-dot{width:8px;height:8px;border-radius:999px;background:currentColor;display:inline-block}
-
-    .fusion-panel{margin-top:18px;padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#fcfaf7);box-shadow:var(--shadow-soft)}
-    .fusion-list{display:grid;gap:10px;margin-top:14px;max-height:360px;overflow:auto;padding-right:4px}
-    .fusion-item{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid #efe8dc;border-radius:16px;background:#fff}
-    .fusion-item input[type="checkbox"]{width:20px;height:20px;min-height:20px;border-radius:6px;accent-color:#111}
-    .fusion-item-main{min-width:0}.fusion-item-title{font-weight:800;font-size:14px;color:#111;margin-bottom:4px}.fusion-item-sub{font-size:12px;color:#6f6f6f;line-height:1.4}.fusion-item-metric{text-align:right;font-size:13px;color:#444;white-space:nowrap}
-    .fusion-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
-    .fusion-summary-box{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px}.fusion-summary-box .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#777;font-weight:800;margin-bottom:6px}.fusion-summary-box .value{font-size:20px;font-weight:900;color:#111;line-height:1.05}
-
-    .session-list-min{display:grid;gap:10px}
-    .session-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fff,#fcfaf7);box-shadow:var(--shadow-soft)}
-    .session-row-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}.session-row-title{font-weight:800;font-size:14px;color:#111}.session-row-date{font-size:13px;color:#666}.session-row-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-
-    .profit-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:0;margin-bottom:18px}
-    .profit-toolbar label{max-width:220px}
-
-    .print-sheet{display:none;font-family:Arial,Helvetica,sans-serif;color:#111}
-    .print-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #d9d1c4;padding-bottom:10px;margin-bottom:12px}
-    .print-brand{font-size:20px;font-weight:800;letter-spacing:.01em;line-height:1}.print-sub{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}.print-meta{text-align:right;font-size:11px;color:#444;line-height:1.45}.print-section{margin-bottom:10px}.print-section-title{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#666;margin-bottom:5px;font-weight:700}.print-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px}.print-row{padding:4px 0;border-bottom:1px solid #ece6dc;font-size:11px;line-height:1.3}.print-row strong{display:inline-block;min-width:92px}.print-table{width:100%;border-collapse:collapse;margin-top:6px;min-width:0}.print-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#666;background:#f7f3ec;padding:6px 8px;border:1px solid #e8e1d5;line-height:1.2}.print-table td{padding:6px 8px;border:1px solid #e8e1d5;font-size:11px;line-height:1.25}.print-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.print-summary-box{border:1px solid #e8e1d5;border-radius:10px;padding:10px 12px;background:#fcfaf6}.print-summary-label{font-size:10px;text-transform:uppercase;color:#777;letter-spacing:.05em;margin-bottom:4px}.print-summary-value{font-size:18px;font-weight:800;line-height:1.05}.print-signatures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:18px}.print-sign-box{padding-top:20px;border-top:1px solid #444;font-size:11px;color:#444;text-align:center}.print-declarations{margin-top:14px;padding:12px 14px;border:1px solid #e8e1d5;border-radius:10px;background:#fcfaf6}.print-declaration-text{font-size:10.5px;line-height:1.45;color:#333;margin-bottom:8px}
-
-    @media print {
-      html,body{background:#fff !important;margin:0 !important;padding:0 !important}
-      body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-      .page > *{display:none !important}
-      .print-target{display:block !important;background:#fff !important;color:#111 !important;padding:0 !important;margin:0 !important}
-      @page{size:A4;margin:9mm}
-    }
-
-    @media (max-width:1100px){
-      .quote-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .admin-shell{grid-template-columns:1fr}
-    }
-
-    @media (max-width:960px){
-      .page{padding:16px}
-      .hero{grid-template-columns:1fr;padding:24px;min-height:auto}
-      .hero-side{grid-template-columns:1fr}
-      .quote-grid,.fusion-summary{grid-template-columns:1fr}
-      .quote-grid.store-view{grid-template-columns:1fr}
-      .auth-form,.form-full,.control-row{grid-template-columns:1fr}
-      .summary-grid{grid-template-columns:1fr}
-      .quote-card,.section{padding:20px}
-      .head{flex-direction:column;align-items:flex-start}
-      .actions-row{flex-direction:column}
-      .fusion-item{grid-template-columns:auto 1fr}
-      .fusion-item-metric{text-align:left}
-      table{min-width:1180px}
-      .session-row{grid-template-columns:1fr}
-      .profit-toolbar{flex-direction:column;align-items:stretch}
-    }
+    :root{--bg1:#f6f1e8;--bg2:#fcfbf8;--bg3:#efe6d8;--card:rgba(255,255,255,.96);--line:rgba(17,24,39,.08);--text:#151515;--muted:#6f6f6f;--muted-2:#919191;--soft:#f6efe4;--gold:#c6a769;--gold-soft:rgba(198,167,105,.14);--ok:#0f766e;--ok-soft:#dff7ef;--bad:#b91c1c;--bad-soft:#fde9e9;--amber:#9a6700;--amber-soft:#fff4db;--shadow:0 22px 60px rgba(0,0,0,.06);--shadow-soft:0 12px 30px rgba(0,0,0,.05);--radius-xl:28px;--radius-lg:22px;--radius-md:16px;--radius-sm:12px}
+    *{box-sizing:border-box;transition:all .15s ease}html,body{margin:0;padding:0}html{scroll-behavior:smooth}
+    body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 30%), linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 48%,var(--bg3) 100%);color:var(--text);min-height:100vh}
+    .page{max-width:1320px;margin:0 auto;padding:28px}.card{background:var(--card);border:1px solid rgba(0,0,0,.05);border-radius:var(--radius-xl);box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;padding:30px 32px;margin-bottom:20px;position:relative;overflow:hidden;min-height:168px;align-items:center}.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 86% 20%, rgba(198,167,105,.14), transparent 24%), radial-gradient(circle at 100% 100%, rgba(198,167,105,.08), transparent 28%);pointer-events:none}
+    .eyebrow,.small-label{text-transform:uppercase;letter-spacing:.13em;font-size:11px;color:var(--muted-2);font-weight:800}.hero h1{margin:10px 0 0;font-size:clamp(2.5rem,5vw,4.6rem);line-height:.94;letter-spacing:-.06em;position:relative;z-index:1;font-weight:900;color:#111}.hero-left{position:relative;z-index:1}.hero-left .hero-mini{margin-top:14px;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:linear-gradient(135deg,#fff,#f5efe6);border:1px solid rgba(198,167,105,.25);color:#5f5f5f;font-size:12px;font-weight:700;box-shadow:var(--shadow-soft)}
+    .hero-side{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-self:start;position:relative;z-index:1}.hero-info-card{background:rgba(255,255,255,.82);border:1px solid rgba(17,24,39,.06);border-radius:22px;padding:16px 18px;box-shadow:var(--shadow-soft);min-height:92px;display:flex;flex-direction:column;justify-content:center}.hero-side .value{margin-top:8px;font-weight:800;font-size:16px;color:#222;line-height:1.35}
+    .muted{color:var(--muted);font-size:14px;line-height:1.5}.quote-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:20px}.quote-grid.store-view{grid-template-columns:repeat(2,minmax(0,1fr))}.quote-card,.section{padding:24px 26px}.quote-card{position:relative;overflow:hidden;background:linear-gradient(160deg,#ffffff,#f8f3ea);border:1px solid rgba(198,167,105,.25)}.quote-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(180deg,var(--gold),transparent);opacity:.75}.quote-card::after{content:"";position:absolute;right:-36px;bottom:-36px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle, var(--gold-soft), transparent 72%);pointer-events:none}
+    .big-price{font-size:clamp(2.8rem,6vw,5.2rem);line-height:.92;margin:14px 0 8px;font-weight:900;letter-spacing:-.065em;color:#111}.big-sub{font-size:clamp(1.95rem,4vw,2.7rem);line-height:1.02;margin:14px 0 8px;font-weight:850;letter-spacing:-.05em;color:#2a2a2a}.two-col{display:grid;grid-template-columns:1.08fr .92fr;gap:18px;margin-bottom:20px}.two-col.store-view{grid-template-columns:1fr}.head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px}.head h2{margin:0;font-size:1.22rem;letter-spacing:-.025em}
+    .pill{padding:10px 14px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:12px;font-weight:800;white-space:nowrap;color:#5a5a5a;box-shadow:0 3px 10px rgba(0,0,0,.03)}.pill.success{color:#065f46;background:#dff7ef;border:1px solid #b7ecd9}.pill.error{color:#8f1d1d;background:#fde9e9;border:1px solid #f5c8c8}
+    .auth-form{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end}.form-full{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.form-full .full{grid-column:1 / -1}label{display:block}label span{display:block;margin-bottom:8px;font-size:12px;color:#5d5d5d;font-weight:800;letter-spacing:.02em}
+    input,select,button,textarea{width:100%;min-height:54px;border-radius:18px;font:inherit}input,select,textarea{padding:0 16px;background:#fff;color:var(--text);outline:none;border:1px solid rgba(0,0,0,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}input:focus,select:focus,textarea:focus{border-color:rgba(198,167,105,.8);box-shadow:0 0 0 3px rgba(198,167,105,.18)}input:disabled{background:#faf8f4;color:#666}textarea{min-height:96px;padding:14px 16px;resize:vertical}
+    button{padding:0 20px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);color:#fff;cursor:pointer;font-weight:850;letter-spacing:.01em;border:1px solid rgba(0,0,0,.2);box-shadow:0 10px 20px rgba(0,0,0,.12)}button.secondary{background:#fff;color:#111;border:1px solid rgba(0,0,0,.08);box-shadow:0 8px 18px rgba(0,0,0,.05)}button.reset{background:linear-gradient(135deg,#b91c1c,#d93025)}button:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+    .control-row{display:grid;grid-template-columns:220px 1fr auto;gap:14px;align-items:center;margin-top:16px}.table-wrap{overflow:auto;border-radius:22px;border:1px solid var(--line);background:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}table{width:100%;border-collapse:collapse;min-width:1040px}thead th{text-align:left;background:#faf7f2;color:#6b6b6b;font-size:12px;font-weight:800;letter-spacing:.04em;padding:15px 18px;text-transform:uppercase;position:sticky;top:0;z-index:1}tbody td{padding:16px 18px;border-top:1px solid #f2eee7;font-size:14px;vertical-align:middle}
+    .items-table-wrap{overflow:auto;border-radius:20px;border:1px solid var(--line);background:#fff;margin-top:16px;box-shadow:var(--shadow-soft)}.items-table{width:100%;border-collapse:collapse;min-width:720px}.items-table th{text-align:left;background:#faf7f2;color:#6b6b6b;font-size:12px;font-weight:800;padding:12px 14px;text-transform:uppercase;letter-spacing:.04em}.items-table td{padding:12px 14px;border-top:1px solid #f1ece4;vertical-align:middle;background:#fff}.items-table td:nth-child(5){font-weight:700;color:#111}.items-table input{min-height:46px;border-radius:14px}
+    .actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}.summary-box{background:linear-gradient(180deg,#fff,#fcfaf7);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow-soft)}.right{text-align:right}.empty{text-align:center;color:#888;padding:34px 18px}.note{margin-top:14px;font-size:13px;color:#777;line-height:1.45}.hidden{display:none !important}.stack{display:grid;gap:12px}#authMessage{margin-top:12px;font-size:14px;font-weight:700;color:var(--bad);white-space:pre-wrap}.store-logout-card{padding:18px 22px;border-radius:24px}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:800;line-height:1;white-space:nowrap;border:1px solid transparent}.badge.red{background:var(--bad-soft);color:#8f1d1d;border-color:#f5c8c8}.badge.green{background:var(--ok-soft);color:#065f46;border-color:#b7ecd9}.badge.amber{background:var(--amber-soft);color:var(--amber);border-color:#f3d38a}.badge-dot{width:8px;height:8px;border-radius:999px;background:currentColor;display:inline-block}
+    .fusion-panel{margin-top:18px;padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#fcfaf7);box-shadow:var(--shadow-soft)}.fusion-list{display:grid;gap:10px;margin-top:14px;max-height:360px;overflow:auto;padding-right:4px}.fusion-item{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid #efe8dc;border-radius:16px;background:#fff}.fusion-item input[type="checkbox"]{width:20px;height:20px;min-height:20px;border-radius:6px;accent-color:#111}.fusion-item-main{min-width:0}.fusion-item-title{font-weight:800;font-size:14px;color:#111;margin-bottom:4px}.fusion-item-sub{font-size:12px;color:#6f6f6f;line-height:1.4}.fusion-item-metric{text-align:right;font-size:13px;color:#444;white-space:nowrap}
+    .fusion-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}.fusion-summary-box{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px}.fusion-summary-box .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#777;font-weight:800;margin-bottom:6px}.fusion-summary-box .value{font-size:20px;font-weight:900;color:#111;line-height:1.05}
+    .session-list-min{display:grid;gap:10px}.session-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fff,#fcfaf7);box-shadow:var(--shadow-soft)}.session-row-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}.session-row-title{font-weight:800;font-size:14px;color:#111}.session-row-date{font-size:13px;color:#666}.session-row-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .print-sheet{display:none;font-family:Arial,Helvetica,sans-serif;color:#111}.print-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #d9d1c4;padding-bottom:10px;margin-bottom:12px}.print-brand{font-size:20px;font-weight:800;letter-spacing:.01em;line-height:1}.print-sub{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}.print-meta{text-align:right;font-size:11px;color:#444;line-height:1.45}.print-section{margin-bottom:10px}.print-section-title{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#666;margin-bottom:5px;font-weight:700}.print-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px}.print-row{padding:4px 0;border-bottom:1px solid #ece6dc;font-size:11px;line-height:1.3}.print-row strong{display:inline-block;min-width:92px}.print-table{width:100%;border-collapse:collapse;margin-top:6px;min-width:0}.print-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#666;background:#f7f3ec;padding:6px 8px;border:1px solid #e8e1d5;line-height:1.2}.print-table td{padding:6px 8px;border:1px solid #e8e1d5;font-size:11px;line-height:1.25}.print-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.print-summary-box{border:1px solid #e8e1d5;border-radius:10px;padding:10px 12px;background:#fcfaf6}.print-summary-label{font-size:10px;text-transform:uppercase;color:#777;letter-spacing:.05em;margin-bottom:4px}.print-summary-value{font-size:18px;font-weight:800;line-height:1.05}.print-signatures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:18px}.print-sign-box{padding-top:20px;border-top:1px solid #444;font-size:11px;color:#444;text-align:center}.print-declarations{margin-top:14px;padding:12px 14px;border:1px solid #e8e1d5;border-radius:10px;background:#fcfaf6}.print-declaration-text{font-size:10.5px;line-height:1.45;color:#333;margin-bottom:8px}
+    @media print{html,body{background:#fff !important;margin:0 !important;padding:0 !important}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.page > *{display:none !important}.print-target{display:block !important;background:#fff !important;color:#111 !important;padding:0 !important;margin:0 !important}@page{size:A4;margin:9mm}}
+    @media (max-width:960px){.page{padding:16px}.hero{grid-template-columns:1fr;padding:24px;min-height:auto}.hero-side{grid-template-columns:1fr}.quote-grid,.two-col,.fusion-summary{grid-template-columns:1fr}.quote-grid.store-view{grid-template-columns:1fr}.auth-form,.form-full,.control-row{grid-template-columns:1fr}.summary-grid{grid-template-columns:1fr}.quote-card,.section{padding:20px}.head{flex-direction:column;align-items:flex-start}.actions-row{flex-direction:column}.fusion-item{grid-template-columns:auto 1fr}.fusion-item-metric{text-align:left}table{min-width:1180px}.session-row{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <div class="page">
     <header class="hero card">
-      <div class="hero-left">
-        <div class="eyebrow">Burato Gioielli · Archivio rientro oro</div>
-        <h1>Burato Gioielli</h1>
-        <div class="hero-mini">Sistema interno per gestione, fusione e fissazioni</div>
-      </div>
-      <div class="hero-side">
-        <div class="hero-info-card"><div class="small-label">Aggiornamento</div><div id="lastUpdate" class="value">—</div></div>
-        <div class="hero-info-card"><div class="small-label">Negozio / ruolo</div><div id="userInfo" class="value">Non autenticato</div></div>
-      </div>
+      <div class="hero-left"><div class="eyebrow">Burato Gioielli · Archivio rientro oro</div><h1>Burato Gioielli</h1><div class="hero-mini">Sistema interno per gestione, fusione e fissazioni</div></div>
+      <div class="hero-side"><div class="hero-info-card"><div class="small-label">Aggiornamento</div><div id="lastUpdate" class="value">—</div></div><div class="hero-info-card"><div class="small-label">Negozio / ruolo</div><div id="userInfo" class="value">Non autenticato</div></div></div>
     </header>
-
     <section id="authCard" class="card section">
       <div class="head"><div><div class="small-label" style="margin-bottom:6px;">Area riservata</div><h2>Accesso negozio</h2></div><div id="authStatus" class="pill">Accedi</div></div>
-      <form id="loginForm" class="auth-form">
-        <label><span>Email negozio</span><input id="email" type="email" placeholder="es. mestre@burato.local" required /></label>
-        <label><span>Password</span><input id="password" type="password" placeholder="Password" required /></label>
-        <button id="loginBtn" type="submit">Accedi</button>
-      </form>
+      <form id="loginForm" class="auth-form"><label><span>Email negozio</span><input id="email" type="email" placeholder="es. mestre@burato.local" required /></label><label><span>Password</span><input id="password" type="password" placeholder="Password" required /></label><button id="loginBtn" type="submit">Accedi</button></form>
       <div id="authMessage"></div>
     </section>
 
@@ -205,124 +49,32 @@
         <article class="quote-card card"><div class="small-label">Quotazione Burato</div><div id="buratoPrice" class="big-price">—</div><div class="muted">Calcolata automaticamente</div></article>
         <article class="quote-card card"><div class="small-label">Oro 24kt live</div><div id="marketPrice" class="big-sub">—</div><div class="muted">Valore attuale in euro / grammo</div></article>
         <article id="adminStatsCard" class="quote-card card"><div class="small-label">Puro stimato in casa</div><div id="totalGrams" class="big-sub">0 g</div><div id="nextAlert" class="muted">Saldo puro fonderia: 0 g</div></article>
-        <article id="profitHeroCard" class="quote-card card hidden"><div class="small-label">Guadagno reale mese</div><div id="profitHeroValue" class="big-sub">0 €</div><div id="profitHeroSub" class="muted">Report del mese selezionato</div></article>
       </section>
 
-      <section class="card section">
-        <div class="head"><div><div class="small-label" style="margin-bottom:6px;">Operatività</div><h2 id="formSectionTitle">Nuova scheda rientro oro</h2></div><button id="toggleFormBtn" class="secondary" type="button">Apri scheda</button></div>
-        <div id="goldFormArea" class="hidden">
-          <form id="goldForm" class="form-full">
-            <label><span>N° scheda</span><input id="formSchedaNumber" type="text" placeholder="es. 2026-001" required /></label>
-            <label><span>Negozio</span><input id="formStore" type="text" disabled /></label>
-            <label><span>Tipo scheda</span><select id="formMaterialType"><option value="gold">Oro</option><option value="silver800">Argento 800</option></select></label>
-            <label><span>Nome cliente</span><input id="formClientName" type="text" required /></label>
-            <label><span>Cognome cliente</span><input id="formClientSurname" type="text" /></label>
-            <label><span>Codice fiscale</span><input id="formClientCf" type="text" /></label>
-            <label><span>Telefono</span><input id="formClientPhone" type="text" /></label>
-            <label class="full"><span>Indirizzo</span><input id="formClientAddress" type="text" /></label>
-            <label><span>Tipo documento</span><input id="formDocumentType" type="text" placeholder="Carta identità / Patente / Passaporto" /></label>
-            <label><span>Numero documento</span><input id="formDocumentNumber" type="text" /></label>
-            <label><span>Rilasciato da</span><input id="formDocumentIssuedBy" type="text" /></label>
-            <label><span>Scadenza documento</span><input id="formDocumentExpiry" type="date" /></label>
-            <label class="full"><span>IBAN cliente</span><input id="formIban" type="text" /></label>
-            <label><span id="formQuoteLabel">Quotazione €/g (18kt)</span><input id="formQuotePerGram" type="number" step="0.01" /></label>
-            <label class="full"><span>Note</span><input id="formNotes" type="text" /></label>
-          </form>
-          <div class="items-table-wrap">
-            <table class="items-table">
-              <thead><tr><th>Descrizione oggetto</th><th>Titolo</th><th>Numero pezzi</th><th>Grammi</th><th>€</th><th>Azioni</th></tr></thead>
-              <tbody id="formItemsBody"></tbody>
-            </table>
-          </div>
-          <div class="actions-row"><button id="addItemRowBtn" class="secondary" type="button">Aggiungi riga oggetto</button><button id="saveFormBtn" type="button">Salva scheda</button><button id="printFormBtn" class="secondary" type="button" onclick="printGoldForm()">Stampa</button></div>
-          <div class="summary-grid">
-            <div class="summary-box"><div class="small-label">Totale grammi</div><div id="formTotalGrams" class="big-sub">0 g</div></div>
-            <div class="summary-box"><div class="small-label">Totale euro</div><div id="formTotalEur" class="big-sub">0 €</div></div>
-            <div class="summary-box"><div class="small-label">Stato scheda</div><div id="formSaveStatus" class="muted">Non salvata</div></div>
-          </div>
-        </div>
-      </section>
+      <section class="card section"><div class="head"><div><div class="small-label" style="margin-bottom:6px;">Operatività</div><h2 id="formSectionTitle">Nuova scheda rientro oro</h2></div><button id="toggleFormBtn" class="secondary" type="button">Apri scheda</button></div><div id="goldFormArea" class="hidden"><form id="goldForm" class="form-full"><label><span>N° scheda</span><input id="formSchedaNumber" type="text" placeholder="es. 2026-001" required /></label><label><span>Negozio</span><input id="formStore" type="text" disabled /></label><label><span>Tipo scheda</span><select id="formMaterialType"><option value="gold">Oro</option><option value="silver800">Argento 800</option></select></label><label><span>Nome cliente</span><input id="formClientName" type="text" required /></label><label><span>Cognome cliente</span><input id="formClientSurname" type="text" /></label><label><span>Codice fiscale</span><input id="formClientCf" type="text" /></label><label><span>Telefono</span><input id="formClientPhone" type="text" /></label><label class="full"><span>Indirizzo</span><input id="formClientAddress" type="text" /></label><label><span>Tipo documento</span><input id="formDocumentType" type="text" placeholder="Carta identità / Patente / Passaporto" /></label><label><span>Numero documento</span><input id="formDocumentNumber" type="text" /></label><label><span>Rilasciato da</span><input id="formDocumentIssuedBy" type="text" /></label><label><span>Scadenza documento</span><input id="formDocumentExpiry" type="date" /></label><label class="full"><span>IBAN cliente</span><input id="formIban" type="text" /></label><label><span id="formQuoteLabel">Quotazione €/g (18kt)</span><input id="formQuotePerGram" type="number" step="0.01" /></label><label class="full"><span>Note</span><input id="formNotes" type="text" /></label></form><div class="items-table-wrap"><table class="items-table"><thead><tr><th>Descrizione oggetto</th><th>Titolo</th><th>Numero pezzi</th><th>Grammi</th><th>€</th><th>Azioni</th></tr></thead><tbody id="formItemsBody"></tbody></table></div><div class="actions-row"><button id="addItemRowBtn" class="secondary" type="button">Aggiungi riga oggetto</button><button id="saveFormBtn" type="button">Salva scheda</button><button id="printFormBtn" class="secondary" type="button" onclick="printGoldForm()">Stampa</button></div><div class="summary-grid"><div class="summary-box"><div class="small-label">Totale grammi</div><div id="formTotalGrams" class="big-sub">0 g</div></div><div class="summary-box"><div class="small-label">Totale euro</div><div id="formTotalEur" class="big-sub">0 €</div></div><div class="summary-box"><div class="small-label">Stato scheda</div><div id="formSaveStatus" class="muted">Non salvata</div></div></div></div></section>
 
-      <div id="adminShell" class="admin-shell">
-        <div class="admin-left">
-          <section id="sessionCard" class="card section">
-            <div class="head"><div><div class="small-label" style="margin-bottom:6px;">Controllo</div><h2>Fusioni reali</h2></div><div id="status" class="pill">Pronto</div></div>
-            <div id="sessionAdminArea">
-              <div class="muted">Le schede salvate aggiornano il puro stimato in casa. Le fusioni reali registrano il puro effettivo uscito dalla fonderia.</div>
-              <div class="control-row"><button id="resetBtn" class="reset hidden" type="button">Nuova fusione</button><div id="resetNote" class="muted">Solo admin può registrare una fusione.</div><div></div></div>
-              <div id="fusionPanel" class="fusion-panel hidden">
-                <div class="head" style="margin-bottom:12px;"><div><div class="small-label" style="margin-bottom:6px;">Selezione</div><h2 style="font-size:1.06rem;">Schede da mandare in fusione</h2></div><button id="closeFusionPanelBtn" class="secondary" type="button" style="min-height:42px;width:auto;">Chiudi</button></div>
-                <div class="fusion-summary">
-                  <div class="fusion-summary-box"><div class="label">Schede selezionate</div><div id="fusionSelectedCount" class="value">0</div></div>
-                  <div class="fusion-summary-box"><div class="label">Grammi lordi</div><div id="fusionSelectedGross" class="value">0 g</div></div>
-                  <div class="fusion-summary-box"><div class="label">Puro stimato</div><div id="fusionSelectedPure" class="value">0 g</div></div>
-                  <div class="fusion-summary-box"><div class="label">Costo clienti</div><div id="fusionEstimatedMargin" class="value">0 €</div></div>
-                </div>
-                <div id="fusionList" class="fusion-list"><div class="muted">Nessuna scheda oro disponibile da fondere</div></div>
-                <div class="actions-row"><button id="confirmFusionBtn" type="button">Crea lotto fusione</button></div>
-              </div>
-            </div>
-            <div class="actions-row" style="margin-top:14px;"><button id="logoutBtn" class="secondary" type="button" style="width:auto;min-width:140px;">Esci</button></div>
-          </section>
+      <div id="dashboardGrid" class="two-col"><section id="sessionCard" class="card section"><div class="head"><div><div class="small-label" style="margin-bottom:6px;">Controllo</div><h2>Fusioni reali</h2></div><div id="status" class="pill">Pronto</div></div><div id="sessionAdminArea"><div class="muted">Le schede salvate aggiornano il puro stimato in casa. Le fusioni reali registrano il puro effettivo uscito dalla fonderia.</div><div class="control-row"><button id="resetBtn" class="reset hidden" type="button">Nuova fusione</button><div id="resetNote" class="muted">Solo admin può registrare una fusione.</div><div></div></div><div id="fusionPanel" class="fusion-panel hidden"><div class="head" style="margin-bottom:12px;"><div><div class="small-label" style="margin-bottom:6px;">Selezione</div><h2 style="font-size:1.06rem;">Schede da mandare in fusione</h2></div><button id="closeFusionPanelBtn" class="secondary" type="button" style="min-height:42px;width:auto;">Chiudi</button></div><div class="fusion-summary"><div class="fusion-summary-box"><div class="label">Schede selezionate</div><div id="fusionSelectedCount" class="value">0</div></div><div class="fusion-summary-box"><div class="label">Grammi lordi</div><div id="fusionSelectedGross" class="value">0 g</div></div><div class="fusion-summary-box"><div class="label">Puro stimato</div><div id="fusionSelectedPure" class="value">0 g</div></div><div class="fusion-summary-box"><div class="label">Costo clienti</div><div id="fusionEstimatedMargin" class="value">0 €</div></div></div><div id="fusionList" class="fusion-list"><div class="muted">Nessuna scheda oro disponibile da fondere</div></div><div class="actions-row"><button id="confirmFusionBtn" type="button">Crea lotto fusione</button></div></div></div><div class="actions-row" style="margin-top:14px;"><button id="logoutBtn" class="secondary" type="button" style="width:auto;min-width:140px;">Esci</button></div></section><section id="adminFusioniCard" class="card section"><div class="head"><div><div class="small-label" style="margin-bottom:6px;">Storico</div><h2>Fusioni registrate</h2></div><div style="display:flex; gap:10px; align-items:center;"><div id="sessionsCount" class="muted">0 fusioni</div><button id="clearSessionsBtn" class="secondary hidden" type="button" style="min-height:42px;width:auto;">Pulisci storico</button></div></div><div id="sessionsList" class="stack"><div class="muted">Nessuna fusione registrata</div></div></section></div>
 
-          <section id="adminFusioniCard" class="card section">
-            <div class="head"><div><div class="small-label" style="margin-bottom:6px;">Storico</div><h2>Fusioni registrate</h2></div><div style="display:flex; gap:10px; align-items:center;"><div id="sessionsCount" class="muted">0 fusioni</div><button id="clearSessionsBtn" class="secondary hidden" type="button" style="min-height:42px;width:auto;">Pulisci storico</button></div></div>
-            <div id="sessionsList" class="stack"><div class="muted">Nessuna fusione registrata</div></div>
-          </section>
-        </div>
+      <section id="adminFixCard" class="card section hidden"><div class="head"><div><div class="small-label" style="margin-bottom:6px;">Fonderia</div><h2>Fissazioni prezzo</h2></div><div id="fixesCount" class="muted">0 fissazioni</div></div><div class="form-full"><label><span>Puro fissato (g)</span><input id="fixPureGrams" type="number" step="0.01" placeholder="es. 300" /></label><label><span>Prezzo €/g</span><input id="fixPricePerGram" type="number" step="0.01" placeholder="es. 135" /></label><label><span>Riferimento</span><input id="fixReference" type="text" placeholder="es. telefonata / doc. fonderia" /></label><label><span>Totale</span><input id="fixTotalValue" type="text" disabled value="0,00 €" /></label><label class="full"><span>Note</span><input id="fixNotes" type="text" placeholder="eventuali note interne" /></label></div><div class="actions-row"><button id="saveFixBtn" type="button">Salva fissazione</button></div><div id="fixesList" class="session-list-min" style="margin-top:18px;"><div class="muted">Nessuna fissazione registrata</div></div></section>
 
-        <div class="admin-right">
-          <section id="adminFixCard" class="card section hidden">
-            <div class="head"><div><div class="small-label" style="margin-bottom:6px;">Fonderia</div><h2>Fissazioni prezzo</h2></div><div id="fixesCount" class="muted">0 fissazioni</div></div>
-            <div class="form-full">
-              <label><span>Puro fissato (g)</span><input id="fixPureGrams" type="number" step="0.01" placeholder="es. 300" /></label>
-              <label><span>Prezzo €/g</span><input id="fixPricePerGram" type="number" step="0.01" placeholder="es. 135" /></label>
-              <label><span>Riferimento</span><input id="fixReference" type="text" placeholder="es. telefonata / doc. fonderia" /></label>
-              <label><span>Totale</span><input id="fixTotalValue" type="text" disabled value="0,00 €" /></label>
-              <label class="full"><span>Note</span><input id="fixNotes" type="text" placeholder="eventuali note interne" /></label>
-            </div>
-            <div class="actions-row"><button id="saveFixBtn" type="button">Salva fissazione</button></div>
-            <div id="fixesList" class="session-list-min" style="margin-top:18px;"><div class="muted">Nessuna fissazione registrata</div></div>
-          </section>
+      <section id="profitCard" class="card section hidden"><div class="head"><div><div class="small-label" style="margin-bottom:6px;">Analisi</div><h2>Guadagno reale</h2></div></div><div class="actions-row" style="margin-top:0; margin-bottom:18px;"><label style="max-width:220px;"><span>Mese report</span><input id="profitMonth" type="month" /></label><button id="printProfitBtn" class="secondary" type="button" style="width:auto;min-width:220px;">Stampa report mensile</button></div><div class="summary-grid"><div class="summary-box"><div class="small-label">Puro coperto / venduto</div><div id="profitPureSold" class="big-sub">0 g</div></div><div class="summary-box"><div class="small-label">Ricavo realizzato</div><div id="profitRevenue" class="big-sub">0 €</div></div><div class="summary-box"><div class="small-label">Costo attribuito</div><div id="profitCost" class="big-sub">0 €</div></div></div><div class="summary-grid" style="margin-top:12px;"><div class="summary-box"><div class="small-label">Guadagno netto</div><div id="profitNet" class="big-sub">0 €</div></div><div class="summary-box"><div class="small-label">Margine €/g</div><div id="profitPerGram" class="big-sub">0 €/g</div></div><div class="summary-box"><div class="small-label">Fissazioni scoperte</div><div id="profitUncovered" class="big-sub">0 g</div></div></div></section>
 
-          <section id="profitCard" class="card section hidden">
-            <div class="head"><div><div class="small-label" style="margin-bottom:6px;">Analisi</div><h2>Guadagno reale</h2></div></div>
-            <div class="profit-toolbar">
-              <label><span>Mese report</span><input id="profitMonth" type="month" /></label>
-              <button id="printProfitBtn" class="secondary" type="button" style="width:auto;min-width:220px;">Stampa report mensile</button>
-            </div>
-            <div class="summary-grid">
-              <div class="summary-box"><div class="small-label">Puro coperto / venduto</div><div id="profitPureSold" class="big-sub">0 g</div></div>
-              <div class="summary-box"><div class="small-label">Ricavo realizzato</div><div id="profitRevenue" class="big-sub">0 €</div></div>
-              <div class="summary-box"><div class="small-label">Costo attribuito</div><div id="profitCost" class="big-sub">0 €</div></div>
-            </div>
-            <div class="summary-grid" style="margin-top:12px;">
-              <div class="summary-box"><div class="small-label">Guadagno netto</div><div id="profitNet" class="big-sub">0 €</div></div>
-              <div class="summary-box"><div class="small-label">Margine €/g</div><div id="profitPerGram" class="big-sub">0 €/g</div></div>
-              <div class="summary-box"><div class="small-label">Fissazioni scoperte</div><div id="profitUncovered" class="big-sub">0 g</div></div>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <section class="card section">
-        <div class="head"><div><div class="small-label" style="margin-bottom:6px;">Archivio</div><h2>Schede salvate</h2></div><div id="formsCount" class="muted">0 schede</div></div>
-        <div class="table-wrap"><table><thead><tr><th>Data</th><th>N° scheda</th><th>Cliente</th><th>Negozio</th><th>Stato</th><th>Rif. fusione</th><th class="right">Grammi</th><th class="right">Euro</th><th>Azioni</th></tr></thead><tbody id="formsBody"><tr><td colspan="9" class="empty">Nessuna scheda salvata</td></tr></tbody></table></div>
-        <div class="note">Le schede restano sempre disponibili per la ristampa, anche dopo la fusione.</div>
-      </section>
+      <section class="card section"><div class="head"><div><div class="small-label" style="margin-bottom:6px;">Archivio</div><h2>Schede salvate</h2></div><div id="formsCount" class="muted">0 schede</div></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>N° scheda</th><th>Cliente</th><th>Negozio</th><th>Stato</th><th>Rif. fusione</th><th class="right">Grammi</th><th class="right">Euro</th><th>Azioni</th></tr></thead><tbody id="formsBody"><tr><td colspan="9" class="empty">Nessuna scheda salvata</td></tr></tbody></table></div><div class="note">Le schede restano sempre disponibili per la ristampa, anche dopo la fusione.</div></section>
 
       <div id="storeLogoutArea" class="card section store-logout-card hidden" style="margin-top:20px;"><div class="actions-row" style="margin-top:0;"><button id="logoutBtnStore" class="secondary" type="button" style="width:auto;min-width:140px;">Esci</button></div></div>
     </div>
 
-    <!-- print sections unchanged -->
-    <section id="printSheet" class="print-sheet"></section>
-    <section id="fusionPrintSheet" class="print-sheet"></section>
-    <section id="fixPrintSheet" class="print-sheet"></section>
-    <section id="profitPrintSheet" class="print-sheet"></section>
+    <section id="printSheet" class="print-sheet"><div class="print-header"><div><div class="print-brand">BURATO GIOIELLI S.P.A.</div><div class="print-sub">Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278</div><div id="printSheetSub" class="print-sub" style="margin-top:6px;">Scheda rientro oro (Art. 5 D.Lgs. 92/2017)</div></div><div class="print-meta"><div><strong>N° scheda:</strong> <span id="printSchedaNumber">—</span></div><div><strong>Negozio:</strong> <span id="printStore">—</span></div><div><strong>Data:</strong> <span id="printDate">—</span></div></div></div><div class="print-section"><div class="print-section-title">Dati cliente</div><div class="print-grid"><div class="print-row"><strong>Nome:</strong> <span id="printClientName">—</span></div><div class="print-row"><strong>Cognome:</strong> <span id="printClientSurname">—</span></div><div class="print-row"><strong>Codice fiscale:</strong> <span id="printClientCf">—</span></div><div class="print-row"><strong>Telefono:</strong> <span id="printClientPhone">—</span></div><div class="print-row" style="grid-column:1 / -1;"><strong>Indirizzo:</strong> <span id="printClientAddress">—</span></div><div class="print-row"><strong>Metodo pagamento:</strong> <span id="printPaymentMethod">Bonifico</span></div><div class="print-row"><strong>IBAN:</strong> <span id="printIban">—</span></div></div></div><div class="print-section"><div class="print-section-title">Documento</div><div class="print-grid"><div class="print-row"><strong>Tipo:</strong> <span id="printDocumentType">—</span></div><div class="print-row"><strong>Numero:</strong> <span id="printDocumentNumber">—</span></div><div class="print-row"><strong>Rilasciato da:</strong> <span id="printDocumentIssuedBy">—</span></div><div class="print-row"><strong>Scadenza:</strong> <span id="printDocumentExpiry">—</span></div></div></div><div class="print-section"><div class="print-section-title">Oggetti conferiti</div><table class="print-table"><thead><tr><th style="width:52%;">Descrizione</th><th style="width:16%; text-align:center;">Titolo</th><th style="width:12%; text-align:center;">Pezzi</th><th style="width:20%; text-align:right;">Grammi</th></tr></thead><tbody id="printItemsBody"><tr><td colspan="4">Nessun oggetto</td></tr></tbody></table></div><div class="print-summary"><div class="print-summary-box"><div class="print-summary-label">Totale grammi</div><div id="printTotalGrams" class="print-summary-value">0 g</div></div><div class="print-summary-box"><div class="print-summary-label">Importo totale</div><div id="printTotalEur" class="print-summary-value">0 €</div></div></div><div class="print-section" style="margin-top:10px;"><div class="print-section-title">Note</div><div id="printNotes" class="print-row" style="min-height:40px;">—</div></div><div class="print-section print-declarations"><div class="print-section-title">Dichiarazioni cliente</div><div class="print-declaration-text">Il sottoscritto dichiara di operare in qualità di soggetto privato e che gli oggetti ceduti sono usati, di sua piena ed esclusiva proprietà, nella sua libera disponibilità giuridica e di lecita provenienza, non derivanti da furto, appropriazione indebita, ricettazione o altra provenienza illecita.</div><div class="print-declaration-text">Il sottoscritto dichiara inoltre di aver ricevuto e preso visione dell’informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR) e di essere stato informato che i dati forniti saranno trattati da Burato Gioielli S.P.A. per finalità connesse alla gestione dell’operazione, agli adempimenti amministrativi, fiscali e agli obblighi di legge.</div><div class="print-declaration-text">Il cliente si impegna, qualora a seguito di verifica il titolo degli oggetti risulti diverso da quello dichiarato o presunto, a restituire eventuali differenze di importo entro 7 giorni dalla richiesta.</div></div><div class="print-signatures"><div class="print-sign-box">Firma del cliente / dichiarante</div><div class="print-sign-box">Firma operatore addetto all’identificazione</div></div></section>
+
+    <section id="fusionPrintSheet" class="print-sheet"><div class="print-header"><div><div class="print-brand">BURATO GIOIELLI S.P.A.</div><div class="print-sub">Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278</div><div class="print-sub" style="margin-top:6px;">Report fusione reale</div></div><div class="print-meta"><div><strong>ID fusione:</strong> <span id="fusionPrintId">—</span></div><div><strong>Stato:</strong> <span id="fusionPrintStatus">—</span></div><div><strong>Data creazione:</strong> <span id="fusionPrintLockedAt">—</span></div><div><strong>Data esito:</strong> <span id="fusionPrintCompletedAt">—</span></div></div></div><div class="print-section"><div class="print-section-title">Dati fusione</div><div class="print-grid"><div class="print-row"><strong>Lordo stimato:</strong> <span id="fusionPrintEstimatedGross">—</span></div><div class="print-row"><strong>Puro stimato:</strong> <span id="fusionPrintEstimatedPure">—</span></div><div class="print-row"><strong>Puro reale:</strong> <span id="fusionPrintActualPure">—</span></div><div class="print-row"><strong>Diff. puro:</strong> <span id="fusionPrintPureDiff">—</span></div><div class="print-row"><strong>Costo clienti:</strong> <span id="fusionPrintPaid">—</span></div><div class="print-row"><strong>Costo medio reale:</strong> <span id="fusionPrintActualRevenue">—</span></div><div class="print-row"><strong>Già fissato:</strong> <span id="fusionPrintAllocatedPure">—</span></div><div class="print-row"><strong>Ricavo realizzato:</strong> <span id="fusionPrintAllocatedRevenue">—</span></div><div class="print-row"><strong>Costo attribuito:</strong> <span id="fusionPrintAllocatedCost">—</span></div><div class="print-row"><strong>Guadagno realizzato:</strong> <span id="fusionPrintRealizedProfit">—</span></div><div class="print-row"><strong>Residuo non fissato:</strong> <span id="fusionPrintResidualPure">—</span></div><div class="print-row"><strong>Residuo a costo:</strong> <span id="fusionPrintResidualCost">—</span></div><div class="print-row" style="grid-column:1 / -1;"><strong>Riferimento:</strong> <span id="fusionPrintReference">—</span></div></div></div><div class="print-section"><div class="print-section-title">Schede incluse</div><table class="print-table"><thead><tr><th>Data</th><th>N° scheda</th><th>Cliente</th><th>Negozio</th><th style="text-align:right;">Grammi</th><th style="text-align:right;">Euro</th></tr></thead><tbody id="fusionPrintFormsBody"><tr><td colspan="6">Nessuna scheda</td></tr></tbody></table></div><div class="print-section" style="margin-top:10px;"><div class="print-section-title">Note</div><div id="fusionPrintNotes" class="print-row" style="min-height:40px;">—</div></div><div class="print-signatures"><div class="print-sign-box">Firma interna Burato Gioielli</div><div class="print-sign-box">Firma / timbro fonderia</div></div></section>
+
+    <section id="fixPrintSheet" class="print-sheet"><div class="print-header"><div><div class="print-brand">BURATO GIOIELLI S.P.A.</div><div class="print-sub">Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278</div><div class="print-sub" style="margin-top:6px;">Report fissazione prezzo</div></div><div class="print-meta"><div><strong>ID fissazione:</strong> <span id="fixPrintId">—</span></div><div><strong>Data:</strong> <span id="fixPrintDate">—</span></div></div></div><div class="print-section"><div class="print-section-title">Dati fissazione</div><div class="print-grid"><div class="print-row"><strong>Puro fissato:</strong> <span id="fixPrintPure">—</span></div><div class="print-row"><strong>Prezzo €/g:</strong> <span id="fixPrintPrice">—</span></div><div class="print-row"><strong>Valore totale:</strong> <span id="fixPrintValue">—</span></div><div class="print-row"><strong>Coperto:</strong> <span id="fixPrintCovered">—</span></div><div class="print-row"><strong>Scoperto:</strong> <span id="fixPrintUncovered">—</span></div><div class="print-row"><strong>Costo attribuito:</strong> <span id="fixPrintCost">—</span></div><div class="print-row"><strong>Profitto realizzato:</strong> <span id="fixPrintProfit">—</span></div><div class="print-row"><strong>Riferimento:</strong> <span id="fixPrintReference">—</span></div></div></div><div class="print-section" style="margin-top:10px;"><div class="print-section-title">Note</div><div id="fixPrintNotes" class="print-row" style="min-height:40px;">—</div></div><div class="print-signatures"><div class="print-sign-box">Firma interna Burato Gioielli</div><div class="print-sign-box">Firma / conferma fonderia</div></div></section>
+
+    <section id="profitPrintSheet" class="print-sheet"><div class="print-header"><div><div class="print-brand">BURATO GIOIELLI S.P.A.</div><div class="print-sub">Sede legale: Piazza Milano, 12 – 30016 Jesolo (VE) · P.IVA e C.F. 02543700278</div><div class="print-sub" style="margin-top:6px;">Report mensile guadagno reale</div></div><div class="print-meta"><div><strong>Mese:</strong> <span id="profitPrintMonth">—</span></div><div><strong>Data stampa:</strong> <span id="profitPrintDate">—</span></div></div></div><div class="print-summary"><div class="print-summary-box"><div class="print-summary-label">Puro coperto / venduto</div><div id="profitPrintPureSold" class="print-summary-value">0 g</div></div><div class="print-summary-box"><div class="print-summary-label">Ricavo realizzato</div><div id="profitPrintRevenue" class="print-summary-value">0 €</div></div><div class="print-summary-box"><div class="print-summary-label">Costo attribuito</div><div id="profitPrintCost" class="print-summary-value">0 €</div></div><div class="print-summary-box"><div class="print-summary-label">Guadagno netto</div><div id="profitPrintNet" class="print-summary-value">0 €</div></div><div class="print-summary-box"><div class="print-summary-label">Margine €/g</div><div id="profitPrintPerGram" class="print-summary-value">0 €/g</div></div><div class="print-summary-box"><div class="print-summary-label">Fissazioni scoperte</div><div id="profitPrintUncovered" class="print-summary-value">0 g</div></div></div></section>
   </div>
 
-  <script>
-   (async function () {
+<script>
+(async function () {
   const cfg = window.BURATO_CONFIG || {};
   const supabaseUrl = cfg.supabaseUrl;
   const supabaseAnonKey = cfg.supabaseAnonKey;
@@ -528,6 +280,6 @@
 
   window.printGoldForm = function () { fillPrintSheet(); const goldSheet = document.getElementById('printSheet'); const fusionSheet = document.getElementById('fusionPrintSheet'); const fixSheet = document.getElementById('fixPrintSheet'); const profitSheet = document.getElementById('profitPrintSheet'); fusionSheet.classList.remove('print-target'); fixSheet.classList.remove('print-target'); profitSheet.classList.remove('print-target'); goldSheet.classList.add('print-target'); setTimeout(() => { window.print(); setTimeout(() => goldSheet.classList.remove('print-target'), 300); }, 100); };
 })();
-  </script>
+</script>
 </body>
 </html>
